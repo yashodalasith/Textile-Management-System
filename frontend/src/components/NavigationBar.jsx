@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Navbar,
   MobileNav,
@@ -261,10 +262,12 @@ export function NavigationBar() {
         >
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
+        <Link to="/home">
+          <Button size="sm" variant="text">
+            <span>Log In</span>
+          </Button>
+        </Link>
 
-        <Button size="sm" variant="text">
-          <span>Log In</span>
-        </Button>
         <ProfileMenu />
       </div>
       <MobileNav open={isNavOpen} className="overflow-scroll">
