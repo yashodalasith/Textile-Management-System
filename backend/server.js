@@ -24,10 +24,7 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-  .connect(URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(URL)
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })

@@ -1,84 +1,73 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const CartPage = () => {
-  const [cart, setCart] = useState(null);
+const Cart = ({ userId }) => {
+  const [cart, setCart] = useState(null); // Default is null
+  const [loading, setLoading] = useState(true);
 
-  // Fetch cart details
   useEffect(() => {
+    // Fetch the cart data from the backend
     const fetchCart = async () => {
       try {
-        const response = await axios.get("/cart");
+        const response = await axios.get(`/cart/${userId}`);
         setCart(response.data);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching cart", error);
+        console.error("Failed to fetch cart", error);
+        setLoading(false);
       }
     };
     fetchCart();
-  }, []);
+  }, [userId]);
 
-  // Update quantity
-  const updateQuantity = async (productId, quantity) => {
+  const confirmOrder = async () => {
     try {
-      const response = await axios.put("/cart/update", { productId, quantity });
-      setCart(response.data); // Update cart in UI
+      const response = await axios.post("/confirm-order", { userId });
+      alert("Order confirmed!");
+      window.location.href = "/confirm-order"; // Redirect to confirm-order page
     } catch (error) {
-      console.error("Error updating quantity", error);
+      console.error("Failed to confirm order", error);
     }
   };
 
-  // Remove item from cart
-  const removeFromCart = async (productId) => {
-    try {
-      const response = await axios.delete(`/cart/remove/${productId}`);
-      setCart(response.data); // Update cart in UI
-    } catch (error) {
-      console.error("Error removing item", error);
-    }
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h2>Your Cart</h2>
-      {cart ? (
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-xl font-bold mb-4">Your Cart</h2>
+      {/* Check if cart exists and if cart.items exists */}
+      {cart && cart.items && cart.items.length > 0 ? (
         <div>
-          {cart.items.map((item) => (
-            <div key={item.productId}>
-              <p>{item.name}</p>
-              <p>Price: ${item.price}</p>
-              <p>Quantity: {item.quantity}</p>
-              <button
-                onClick={() =>
-                  updateQuantity(item.productId, item.quantity + 1)
-                }
-              >
-                +
-              </button>
-              <button
-                onClick={() =>
-                  updateQuantity(item.productId, item.quantity - 1)
-                }
-              >
-                -
-              </button>
-              <button onClick={() => removeFromCart(item.productId)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <h3>Total: ${cart.totalPrice}</h3>
-          <button onClick={() => (window.location.href = "/confirm-order")}>
-            Proceed to Checkout
-          </button>
+          <ul className="divide-y divide-gray-200">
+            {cart.items.map((item) => (
+              <li key={item.productId} className="py-4">
+                <div className="flex justify-between">
+                  <span>{item.name}</span>
+                  <span>
+                    {item.quantity} x ${item.price} = $
+                    {item.quantity * item.price}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              onClick={confirmOrder}
+            >
+              Confirm Order
+            </button>
+          </div>
         </div>
       ) : (
-        <p>Your cart is empty.</p>
+        <p>Your cart is empty </p>
       )}
     </div>
   );
 };
 
-export default CartPage;
+export default Cart;
 
 // import React, { useState, useEffect } from "react";
 // import api from "../services/api";

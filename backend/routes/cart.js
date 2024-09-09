@@ -20,11 +20,14 @@ router.post("/add", async (req, res) => {
   try {
     let cart = await Cart.findOne({ userId });
 
+    // Convert quantity to a number to prevent string concatenation
+    const parsedQuantity = parseInt(quantity, 10);
+
     // If the cart doesn't exist, create a new one
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, quantity, price: product.price }],
+        items: [{ productId, quantity: parsedQuantity, price: product.price }],
       });
     } else {
       // If cart exists, update it
@@ -34,10 +37,14 @@ router.post("/add", async (req, res) => {
 
       if (itemIndex > -1) {
         // Item exists in the cart, update quantity
-        cart.items[itemIndex].quantity += quantity;
+        cart.items[itemIndex].quantity += parsedQuantity;
       } else {
         // Item does not exist in the cart, add it
-        cart.items.push({ productId, quantity, price: product.price });
+        cart.items.push({
+          productId,
+          quantity: parsedQuantity,
+          price: product.price,
+        });
       }
     }
 
@@ -70,12 +77,44 @@ router.delete("/remove", async (req, res) => {
     const cart = await Cart.findOne({ userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    cart.items = cart.items.filter((item) => item.productId !== productId);
+    const itemIndex = cart.items.findIndex(
+      (item) => item.productId === productId
+    );
+
+    if (itemIndex > -1) {
+      // If item quantity is more than 1, decrease the quantity by 1
+      if (cart.items[itemIndex].quantity > 1) {
+        cart.items[itemIndex].quantity -= 1;
+      } else {
+        // If item quantity is 1, remove the item from the cart
+        cart.items = cart.items.filter((item) => item.productId !== productId);
+      }
+
+      await cart.save();
+      res.status(200).json({ message: "Item quantity updated/removed", cart });
+    } else {
+      res.status(404).json({ message: "Item not found in cart" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update item quantity" });
+  }
+});
+
+// Clear cart
+router.delete("/clear", async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    // Clear all items in the cart
+    cart.items = [];
     await cart.save();
 
-    res.status(200).json({ message: "Item removed from cart", cart });
+    res.status(200).json({ message: "Cart cleared", cart });
   } catch (error) {
-    res.status(500).json({ error: "Failed to remove item from cart" });
+    res.status(500).json({ error: "Failed to clear cart" });
   }
 });
 
