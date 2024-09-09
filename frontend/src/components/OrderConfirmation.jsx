@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
 
-const TABLE_HEAD = ["Product ID", "Quantity", "Price", ""];
+const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
 export default function OrderConfirmation() {
   const [orders, setOrders] = useState([]);
@@ -28,93 +28,51 @@ export default function OrderConfirmation() {
   }, [userId, orderId]);
 
   return (
-    <Card className="h-full w-full overflow-scroll">
-      <table className="w-full min-w-max table-auto text-left">
-        <thead>
-          <tr>
-            {TABLE_HEAD.map((head) => (
-              <th
-                key={head}
-                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-              >
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  {head}
-                </Typography>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {orders.length === 0 ? (
-            <tr>
-              <td colSpan={TABLE_HEAD.length} className="p-4 text-center">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal"
-                >
-                  No orders found
-                </Typography>
-              </td>
-            </tr>
-          ) : (
-            orders.map((order, index) => {
-              const isLast = index === orders.length - 1;
-              const classes = isLast
-                ? "p-4"
-                : "p-4 border-b border-blue-gray-50";
+    <div className="">
+      <div className="text-center font-bold">
+        <h1 className="text-3xl p-5 underline">Payment Confirmation</h1>
+      </div>
+      <div className="  shadow-2xl p-5 border rounded-lg">
+        <h2 className="text-xl font-semibold mb-4 flex  items-center ">
+          Bill Summary
+        </h2>
 
-              return (
-                <tr key={order._id}>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {order.productId}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {order.quantity}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {order.price}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      as="a"
-                      href="#"
-                      variant="small"
-                      color="blue-gray"
-                      className="font-medium"
-                    >
-                      Edit
-                    </Typography>
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
-    </Card>
+        <div className="flex justify-between mt-4">
+          <span className="font-medium">Products Purchased:</span>
+          <span>shirt 1, jeans 1</span>
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <span className="font-medium">Total Amount:</span>
+          <span>$120.00</span>
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <span className="font-medium">Discounts:</span>
+          <span>$20.00</span>
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <span className="font-medium">Amount to be paid:</span>
+          <span>$100.00</span>
+        </div>
+
+        <div className="flex justify-between mt-4 mb-4">
+          <span className="font-medium">Payment Method:</span>
+          <span>Cash on Delivery</span>
+        </div>
+
+        {/* Confirm Payment Button */}
+        <div className="flex justify-end mt-4">
+          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">
+            Confirm Payment
+          </button>
+        </div>
+      </div>{" "}
+      <div className="pt-4">
+        <p>Additional notes</p>
+      </div>
+    </div>
   );
 }
 
