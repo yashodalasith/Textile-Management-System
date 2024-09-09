@@ -25,37 +25,50 @@ ChartJS.register(
 
 const Dashboard = () => {
   const [salesData, setSalesData] = useState([]);
-  const [discountedItems, setDiscountedItems] = useState([]);
+  const [itemSalesData, setItemSalesData] = useState([]);
+  const [mostSoldItem, setMostSoldItem] = useState({});
+  const [leastSoldItem, setLeastSoldItem] = useState({});
+  const [mostSalesHour, setMostSalesHour] = useState("");
+  const [leastSalesHour, setLeastSalesHour] = useState("");
+  const [discountHours, setDiscountHours] = useState(0);
+  const [discountItems, setDiscountItems] = useState([]);
   const [message, setMessage] = useState("");
 
   // Fetch dashboard data
-  //   useEffect(() => {
-  //     axios.get('/api/discount/dashboard')
-  //       .then(response => {
-  //         setSalesData(response.data.hourlySales);
-  //         setDiscountedItems(response.data.discountedItems);
-  //       })
-  //       .catch(err => console.error(err));
-  //   }, []);
+  // useEffect(() => {
+  //   axios.get("/api/admindis/dashboard")
+  //     .then(response => {
+  //       const data = response.data;
+  //       setSalesData(data.hourlySales);
+  //       setItemSalesData(data.itemSales);
+  //       setMostSalesHour(data.mostSalesHour);
+  //       setLeastSalesHour(data.leastSalesHour);
+  //       setMostSoldItem(data.mostSoldItem);
+  //       setLeastSoldItem(data.leastSoldItem);
+  //       setDiscountHours(data.discountedHours);
+  //       setDiscountItems(data.discountedItems);
+  //     })
+  //     .catch(err => console.error(err));
+  // }, []);
 
-  // Function to apply discount now
+  // Apply discount now function
   const handleDiscountNow = (type) => {
     axios
       .post("/api/discount/apply-discount", { type })
       .then((response) => {
-        setMessage(`Discount applied successfully for ${type} sold items.`);
+        setMessage(`Discount applied successfully for ${type} items.`);
         // Refetch updated data
-        axios.get("/api/discount/dashboard").then((res) => {
+        axios.get("/api/admindis/dashboard").then((res) => {
           setSalesData(res.data.hourlySales);
-          setDiscountedItems(res.data.discountedItems);
+          setDiscountItems(res.data.discountedItems);
         });
       })
       .catch((err) => setMessage(`Error applying discount: ${err.message}`));
   };
 
-  // Prepare data for the chart
-  const chartData = {
-    labels: [...Array(24).keys()].map((hour) => `Hour ${hour}`), // Labels for 24 hours
+  // Prepare chart data for sales graph (Hourly sales)
+  const hourlySalesChartData = {
+    labels: [...Array(24).keys()].map((hour) => `Hour ${hour}`),
     datasets: [
       {
         label: "Sales per Hour",
@@ -67,6 +80,26 @@ const Dashboard = () => {
     ],
   };
 
+  // Prepare chart data for item sales graph
+  const itemSalesChartData = {
+    labels: itemSalesData.map((item) => item.name),
+    datasets: [
+      {
+        label: "Sales per Item",
+        data: itemSalesData.map((item) => item.sales),
+        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  // Function to check if discount time has passed
+  const isDiscountCompleted = (discountHour) => {
+    const currentHour = new Date().getHours();
+    return currentHour >= discountHour;
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="container mx-auto">
@@ -74,46 +107,64 @@ const Dashboard = () => {
           Admin Dashboard
         </h1>
 
-        {/* Discount Now Buttons */}
-        <div className="flex justify-between items-center mb-8">
-          <Typography
-            variant="h6"
-            className="text-lg font-semibold text-gray-700"
+        {/* Hourly Sales for Current Day */}
+        <Card className="p-6 mb-8">
+          <Typography variant="h5" className="text-gray-800 mb-4">
+            Hourly Sales (for Upcoming Day)
+          </Typography>
+          <Line data={hourlySalesChartData} />
+          <Typography variant="h6" className="text-gray-600 mt-4">
+            Most Sales Hour (Upcoming Day): {mostSalesHour}
+          </Typography>
+          <Typography variant="h6" className="text-gray-600 mt-2">
+            Least Sales Hour (Upcoming Day): {leastSalesHour}
+          </Typography>
+        </Card>
+
+        {/* Items with their Sales for Current Day */}
+        <Card className="p-6 mb-8">
+          <Typography variant="h5" className="text-gray-800 mb-4">
+            Items with Sales (for Upcoming Day)
+          </Typography>
+          <Line data={itemSalesChartData} />
+          <Typography variant="h6" className="text-gray-600 mt-4">
+            {/* Most Sold Item: {mostSoldItem.name} ({mostSoldItem.sales} sales) */}
+          </Typography>
+          <Typography variant="h6" className="text-gray-600 mt-2">
+            {/* Least Sold Item: {leastSoldItem.name} ({leastSoldItem.sales} sales) */}
+          </Typography>
+        </Card>
+
+        {/* Current Day's Discounting Hours */}
+        <Card className="p-6 mb-8">
+          <Typography variant="h5" className="text-gray-800 mb-4">
+            Discounting Hours (Current Day)
+          </Typography>
+          <Typography variant="h6" className="text-gray-600 mb-4">
+            {/* Most Sales Hour (Previous Day): {discountHours} */}
+          </Typography>
+          <Button
+            color="green"
+            // disabled={isDiscountCompleted(discountHours)}
+            onClick={() => handleDiscountNow("hour")}
           >
-            Apply Discounts Now
-          </Typography>
-          <div className="flex space-x-4">
-            <Button color="green" onClick={() => handleDiscountNow("most")}>
-              Give Discount Now (Most Sold)
-            </Button>
-            <Button color="blue" onClick={() => handleDiscountNow("least")}>
-              Give Discount Now (Least Sold)
-            </Button>
-          </div>
-        </div>
-        {message && <p className="text-sm text-red-500 mb-8">{message}</p>}
-
-        {/* Sales Graph */}
-        <Card className="p-6 mb-8">
-          <Typography variant="h5" className="text-gray-800 mb-4">
-            Hourly Sales
-          </Typography>
-          <Line data={chartData} />
+            Apply Discount Now (Most Sold Hour)
+          </Button>
         </Card>
 
-        {/* Discounted Items Section */}
+        {/* Current Day's Discounting Items */}
         <Card className="p-6 mb-8">
           <Typography variant="h5" className="text-gray-800 mb-4">
-            Discounted Items
+            Discounting Items (Current Day)
           </Typography>
-          <ul className="space-y-2">
-            {/* {discountedItems.map(item => (
-              <li key={item.item_id} className="text-gray-600">
-                {item.name}: {item.displayed_price} (Discount: {item.discount_percentage}%)
-              </li>
-            ))} */}
-          </ul>
+          {/* {discountItems.map(item => (
+            <Typography key={item.item_id} variant="h6" className="text-gray-600 mb-2">
+              {item.name}: {item.sales} sales (Discount: {item.discount_percentage}%)
+            </Typography>
+          ))} */}
         </Card>
+
+        {message && <p className="text-sm text-red-500 mt-8">{message}</p>}
       </div>
     </div>
   );

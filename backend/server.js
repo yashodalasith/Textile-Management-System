@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config(); // This loads environment variables
+const discountRoutes = require("./routes/DiscountRoutes");
+const adminDiscountRoutes = require("./routes/AdminDiscount");
 
 const app = express();
 app.use(cors());
@@ -15,6 +17,10 @@ const URL = process.env.MONGODB_URL;
 app.get("/", (req, res) => {
   res.send("Hello from the backend!");
 });
+
+// Discount routes
+app.use("/api/discount", discountRoutes);
+app.use("/api/admindis", adminDiscountRoutes);
 
 mongoose
   .connect(URL)
