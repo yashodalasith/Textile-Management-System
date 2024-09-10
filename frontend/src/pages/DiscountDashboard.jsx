@@ -43,8 +43,8 @@ const Dashboard = () => {
         setItemSalesData(data.itemSales);
         setMostSalesHour(data.mostSalesHour);
         setLeastSalesHour(data.leastSalesHour);
-        setMostSoldItem(data.mostSoldItem);
-        setLeastSoldItem(data.leastSoldItem);
+        setMostSoldItem(data.mostSoldItems);
+        setLeastSoldItem(data.leastSoldItems);
         setDiscountHours(data.discountedHours);
         setDiscountItems(data.discountedItems);
       })
