@@ -9,14 +9,14 @@ const OrderSchema = new mongoose.Schema({
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
       name: { type: String, required: true },
+      Discounted: { type: Boolean, default: false },
+      sold_count: { type: Number, default: null },
     },
   ],
   totalPrice: { type: Number, required: true },
   paymentStatus: { type: String, default: "Pending - Cash on Delivery" },
   orderStatus: { type: String, default: "Confirmed" },
   createdAt: { type: Date, default: Date.now },
-  Discounted: { type: Boolean, default: false },
-  sold_count: { type: Number },
 });
 
 const Order = mongoose.model("Order", OrderSchema);

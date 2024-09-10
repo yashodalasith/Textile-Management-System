@@ -63,6 +63,46 @@ const TABLE_ROWS = [
   },
 ];
 
+const baseUrl = "http://localhost:3001/cart"; // Adjust based on your server setup
+const baseUrl1 = "http://localhost:3001/order";
+// Handle the "Make Order" button click
+const handleMakeOrder = async () => {
+  try {
+    const userId = "mockUser123"; // Replace this with the actual user ID
+    const response = await axios.post(`${baseUrl1}/confirm-order`, { userId });
+
+    if (response.status === 200) {
+      alert("Order placed successfully!");
+      console.log("Order details:", response.data);
+    } else {
+      alert(response.data.message || "Failed to place order.");
+    }
+  } catch (error) {
+    console.error("Error placing order:", error);
+    alert("An error occurred while placing the order.");
+  }
+};
+
+// Handle the "Cancel" button click
+const handleCancelOrder = async () => {
+  try {
+    const userId = "mockUser123"; // Replace this with the actual user ID
+    const response = await axios.delete(`${baseUrl}/clear`, {
+      data: { userId },
+    });
+
+    if (response.status === 200) {
+      alert("Cart cleared successfully!");
+      console.log("Cleared cart details:", response.data);
+    } else {
+      alert(response.data.message || "Failed to clear cart.");
+    }
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    alert("An error occurred while clearing the cart.");
+  }
+};
+
 export default function CartPage() {
   const [cart, setCart] = useState(null);
 
@@ -220,12 +260,18 @@ export default function CartPage() {
           </table>
           <div className="flex justify-between">
             <div>
-              <button className="bg-green-500 text-white font-bold py-2 px-4 rounded">
+              <button
+                className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                onClick={handleMakeOrder} // Add the onClick event for making the order
+              >
                 Make order
               </button>
             </div>
             <div>
-              <button className="bg-red-500 text-white font-bold py-2 px-4 rounded">
+              <button
+                className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                onClick={handleCancelOrder} // Add the onClick event for canceling the order
+              >
                 Cancel
               </button>
             </div>

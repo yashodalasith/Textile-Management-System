@@ -6,16 +6,14 @@ const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
 export default function OrderConfirmation() {
   const [items, setItems] = useState([]);
-
   const [totalprice, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
   const userId = "mockUser123"; // Replace with actual userId or pass as a prop
-  const orderId = "66dfda452a5c8304332b2b15"; // Replace with actual orderId
 
   useEffect(() => {
     const getOrderDetails = async () => {
       try {
-        const res = await api.get(`/order/order-details/${userId}/${orderId}`);
+        const res = await api.get(`/order/order-details/${userId}`);
 
         if (res.status === 200) {
           // Use status code for a successful response
@@ -35,7 +33,7 @@ export default function OrderConfirmation() {
     };
 
     getOrderDetails();
-  }, [userId, orderId]);
+  }, [userId]);
 
   return (
     <div className="">

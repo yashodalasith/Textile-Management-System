@@ -51,29 +51,26 @@ router.post("/confirm-order", async (req, res) => {
   }
 });
 
-router.get("/order-details/:userId/:orderId", async (req, res) => {
-  const { userId, orderId } = req.params;
+//
+router.get("/order-details/:userId", async (req, res) => {
+  const { userId } = req.params;
 
   try {
-    // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ message: "Invalid orderId format" });
-    }
-
     // Check if user exists (mock data example)
     if (mockUser.userId !== userId) {
       console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Fetch the order
-    const order = await Order.findOne({ userId, _id: orderId });
-    if (!order) {
+    // Fetch the latest order based on `createdAt` for the user
+    const latestOrder = await Order.findOne({ userId }).sort({ createdAt: -1 });
+
+    if (!latestOrder) {
       console.log("Order not found");
-      return res.status(404).json({ message: "Order not found" });
+      return res.status(404).json({ message: "No orders found for the user" });
     }
 
-    res.status(200).json(order);
+    res.status(200).json(latestOrder);
   } catch (error) {
     console.error("Error fetching order details:", error);
     res.status(500).json({ error: "Failed to fetch order details" });
