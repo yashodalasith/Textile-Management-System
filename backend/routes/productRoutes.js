@@ -71,6 +71,7 @@ router.get('/products', async (req, res) => {
   }
 });
 
+
 // UPDATE operation - Update a product by ID
 router.put('/products-update/:id', async (req, res) => {
   try {

@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
   res.send("Hello from the backend!");
 });
 
+
 mongoose
   .connect(URL)
   .then(() => {
