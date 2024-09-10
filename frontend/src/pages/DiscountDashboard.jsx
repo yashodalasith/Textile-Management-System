@@ -100,14 +100,14 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-3 md:mx-auto">
+    <div className="p-3 md:mx-auto shadow-lg">
       <h1 className="text-4xl font-bold mt-8 text-gray-800 text-center">
         Admin Dashboard
       </h1>
 
       <div className="flex flex-row gap-5 justify-center p-10 m-10">
         {/* Hourly Sales for Current Day */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -133,7 +133,7 @@ const Dashboard = () => {
         </div>
 
         {/* Items with their Sales for Current Day */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -161,7 +161,7 @@ const Dashboard = () => {
 
       <div className="flex flex-row gap-10 justify-center p-10 m-10">
         {/* Current Day's Discounting Hours */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -204,7 +204,7 @@ const Dashboard = () => {
         </div>
 
         {/* Current Day's Discounting Items */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
