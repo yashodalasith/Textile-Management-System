@@ -15,12 +15,15 @@
     "apexcharts": "^3.53.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
+    "firebase": "^10.13.1",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.3.0",
-    "react-router-dom": "^6.26.1"
+    "react-router-dom": "^6.26.1",
+    "react-redux": "^9.1.2",
+    "use-react-countries": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
