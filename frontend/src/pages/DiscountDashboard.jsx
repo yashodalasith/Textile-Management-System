@@ -101,13 +101,13 @@ const Dashboard = () => {
 
   return (
     <div className="p-3 md:mx-auto shadow-lg">
-      <h1 className="text-4xl font-bold mt-8 text-gray-800 text-center">
+      <h1 className="text-4xl font-bold text-gray-800 text-center">
         Admin Dashboard
       </h1>
 
-      <div className="flex flex-row gap-5 justify-center p-10 m-10">
+      <div className="flex flex-row gap-20 items-start p-32 m-10">
         {/* Hourly Sales for Current Day */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -131,9 +131,8 @@ const Dashboard = () => {
             </span>
           </div>
         </div>
-
         {/* Items with their Sales for Current Day */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -159,9 +158,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="flex flex-row gap-10 justify-center p-10 m-10">
+      <div className="flex flex-row gap-10 items-start p-10 m-10">
         {/* Current Day's Discounting Hours */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -204,7 +203,7 @@ const Dashboard = () => {
         </div>
 
         {/* Current Day's Discounting Items */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-auto max-w-fit rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -224,7 +223,7 @@ const Dashboard = () => {
                   <th style={{ padding: "12px" }}>Discount</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{ backgroundColor: "grey" }}>
                 {discountItems.map((item) => (
                   <tr style={{ backgroundColor: "#FFFFFF" }} key={item.item_id}>
                     <td
