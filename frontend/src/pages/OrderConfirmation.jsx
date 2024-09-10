@@ -8,7 +8,7 @@ export default function OrderConfirmation() {
   const [items, setItems] = useState([]);
   const [totalprice, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
-  const userId = "mockUser123"; // Replace with actual userId or pass as a prop
+  const userId = "mockUser123";
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -16,11 +16,9 @@ export default function OrderConfirmation() {
         const res = await api.get(`/order/order-details/${userId}`);
 
         if (res.status === 200) {
-          // Use status code for a successful response
           const data = res.data; // Access the data
           console.log(data);
 
-          // Assuming your data structure contains these fields
           setItems(data.items);
           setPrice(data.totalPrice);
           setPaymentStatus(data.paymentStatus);
@@ -36,48 +34,57 @@ export default function OrderConfirmation() {
   }, [userId]);
 
   return (
-    <div className="">
+    <div>
       <div className="text-center font-bold">
         <h1 className="text-3xl p-5 underline">Payment Confirmation</h1>
       </div>
-      <div className="  shadow-2xl p-5 border rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 flex  items-center ">
-          Bill Summary
-        </h2>
+      <div className="w-50 shadow-2xl p-5 border rounded-lg">
+        <Card className="p-4 shadow-2xl">
+          <h2 className="text-xl font-semibold mb-4 flex  items-center ">
+            Bill Summary
+          </h2>
+          <div className="flex justify-between mt-4">
+            <ul>
+              <li>Items Purchased</li>
+              {items.map((items) => (
+                <li key={items.productId}>
+                  {items.quantity} {items.name} Purchased
+                </li>
+              ))}
+            </ul>
+            <ul>
+              <li>Amount</li>
+              {items.map((items) => (
+                <li key={items.productId}>
+                  Itme Prcie purchased {items.quantity * items.price}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex justify-between mt-4">
-          <ul>
-            {items.map((items) => (
-              <li key={items.productId}>
-                {items.name} - Quantity: {items.quantity} -item price:{" "}
-                {items.price}- Price: ${items.price * items.quantity}
-              </li>
-            ))}
-          </ul>
-        </div>
+          <div className="flex justify-between mt-4">
+            <span className="font-medium flex ">Total Amount:</span>
+            <span>{totalprice}</span>
+          </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Total Amount:</span>
-          <span>{totalprice}</span>
-        </div>
+          <div className="flex justify-between mt-4">
+            <span className="font-medium flex ">Discounts:</span>
+            <span>0</span>
+          </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Discounts:</span>
-          <span>0</span>
-        </div>
+          <div className="flex justify-between mt-4">
+            <span className="font-medium flex ">Amount to be paid:</span>
+            <span>{totalprice}</span>
+          </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Amount to be paid:</span>
-          <span>{totalprice}</span>
-        </div>
-
-        <div className="flex justify-between mt-4 mb-4">
-          <span className="font-medium">{paymentStatus}</span>
-          <span>Cash on Delivery</span>
-        </div>
+          <div className="flex justify-between mt-4 mb-4">
+            <span className="font-medium flex ">{paymentStatus}</span>
+            <span>Cash on Delivery</span>
+          </div>
+        </Card>
 
         {/* Confirm Payment Button */}
-        <div className="flex justify-end mt-4">
+        <div className="flex  mt-4">
           <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">
             Confirm Payment
           </button>

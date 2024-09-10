@@ -4,7 +4,6 @@ import axios from "axios";
 import api from "../../api";
 
 const TABLE_HEAD = [
-  "Image",
   "Product Name",
   "Price",
   "Quantity",
@@ -12,59 +11,11 @@ const TABLE_HEAD = [
   "Discounts",
   "Final price",
   "",
-  "",
-];
-
-const TABLE_ROWS = [
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
 ];
 
 const baseUrl = "http://localhost:3001/cart"; // Adjust based on your server setup
 const baseUrl1 = "http://localhost:3001/order";
+
 // Handle the "Make Order" button click
 const handleMakeOrder = async () => {
   try {
@@ -103,8 +54,28 @@ const handleCancelOrder = async () => {
   }
 };
 
+const handleRemoveItem = async (productId) => {
+  try {
+    const userId = "mockUser123"; // Replace this with actual user ID
+    const response = await axios.delete(`${baseUrl}/remove`, {
+      data: { userId, productId }, // Pass the userId and productId
+    });
+
+    if (response.status === 200) {
+      alert("Item removed successfully!");
+      console.log("Updated cart:", response.data.cart);
+      setCart(response.data.cart); // Update the cart
+    } else {
+      alert(response.data.message || "Failed to remove item.");
+    }
+  } catch (error) {
+    console.error("Error removing item:", error);
+    // alert("An error occurred while removing the item.");
+  }
+};
+
 export default function CartPage() {
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -115,8 +86,8 @@ export default function CartPage() {
     const fetchCart = async () => {
       try {
         const response = await api.get(`/cart/${userId}`);
-        console.log(response);
-        setCart(response.data);
+        console.log("respone", response.data.items);
+        setCart(response.data.items);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cart");
       } finally {
@@ -126,6 +97,7 @@ export default function CartPage() {
 
     fetchCart();
   }, [userId]);
+
   return (
     <div className="">
       <div className="flex justify-between">
@@ -151,7 +123,7 @@ export default function CartPage() {
                 {TABLE_HEAD.map((head) => (
                   <th
                     key={head}
-                    className="border-b  border-blue-100 bg-black p-4"
+                    className="border-b border-blue-100 bg-black p-4"
                   >
                     <Typography
                       variant="small"
@@ -165,99 +137,87 @@ export default function CartPage() {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS.map(
-                (
-                  { Image, name, Price, Quantity, Total, Discounts, Final },
-                  index
-                ) => {
-                  const isLast = index === TABLE_ROWS.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
-
-                  return (
-                    <tr key={name}>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
+              {cart.map((item, index) => {
+                return (
+                  // Add 'return' here
+                  <tr key={index}>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.name || "N/A"}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal  mt-4 p-4"
+                      >
+                        {item.price}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.price * item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        Discounts
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.price * item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        as="a"
+                        href="#"
+                        variant="small"
+                        color="red"
+                        className="font-medium mt-4 p-4"
+                      >
+                        <button
+                          className="text-red-700"
+                          onClick={() => handleRemoveItem(item.productId)}
                         >
-                          {Image}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {name}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Price}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Quantity}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Total}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Discounts}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Final}
-                        </Typography>
-                      </td>
-
-                      <td className={classes}>
-                        <Typography
-                          as="a"
-                          href="#"
-                          variant="small"
-                          color="red"
-                          className="font-medium"
-                        >
-                          Remove
-                        </Typography>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
+                          {" "}
+                          Remove Item
+                        </button>
+                      </Typography>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+
           <div className="flex justify-between">
             <div>
               <button
