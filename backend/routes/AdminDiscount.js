@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Order = require("./models/Order1"); // Replace with your actual Order model path
-const Products = require("./models/Products"); // Replace with your actual Products model path
+const Order = require("../models/Order1"); // Replace with your actual Order model path
+const Products = require("../models/Products"); // Replace with your actual Products model path
 
 router.get("/dashboard", async (req, res) => {
   try {

@@ -34,21 +34,22 @@ const Dashboard = () => {
   const [message, setMessage] = useState("");
 
   // Fetch dashboard data
-  // useEffect(() => {
-  //   axios.get("/api/admindis/dashboard")
-  //     .then(response => {
-  //       const data = response.data;
-  //       setSalesData(data.hourlySales);
-  //       setItemSalesData(data.itemSales);
-  //       setMostSalesHour(data.mostSalesHour);
-  //       setLeastSalesHour(data.leastSalesHour);
-  //       setMostSoldItem(data.mostSoldItem);
-  //       setLeastSoldItem(data.leastSoldItem);
-  //       setDiscountHours(data.discountedHours);
-  //       setDiscountItems(data.discountedItems);
-  //     })
-  //     .catch(err => console.error(err));
-  // }, []);
+  useEffect(() => {
+    axios
+      .get("/api/admindis/dashboard")
+      .then((response) => {
+        const data = response.data;
+        setSalesData(data.hourlySales);
+        setItemSalesData(data.itemSales);
+        setMostSalesHour(data.mostSalesHour);
+        setLeastSalesHour(data.leastSalesHour);
+        setMostSoldItem(data.mostSoldItem);
+        setLeastSoldItem(data.leastSoldItem);
+        setDiscountHours(data.discountedHours);
+        setDiscountItems(data.discountedItems);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   // Apply discount now function
   const handleDiscountNow = (type) => {
@@ -146,13 +147,13 @@ const Dashboard = () => {
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Most Sold Item:</div>
             <span className="text-green-500 flex items-center">
-              {/* {mostSoldItem.name} ({mostSoldItem.sales} sales) */}
+              {mostSoldItem.name} ({mostSoldItem.sales} sales)
             </span>
           </div>
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Least Sold Item:</div>
             <span className="text-red-500 flex items-center">
-              {/* {leastSoldItem.name} ({leastSoldItem.sales} sales) */}
+              {leastSoldItem.name} ({leastSoldItem.sales} sales)
             </span>
           </div>
         </div>
@@ -171,12 +172,12 @@ const Dashboard = () => {
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Discounting Hours:</div>
             <span className="text-green-500 flex items-center">
-              {/* {discountHours}  */}
+              {discountHours}
             </span>
           </div>
           <div className="flex gap-2 text-sm">
             <button
-              // disabled={isDiscountCompleted(discountHours)}
+              disabled={isDiscountCompleted(discountHours)}
               onClick={() => handleDiscountNow("hour")}
               style={{
                 padding: "0.5rem 1rem",

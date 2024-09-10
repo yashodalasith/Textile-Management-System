@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Products = require("../models/Product");
+const Products = require("../models/Products");
 const Order = require("../models/Order1");
 
 // Helper function to calculate displayed price
