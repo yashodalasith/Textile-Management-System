@@ -1,0 +1,93 @@
+.prof-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 30px;
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+    margin: 20px auto;
+}
+
+.prof-form-container h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    background-color: #BBB;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .circle  {
+    font-size: 50px; 
+    color: white; 
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  
+
+.user-details {
+    width: 100%;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    padding-bottom: 40px;
+}
+
+
+.user-details td {
+    margin: 5px 0;
+    color: #666;
+    text-align: left;
+   
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.update {
+    background-color: #4CAF50;
+}
+
+.delete {
+    background-color: #F44336;
+}
+
+.logout {
+    background-color: #2196F3;
+    width: 100%;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+.user-name{
+    text-decoration: underline;
+
+}
