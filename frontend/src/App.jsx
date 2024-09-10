@@ -4,8 +4,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { NavigationBar } from "./components/NavigationBar";
 import ProductList from "./components/ProductList";
-import CartPage from "./components/CartPage";
-import OrderConfirmation from "./components/OrderConfirmation";
+import CartPage from "./pages/CartPage";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 export default function App() {
   return (
