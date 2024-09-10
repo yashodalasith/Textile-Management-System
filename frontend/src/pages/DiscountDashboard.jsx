@@ -11,7 +11,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Button, Card, Typography } from "@material-tailwind/react";
 
 ChartJS.register(
   CategoryScale,
@@ -101,71 +100,169 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="container mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-gray-800">
-          Admin Dashboard
-        </h1>
+    <div className="p-3 md:mx-auto">
+      <h1 className="text-4xl font-bold mt-8 text-gray-800 text-center">
+        Admin Dashboard
+      </h1>
 
+      <div className="flex flex-row gap-5 justify-center p-10 m-10">
         {/* Hourly Sales for Current Day */}
-        <Card className="p-6 mb-8">
-          <Typography variant="h5" className="text-gray-800 mb-4">
-            Hourly Sales (for Upcoming Day)
-          </Typography>
-          <Line data={hourlySalesChartData} />
-          <Typography variant="h6" className="text-gray-600 mt-4">
-            Most Sales Hour (Upcoming Day): {mostSalesHour}
-          </Typography>
-          <Typography variant="h6" className="text-gray-600 mt-2">
-            Least Sales Hour (Upcoming Day): {leastSalesHour}
-          </Typography>
-        </Card>
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+          <div className="flex justify-between">
+            <div>
+              <h3 className="text-gray-500 text-md uppercase">
+                Hourly Sales (for Upcoming Day)
+              </h3>
+            </div>
+          </div>
+          <div className="flex">
+            <Line data={hourlySalesChartData} />
+          </div>
+          <div className="flex gap-2 text-sm">
+            <div className="text-gray-500">Most Sales Hour:</div>
+            <span className="text-green-500 flex items-center">
+              {mostSalesHour}
+            </span>
+          </div>
+          <div className="flex gap-2 text-sm">
+            <div className="text-gray-500">Least Sales Hour:</div>
+            <span className="text-red-500 flex items-center">
+              {leastSalesHour}
+            </span>
+          </div>
+        </div>
 
         {/* Items with their Sales for Current Day */}
-        <Card className="p-6 mb-8">
-          <Typography variant="h5" className="text-gray-800 mb-4">
-            Items with Sales (for Upcoming Day)
-          </Typography>
-          <Line data={itemSalesChartData} />
-          <Typography variant="h6" className="text-gray-600 mt-4">
-            {/* Most Sold Item: {mostSoldItem.name} ({mostSoldItem.sales} sales) */}
-          </Typography>
-          <Typography variant="h6" className="text-gray-600 mt-2">
-            {/* Least Sold Item: {leastSoldItem.name} ({leastSoldItem.sales} sales) */}
-          </Typography>
-        </Card>
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+          <div className="flex justify-between">
+            <div>
+              <h3 className="text-gray-500 text-md uppercase">
+                Items with Sales (for Upcoming Day)
+              </h3>
+            </div>
+          </div>
+          <div className="flex">
+            <Line data={itemSalesChartData} />
+          </div>
+          <div className="flex gap-2 text-sm">
+            <div className="text-gray-500">Most Sold Item:</div>
+            <span className="text-green-500 flex items-center">
+              {/* {mostSoldItem.name} ({mostSoldItem.sales} sales) */}
+            </span>
+          </div>
+          <div className="flex gap-2 text-sm">
+            <div className="text-gray-500">Least Sold Item:</div>
+            <span className="text-red-500 flex items-center">
+              {/* {leastSoldItem.name} ({leastSoldItem.sales} sales) */}
+            </span>
+          </div>
+        </div>
+      </div>
 
+      <div className="flex flex-row gap-10 justify-center p-10 m-10">
         {/* Current Day's Discounting Hours */}
-        <Card className="p-6 mb-8">
-          <Typography variant="h5" className="text-gray-800 mb-4">
-            Discounting Hours (Current Day)
-          </Typography>
-          <Typography variant="h6" className="text-gray-600 mb-4">
-            {/* Most Sales Hour (Previous Day): {discountHours} */}
-          </Typography>
-          <Button
-            color="green"
-            // disabled={isDiscountCompleted(discountHours)}
-            onClick={() => handleDiscountNow("hour")}
-          >
-            Apply Discount Now (Most Sold Hour)
-          </Button>
-        </Card>
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+          <div className="flex justify-between">
+            <div>
+              <h3 className="text-gray-500 text-md uppercase">
+                Discounting Hours (Current Day)
+              </h3>
+            </div>
+          </div>
+          <div className="flex gap-2 text-sm">
+            <div className="text-gray-500">Discounting Hours:</div>
+            <span className="text-green-500 flex items-center">
+              {/* {discountHours}  */}
+            </span>
+          </div>
+          <div className="flex gap-2 text-sm">
+            <button
+              // disabled={isDiscountCompleted(discountHours)}
+              onClick={() => handleDiscountNow("hour")}
+              style={{
+                padding: "0.5rem 1rem",
+                fontSize: "1rem",
+                borderRadius: "0.375rem",
+                color: "linear-gradient(90deg, #EC4899, #FFB037)",
+                background: "transparent",
+                border: "1px solid #EC4899",
+                outline: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background =
+                  "linear-gradient(90deg, #EC4899, #FFB037)";
+                e.target.style.color = "white";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "transparent";
+                e.target.style.color = "black";
+              }}
+            >
+              Apply Discount Now
+            </button>
+          </div>
+        </div>
 
         {/* Current Day's Discounting Items */}
-        <Card className="p-6 mb-8">
-          <Typography variant="h5" className="text-gray-800 mb-4">
-            Discounting Items (Current Day)
-          </Typography>
-          {/* {discountItems.map(item => (
-            <Typography key={item.item_id} variant="h6" className="text-gray-600 mb-2">
-              {item.name}: {item.sales} sales (Discount: {item.discount_percentage}%)
-            </Typography>
-          ))} */}
-        </Card>
-
-        {message && <p className="text-sm text-red-500 mt-8">{message}</p>}
+        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+          <div className="flex justify-between">
+            <div>
+              <h3 className="text-gray-500 text-md uppercase">
+                Discounting Items (Current Day)
+              </h3>
+            </div>
+          </div>
+          <div className="flex">
+            <table
+              className="shadow-md"
+              style={{ width: "100%", borderCollapse: "collapse" }}
+            >
+              <thead>
+                <tr style={{ backgroundColor: "#F3F4F6" }}>
+                  <th style={{ padding: "12px" }}>Item name</th>
+                  <th style={{ padding: "12px" }}>Sales</th>
+                  <th style={{ padding: "12px" }}>Discount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {discountItems.map((item) => (
+                  <tr style={{ backgroundColor: "#FFFFFF" }} key={item.item_id}>
+                    <td
+                      style={{
+                        padding: "12px",
+                        fontWeight: "bold",
+                        color: "#4B5563",
+                      }}
+                    >
+                      {item.name}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px",
+                        fontWeight: "bold",
+                        color: "#4B5563",
+                      }}
+                    >
+                      {item.sales}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px",
+                        fontWeight: "bold",
+                        color: "#4B5563",
+                      }}
+                    >
+                      {item.discount_percentage}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
+      {message && <p className="text-sm text-red-500 mt-8">{message}</p>}
     </div>
   );
 };
