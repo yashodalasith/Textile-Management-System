@@ -10,6 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const productRoutes = require("./routes/productRoutes.js");
+app.use("/Products", productRoutes);
+
 const PORT = process.env.PORT || 3001;
 const URL = process.env.MONGODB_URL;
 
