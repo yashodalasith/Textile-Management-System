@@ -23,6 +23,12 @@ app.get("/", (req, res) => {
   res.send("Hello from the backend!");
 });
 
+// Configure CORS options to recieve requests from frontend
+const corsOptions = {
+  origin: "http://localhost:5173/",
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  optionsSuccessStatus: 200,
+};
 mongoose
   .connect(URL)
   .then(() => {

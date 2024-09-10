@@ -10,7 +10,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 export default function App() {
   return (
     <BrowserRouter>
-      <NavigationBar />
+      {/* <NavigationBar /> */}
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/ProductList" element={<ProductList />} />

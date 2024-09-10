@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
+import api from "../../api";
 
 const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
 export default function OrderConfirmation() {
-  const [orders, setOrders] = useState([]);
+  const [items, setItems] = useState([]);
+
+  const [totalprice, setPrice] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState("");
   const userId = "mockUser123"; // Replace with actual userId or pass as a prop
-  const orderId = "66de80de51e8101e332f76cd"; // Replace with actual orderId
+  const orderId = "66dfda452a5c8304332b2b15"; // Replace with actual orderId
 
   useEffect(() => {
     const getOrderDetails = async () => {
       try {
-        const res = await fetch(
-          `/api/order/order-details/${userId}/${orderId}`
-        );
-        const data = await res.json();
-        if (res.ok) {
-          setOrders(data.items || []); // Adjust based on the API response
+        const res = await api.get(`/order/order-details/${userId}/${orderId}`);
+
+        if (res.status === 200) {
+          // Use status code for a successful response
+          const data = res.data; // Access the data
+          console.log(data);
+
+          // Assuming your data structure contains these fields
+          setItems(data.items);
+          setPrice(data.totalPrice);
+          setPaymentStatus(data.paymentStatus);
         } else {
           throw new Error("Network response was not ok");
         }
@@ -24,6 +33,7 @@ export default function OrderConfirmation() {
         console.error("Error fetching order data:", error.message);
       }
     };
+
     getOrderDetails();
   }, [userId, orderId]);
 
@@ -38,27 +48,33 @@ export default function OrderConfirmation() {
         </h2>
 
         <div className="flex justify-between mt-4">
-          <span className="font-medium">Products Purchased:</span>
-          <span>shirt 1, jeans 1</span>
+          <ul>
+            {items.map((items) => (
+              <li key={items.productId}>
+                {items.name} - Quantity: {items.quantity} -item price:{" "}
+                {items.price}- Price: ${items.price * items.quantity}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="flex justify-between mt-4">
           <span className="font-medium">Total Amount:</span>
-          <span>$120.00</span>
+          <span>{totalprice}</span>
         </div>
 
         <div className="flex justify-between mt-4">
           <span className="font-medium">Discounts:</span>
-          <span>$20.00</span>
+          <span>0</span>
         </div>
 
         <div className="flex justify-between mt-4">
           <span className="font-medium">Amount to be paid:</span>
-          <span>$100.00</span>
+          <span>{totalprice}</span>
         </div>
 
         <div className="flex justify-between mt-4 mb-4">
-          <span className="font-medium">Payment Method:</span>
+          <span className="font-medium">{paymentStatus}</span>
           <span>Cash on Delivery</span>
         </div>
 

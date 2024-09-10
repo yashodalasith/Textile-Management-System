@@ -1,6 +1,7 @@
 import { Button, Card, Typography } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../api";
 
 const TABLE_HEAD = [
   "Image",
@@ -64,15 +65,16 @@ const TABLE_ROWS = [
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const userId = "mockuser123"; // Mock user ID
+  const userId = "mockUser123"; // Mock user ID
 
   // Fetch the cart data when the component mounts
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await axios.get(`/cart/${userId}`);
+        const response = await api.get(`/cart/${userId}`);
         console.log(response);
         setCart(response.data);
       } catch (err) {

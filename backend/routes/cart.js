@@ -10,12 +10,15 @@ const mockInventory = [
 ];
 
 // Add item to cart
+// Add item to cart
 router.post("/add", async (req, res) => {
   const { userId, productId, quantity } = req.body;
 
   // Check mock inventory for product
   const product = mockInventory.find((item) => item.productId === productId);
   if (!product) return res.status(404).json({ message: "Product not found" });
+
+  const { name, price } = product; // Extract name and price from product
 
   try {
     let cart = await Cart.findOne({ userId });
@@ -27,7 +30,7 @@ router.post("/add", async (req, res) => {
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, quantity: parsedQuantity, price: product.price }],
+        items: [{ productId, name, quantity: parsedQuantity, price }],
       });
     } else {
       // If cart exists, update it
@@ -42,8 +45,9 @@ router.post("/add", async (req, res) => {
         // Item does not exist in the cart, add it
         cart.items.push({
           productId,
+          name, // Use extracted name here
           quantity: parsedQuantity,
-          price: product.price,
+          price,
         });
       }
     }
@@ -61,7 +65,7 @@ router.get("/:userId", async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ userId });
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
+    if (!cart) return res.status(404).json({ message: "bruh Cart not found" });
 
     res.status(200).json(cart);
   } catch (error) {
