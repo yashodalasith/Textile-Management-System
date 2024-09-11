@@ -48,10 +48,12 @@ router.get("/dashboard", async (req, res) => {
       });
     });
 
-    const salesPerHourYesterday = hourlySalesYesterday.map((count, hour) => ({
-      hour,
-      count,
-    }));
+    const salesPerHourYesterday = hourlySalesYesterday
+      .map((count, hour) => ({
+        hour,
+        count,
+      }))
+      .filter((sale) => sale.count > 0);
     salesPerHourYesterday.sort((a, b) => b.count - a.count);
     const mostSalesHourYesterday = salesPerHourYesterday[0]
       ? salesPerHourYesterday[0].hour
@@ -115,7 +117,9 @@ router.get("/dashboard", async (req, res) => {
     const discountedItems = [...mostSoldItemsy, ...leastSoldItemsy];
 
     // Most/Least sales hours today
-    const salesPerHour = hourlySales.map((count, hour) => ({ hour, count }));
+    const salesPerHour = hourlySales
+      .map((count, hour) => ({ hour, count }))
+      .filter((sale) => sale.count > 0);
     salesPerHour.sort((a, b) => b.count - a.count);
     const mostSalesHour = salesPerHour[0] ? salesPerHour[0].hour : null;
     const leastSalesHour = salesPerHour[salesPerHour.length - 1]

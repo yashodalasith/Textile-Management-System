@@ -32,6 +32,20 @@ const Dashboard = () => {
   const [discountHours, setDiscountHours] = useState(0);
   const [discountItems, setDiscountItems] = useState([]);
   const [message, setMessage] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    // Check local storage for button state
+    const storedDisabledState = localStorage.getItem("discountButtonDisabled");
+    if (storedDisabledState === "true") {
+      setIsDisabled(true);
+      // Set timeout to re-enable button after 1 hour
+      setTimeout(() => {
+        setIsDisabled(false);
+        localStorage.removeItem("discountButtonDisabled");
+      }, 3600000); // 1 hour
+    }
+  });
 
   // Fetch dashboard data
   useEffect(() => {
@@ -51,8 +65,12 @@ const Dashboard = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  // Apply discount now function
   const handleDiscountNow = (type) => {
+    // Disable the button and save state to local storage
+    setIsDisabled(true);
+    localStorage.setItem("discountButtonDisabled", "true");
+
+    // Apply discount now function
     axios
       .post("/api/discount/apply-discount", { type })
       .then((response) => {
@@ -64,6 +82,12 @@ const Dashboard = () => {
         });
       })
       .catch((err) => setMessage(`Error applying discount: ${err.message}`));
+
+    // Re-enable the button after 1 hour (3600000 ms)
+    setTimeout(() => {
+      setIsDisabled(false);
+      localStorage.removeItem("discountButtonDisabled");
+    }, 3600000);
   };
 
   // Prepare chart data for sales graph (Hourly sales)
@@ -172,33 +196,51 @@ const Dashboard = () => {
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Discounting Hours:</div>
             <span className="text-green-500 flex items-center">
-              {discountHours}
+              {discountHours.length > 1 && (
+                <>
+                  <div>
+                    Most: {discountHours[0].toString().padStart(2, "0")}:00
+                  </div>
+                  <div className="ml-4 text-red-500">
+                    Least: {discountHours[1].toString().padStart(2, "0")}:00
+                  </div>
+                </>
+              )}
             </span>
           </div>
           <div className="flex gap-2 text-sm">
             <button
-              disabled={isDiscountCompleted(discountHours)}
               onClick={() => handleDiscountNow("hour")}
+              disabled={isDisabled} // Disable the button based on state
               style={{
                 padding: "0.5rem 1rem",
                 fontSize: "1rem",
                 borderRadius: "0.375rem",
-                color: "linear-gradient(90deg, #EC4899, #FFB037)",
+                color: isDisabled
+                  ? "#A0A0A0"
+                  : "linear-gradient(90deg, #EC4899, #FFB037)",
                 background: "transparent",
-                border: "1px solid #EC4899",
+                border: isDisabled ? "1px solid #A0A0A0" : "1px solid #EC4899",
                 outline: "none",
+                cursor: isDisabled ? "not-allowed" : "pointer",
               }}
               onMouseEnter={(e) => {
-                e.target.style.background =
-                  "linear-gradient(90deg, #EC4899, #FFB037)";
-                e.target.style.color = "white";
+                if (!isDisabled) {
+                  e.target.style.background =
+                    "linear-gradient(90deg, #EC4899, #FFB037)";
+                  e.target.style.color = "white";
+                }
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = "transparent";
-                e.target.style.color = "black";
+                if (!isDisabled) {
+                  e.target.style.background = "transparent";
+                  e.target.style.color = "black";
+                }
               }}
             >
-              Apply Discount Now
+              {isDisabled
+                ? "Discount Active for an Hour"
+                : "Apply Discount Now"}
             </button>
           </div>
         </div>

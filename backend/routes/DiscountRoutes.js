@@ -7,11 +7,44 @@ const Order = require("../models/Order1");
 // Reset and apply discounts every 24 hours at the most and least sales hours
 router.post("/reset-discount", async (req, res) => {
   try {
-    // Schedule the task to run every 24 hours
+    // Schedule the task to run every day at midnight
     cron.schedule("0 0 * * *", async () => {
       console.log("Running daily discount reset...");
-      // Apply discount based on the previous day's data
-      await applyDiscount();
+
+      // Apply discount based on the previous 24 hours' data
+      const currentDate = new Date();
+      const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));
+
+      // Fetch sales from the previous 24 hours
+      const orders = await Order.find({
+        createdAt: { $gte: startOfDay, $lt: endOfDay },
+      });
+
+      // Organize sales data by hour
+      const hourlySales = Array(24).fill(0); // 24-hour sales array initialized to 0
+
+      orders.forEach((order) => {
+        const orderHour = new Date(order.createdAt).getHours();
+        order.items.forEach((item) => {
+          hourlySales[orderHour] += item.quantity;
+        });
+      });
+
+      // Find the two hours with the most and least sales
+      const mostSalesHour = hourlySales.indexOf(Math.max(...hourlySales));
+      // Find the least sales hour, ignoring hours with 0 sales
+      const filteredHourlySales = hourlySales.filter((sales) => sales > 0); // Remove 0 sales hours
+      const minSales = Math.min(...filteredHourlySales); // Find the minimum of the remaining hours
+
+      const leastSalesHour = hourlySales.indexOf(minSales); // Find the original index of the least sales hour
+
+      console.log(`Most sales hour: ${mostSalesHour}:00`);
+      console.log(`Least sales hour: ${leastSalesHour}:00`);
+
+      // Schedule discounts for the most and least sales hours
+      scheduleDiscount(mostSalesHour);
+      scheduleDiscount(leastSalesHour);
     });
 
     res.status(200).json({ message: "Daily discount reset scheduled." });
@@ -119,6 +152,22 @@ async function removeDiscount() {
   } catch (error) {
     console.error("Error removing discounts:", error.message);
   }
+}
+
+// Helper function to schedule and remove discounts for a specific hour
+function scheduleDiscount(hour) {
+  cron.schedule(`0 ${hour} * * *`, async () => {
+    console.log(`Applying discount for hour ${hour}:00`);
+
+    // Apply discount logic here
+    await applyDiscount();
+
+    // Remove discount after an hour
+    cron.schedule(`0 ${hour + 1} * * *`, async () => {
+      console.log(`Removing discount for hour ${hour + 1}:00`);
+      await removeDiscount();
+    });
+  });
 }
 
 module.exports = router;
