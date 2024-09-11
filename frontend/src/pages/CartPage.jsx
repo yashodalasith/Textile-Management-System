@@ -1,7 +1,15 @@
-import { Button, Card, Typography } from "@material-tailwind/react";
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Button,
+  Card,
+  Typography,
+} from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import api from "../../api";
+import { Link, useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
   "Product Name",
@@ -13,80 +21,82 @@ const TABLE_HEAD = [
   "",
 ];
 
-const baseUrl = "http://localhost:3001/cart"; // Adjust based on your server setup
+const baseUrl = "http://localhost:3001/cart";
 const baseUrl1 = "http://localhost:3001/order";
-
-// Handle the "Make Order" button click
-const handleMakeOrder = async () => {
-  try {
-    const userId = "mockUser123"; // Replace this with the actual user ID
-    const response = await axios.post(`${baseUrl1}/confirm-order`, { userId });
-
-    if (response.status === 200) {
-      alert("Order placed successfully!");
-      console.log("Order details:", response.data);
-    } else {
-      alert(response.data.message || "Failed to place order.");
-    }
-  } catch (error) {
-    console.error("Error placing order:", error);
-    alert("An error occurred while placing the order.");
-  }
-};
-
-// Handle the "Cancel" button click
-const handleCancelOrder = async () => {
-  try {
-    const userId = "mockUser123"; // Replace this with the actual user ID
-    const response = await axios.delete(`${baseUrl}/clear`, {
-      data: { userId },
-    });
-
-    if (response.status === 200) {
-      alert("Cart cleared successfully!");
-      console.log("Cleared cart details:", response.data);
-    } else {
-      alert(response.data.message || "Failed to clear cart.");
-    }
-  } catch (error) {
-    console.error("Error clearing cart:", error);
-    alert("An error occurred while clearing the cart.");
-  }
-};
-
-const handleRemoveItem = async (productId) => {
-  try {
-    const userId = "mockUser123"; // Replace this with actual user ID
-    const response = await axios.delete(`${baseUrl}/remove`, {
-      data: { userId, productId }, // Pass the userId and productId
-    });
-
-    if (response.status === 200) {
-      alert("Item removed successfully!");
-      console.log("Updated cart:", response.data.cart);
-      setCart(response.data.cart); // Update the cart
-    } else {
-      alert(response.data.message || "Failed to remove item.");
-    }
-  } catch (error) {
-    console.error("Error removing item:", error);
-    // alert("An error occurred while removing the item.");
-  }
-};
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
-
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userId = "mockUser123"; // Mock user ID
+  const navigate = useNavigate();
 
-  // Fetch the cart data when the component mounts
+  const handleNavigate = () => {
+    setOpen(false);
+    navigate("/confirm-order");
+  };
+
+  //makeorde hadler
+  const handleMakeOrder = async () => {
+    try {
+      const response = await axios.post(`${baseUrl1}/confirm-order`, {
+        userId,
+      });
+
+      if (response.status === 200) {
+        setOpen(true);
+        console.log("Order details:", response.data);
+      } else {
+        alert(response.data.message || "Failed to place order.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("An error occurred while placing the order.");
+    }
+  };
+
+  //cancel hadler
+  const handleCancelOrder = async () => {
+    try {
+      const response = await axios.delete(`${baseUrl}/clear`, {
+        data: { userId },
+      });
+
+      if (response.status === 200) {
+        alert("Cart cleared");
+        console.log(response.data);
+      } else {
+        alert(response.data.message || "dayumn Failed to clear.");
+      }
+    } catch (error) {
+      console.error("ahh mata baaa Error clearing cart:", error);
+      alert("An error occurred ,clearing the cart.");
+    }
+  };
+
+  //Remove hadler
+  const handleRemoveItem = async (productId) => {
+    try {
+      const response = await axios.delete(`${baseUrl}/remove`, {
+        data: { userId, productId },
+      });
+
+      if (response.status === 200) {
+        alert("Item removed successfully!");
+        setCart(response.data.cart); // Update the cart
+      } else {
+        alert(response.data.message || "Failed to remove item.");
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const response = await api.get(`/cart/${userId}`);
-        console.log("respone", response.data.items);
         setCart(response.data.items);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cart");
@@ -99,19 +109,16 @@ export default function CartPage() {
   }, [userId]);
 
   return (
-    <div className="">
+    <div>
       <div className="flex justify-between">
         <div>
           <img
             src="https://static.vecteezy.com/system/resources/previews/000/356/583/original/vector-shopping-cart-icon.jpg"
             alt="product"
-            style={{
-              width: "2cm",
-              height: "2cm",
-            }}
+            style={{ width: "2cm", height: "2cm" }}
             className="p-4"
           />
-        </div>{" "}
+        </div>
         <div className="m-5 text-center text-3xl mt-4">My cart</div>
         <button className="mr-4 text-center text-sm mt-4">Add more</button>
       </div>
@@ -137,84 +144,80 @@ export default function CartPage() {
               </tr>
             </thead>
             <tbody>
-              {cart.map((item, index) => {
-                return (
-                  // Add 'return' here
-                  <tr key={index}>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
+              {cart.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      {item.productName || "N/A"}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      {item.price}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      {item.quantity}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      {item.price * item.quantity}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      Discounts
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal mt-4 p-4"
+                    >
+                      {item.price * item.quantity}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography
+                      as="a"
+                      href="#"
+                      variant="small"
+                      color="red"
+                      className="font-medium mt-4 p-4"
+                    >
+                      <button
+                        className="text-red-700"
+                        onClick={() => handleRemoveItem(item.productId)}
                       >
-                        {item.name || "N/A"}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal  mt-4 p-4"
-                      >
-                        {item.price}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.quantity}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.price * item.quantity}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        Discounts
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.price * item.quantity}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        as="a"
-                        href="#"
-                        variant="small"
-                        color="red"
-                        className="font-medium mt-4 p-4"
-                      >
-                        <button
-                          className="text-red-700"
-                          onClick={() => handleRemoveItem(item.productId)}
-                        >
-                          {" "}
-                          Remove Item
-                        </button>
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
+                        Remove Item
+                      </button>
+                    </Typography>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
@@ -222,18 +225,33 @@ export default function CartPage() {
             <div>
               <button
                 className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-                onClick={handleMakeOrder} // Add the onClick event for making the order
+                onClick={handleMakeOrder}
               >
                 Make order
               </button>
+              <Dialog open={open} handler={() => setOpen(false)}>
+                <DialogBody>
+                  <p>Order placed successfully!</p>
+                </DialogBody>
+                <DialogFooter>
+                  <Button
+                    className="bg-blue-500 text-white"
+                    onClick={handleNavigate}
+                  >
+                    Go to Confirmation Page
+                  </Button>
+                </DialogFooter>
+              </Dialog>
             </div>
             <div>
-              <button
-                className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-                onClick={handleCancelOrder} // Add the onClick event for canceling the order
-              >
-                Cancel
-              </button>
+              <Link to={"/"}>
+                <button
+                  className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleCancelOrder}
+                >
+                  Cancel
+                </button>
+              </Link>
             </div>
           </div>
         </Card>
@@ -243,6 +261,7 @@ export default function CartPage() {
     </div>
   );
 }
+
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 

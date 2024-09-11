@@ -1,36 +1,34 @@
-// routes/cart.js
 const express = require("express");
 const router = express.Router();
 const Cart = require("../models/Cart");
 
-// Mock inventory data for testing
+// dummy data for testing
 const mockInventory = [
-  { productId: "1", name: "T-Shirt", price: 10, stock: 50 },
-  { productId: "2", name: "Jeans", price: 20, stock: 30 },
+  { productId: "1", productName: "T-Shirt", price: 10, stock: 50 },
+  { productId: "2", productName: "Jeans", price: 20, stock: 30 },
 ];
 
-// Add item to cart
 // Add item to cart
 router.post("/add", async (req, res) => {
   const { userId, productId, quantity } = req.body;
 
-  // Check mock inventory for product
+  // Remove
   const product = mockInventory.find((item) => item.productId === productId);
   if (!product) return res.status(404).json({ message: "Product not found" });
 
-  const { name, price } = product; // Extract name and price from product
+  const { productName, price } = product; // remove this prt
 
   try {
     let cart = await Cart.findOne({ userId });
 
-    // Convert quantity to a number to prevent string concatenation
+    // Convert quantity to a number
     const parsedQuantity = parseInt(quantity, 10);
 
-    // If the cart doesn't exist, create a new one
+    //  cart doesn't exist create one
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, name, quantity: parsedQuantity, price }],
+        items: [{ productId, productName, quantity: parsedQuantity, price }],
       });
     } else {
       // If cart exists, update it
@@ -39,13 +37,13 @@ router.post("/add", async (req, res) => {
       );
 
       if (itemIndex > -1) {
-        // Item exists in the cart, update quantity
+        // Item exists update quantity
         cart.items[itemIndex].quantity += parsedQuantity;
       } else {
-        // Item does not exist in the cart, add it
+        // Item does not exist  add it
         cart.items.push({
           productId,
-          name, // Use extracted name here
+          productName,
           quantity: parsedQuantity,
           price,
         });
@@ -73,7 +71,7 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// Remove item from cart
+// Remove item  cart
 router.delete("/remove", async (req, res) => {
   const { userId, productId } = req.body;
 
@@ -112,7 +110,7 @@ router.delete("/clear", async (req, res) => {
     const cart = await Cart.findOne({ userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    // Clear all items in the cart
+    // Clear  the cart
     cart.items = [];
     await cart.save();
 
