@@ -196,13 +196,28 @@ const Dashboard = () => {
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Discounting Hours:</div>
             <span className="text-green-500 flex items-center">
-              {discountHours.length > 1 && (
+              {!discountHours || discountHours.length < 2 ? (
+                <>
+                  <div>Most: Data not available</div>
+                  <div className="ml-4 text-red-500">
+                    Least: Data not available
+                  </div>
+                </>
+              ) : (
                 <>
                   <div>
-                    Most: {discountHours[0].toString().padStart(2, "0")}:00
+                    Most:{" "}
+                    {(discountHours[0] || "Data not available")
+                      .toString()
+                      .padStart(2, "0")}
+                    {discountHours[0] ? ":00" : ""}
                   </div>
                   <div className="ml-4 text-red-500">
-                    Least: {discountHours[1].toString().padStart(2, "0")}:00
+                    Least:{" "}
+                    {(discountHours[1] || "Data not available")
+                      .toString()
+                      .padStart(2, "0")}
+                    {discountHours[1] ? ":00" : ""}
                   </div>
                 </>
               )}
