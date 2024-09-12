@@ -124,8 +124,8 @@ const Dashboard = () => {
       {
         label: "Sales per Item",
         data: itemSalesData.map((item) => item.soldCount),
-        borderColor: "rgba(153, 102, 255, 1)",
-        backgroundColor: "rgba(153, 102, 255, 1)",
+        borderColor: "rgba(153, 102, 255, 1.0)",
+        backgroundColor: "rgba(153, 102, 255, 0.6)",
         tension: 0.4,
       },
     ],
