@@ -4,8 +4,11 @@ const Cart = require("../models/Cart");
 
 // dummy data for testing
 const mockInventory = [
-  { productId: "1", productName: "T-Shirt", price: 10, stock: 50 },
-  { productId: "2", productName: "Jeans", price: 20, stock: 30 },
+  { productId: "Item1", productName: "T-Shirt", price: 1000, stock: 50 },
+  { productId: "Item2", productName: "Jeans", price: 2000, stock: 30 },
+  { productId: "Item3", productName: "Pants", price: 1500, stock: 30 },
+  { productId: "Item4", productName: "Trunks", price: 4800, stock: 30 },
+  { productId: "Item5", productName: "Shorts", price: 3000, stock: 30 },
 ];
 
 // Add item to cart

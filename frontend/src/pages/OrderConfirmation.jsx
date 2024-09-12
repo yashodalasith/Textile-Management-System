@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
 import api from "../../api";
+import { Link } from "react-router-dom";
 
 const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
@@ -35,64 +36,67 @@ export default function OrderConfirmation() {
 
   return (
     <div>
-      <div className="text-center font-bold">
-        <h1 className="text-3xl p-5 underline">Payment Confirmation</h1>
+      <div className="text-center underline font-bold">
+        <h1 className="text-3xl p-5 ">Payment Confirmation</h1>
       </div>
-      <div className="w-50 shadow-2xl p-5 border rounded-lg">
-        <Card className="p-4 shadow-2xl">
-          <h2 className="text-xl font-semibold mb-4 flex  items-center ">
-            Bill Summary
-          </h2>
-          <div className="flex justify-between mt-4">
-            <ul>
-              <li>Items Purchased</li>
-              {items.map((items) => (
-                <li key={items.productId}>
-                  {items.quantity} {items.name} Purchased
+
+      <div className="flex justify-center p-4 m-4 items-center min-h-screen bg-gray-100">
+        <div className="bg-blue-700 p-4 m-4 shadow-2xl rounded-lg p-8 w-96 gap-4">
+          <h2 className="text-2xl font-bold text-center mb-6">Bill Summary</h2>
+          <div className="mb-4">
+            <ul className="mb-4">
+              <li className="flex justify-between font-semibold gap-4">
+                <span>Items Purchased</span>
+                <span>- Amount</span>
+              </li>
+              {items.map((item) => (
+                <li
+                  key={item.productId}
+                  className="flex justify-between mt-2 gap-4"
+                >
+                  <span>
+                    {item.quantity} x {item.productName}
+                  </span>
+                  <span>= LKR {item.quantity * item.price}</span>
                 </li>
               ))}
             </ul>
-            <ul>
-              <li>Amount</li>
-              {items.map((items) => (
-                <li key={items.productId}>
-                  Itme Prcie purchased {items.quantity * items.price}
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="flex justify-between mt-4">
-            <span className="font-medium flex ">Total Amount:</span>
-            <span>{totalprice}</span>
-          </div>
+          <div className="border-t-2 border-black mt-4 pt-4  gap-x-8">
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">Total Amount:</span>
+              <span>LKR {totalprice}</span>
+            </div>
 
-          <div className="flex justify-between mt-4">
-            <span className="font-medium flex ">Discounts:</span>
-            <span>0</span>
-          </div>
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">Discounts:</span>
+              <span>LKR 0</span>
+            </div>
 
-          <div className="flex justify-between mt-4">
-            <span className="font-medium flex ">Amount to be paid:</span>
-            <span>{totalprice}</span>
-          </div>
+            <div className="flex justify-between mb-4">
+              <span className="font-medium">Amount to be paid:</span>
+              <span>LKR {totalprice}</span>
+            </div>
 
-          <div className="flex justify-between mt-4 mb-4">
-            <span className="font-medium flex ">{paymentStatus}</span>
-            <span>Cash on Delivery</span>
-          </div>
-        </Card>
+            <div className="flex justify-between font-semibold mb-4">
+              <span>{paymentStatus}</span>
+            </div>
+            <div className="flex justify-between gap-4 mt-4">
+              <Link to={"/"}>
+                <button className="w-max bg-blue-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
+                  Confirm the Payment
+                </button>
+              </Link>
 
-        {/* Confirm Payment Button */}
-        <div className="flex  mt-4">
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">
-            Confirm Payment
-          </button>
+              <button className="w-max bg-red-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
+                Download the Bill
+              </button>
+            </div>
+          </div>
         </div>
-      </div>{" "}
-      <div className="pt-4">
-        <p>Additional notes</p>
       </div>
+      <div className="pt-4"></div>
     </div>
   );
 }
