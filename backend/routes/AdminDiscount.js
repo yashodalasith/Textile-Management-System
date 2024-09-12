@@ -68,24 +68,30 @@ router.get("/dashboard", async (req, res) => {
     const itemSalesYesterday = {};
     salesYesterday.forEach((sale) => {
       sale.items.forEach((item) => {
-        const itemId = item.productId;
-        if (!itemSalesYesterday[itemId])
-          itemSalesYesterday[itemId] = { soldCount: 0 };
-        itemSalesYesterday[itemId].soldCount++;
+        const productId = item.productId;
+        if (!itemSalesYesterday[productId]) {
+          itemSalesYesterday[productId] = { soldCount: 0 };
+        }
+        itemSalesYesterday[productId].soldCount += item.quantity; // Aggregate sold quantities
       });
     });
 
     const sortedItems = Object.entries(itemSalesYesterday).sort(
       (a, b) => b[1].soldCount - a[1].soldCount
     );
-    const mostSoldItemsy = sortedItems.slice(0, 2).map(([itemId, data]) => ({
-      item_id: itemId,
+    const mostSoldItemsy = sortedItems.slice(0, 2).map(([productId, data]) => ({
+      item_id: productId,
       soldCount: data.soldCount,
+      discount_precentage: 5,
     }));
-    const leastSoldItemsy = sortedItems.slice(-3).map(([itemId, data]) => ({
-      item_id: itemId,
-      soldCount: data.soldCount,
-    }));
+    const leastSoldItemsy =
+      sortedItems.length >= 5
+        ? sortedItems.slice(-3).map(([productId, data]) => ({
+            item_id: productId,
+            soldCount: data.soldCount,
+            discount_percentage: 10,
+          }))
+        : [];
 
     // Prepare item sales data for today with most and least sold items today
     const itemSales = {};
@@ -109,10 +115,13 @@ router.get("/dashboard", async (req, res) => {
       item_id: itemId,
       soldCount: data.soldCount,
     }));
-    const leastSoldItems = sortedItems2.slice(-3).map(([itemId, data]) => ({
-      item_id: itemId,
-      soldCount: data.soldCount,
-    }));
+    const leastSoldItems =
+      sortedItems2.length >= 5
+        ? sortedItems2.slice(-3).map(([itemId, data]) => ({
+            item_id: itemId,
+            soldCount: data.soldCount,
+          }))
+        : [];
 
     const discountedItems = [...mostSoldItemsy, ...leastSoldItemsy];
 

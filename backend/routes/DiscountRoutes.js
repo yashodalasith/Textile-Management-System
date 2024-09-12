@@ -110,7 +110,7 @@ async function applyDiscount() {
     );
 
     const mostSoldItems = sortedItems.slice(0, 2); // 2 most sold items
-    const leastSoldItems = sortedItems.slice(-3); // 3 least sold items
+    const leastSoldItems = sortedItems.length >= 5 ? sortedItems.slice(-3) : []; // 3 least sold items
 
     // Apply discount to most and least sold items
     const allItems = [...mostSoldItems, ...leastSoldItems];

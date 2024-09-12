@@ -25,8 +25,8 @@ ChartJS.register(
 const Dashboard = () => {
   const [salesData, setSalesData] = useState([]);
   const [itemSalesData, setItemSalesData] = useState([]);
-  const [mostSoldItem, setMostSoldItem] = useState({});
-  const [leastSoldItem, setLeastSoldItem] = useState({});
+  const [mostSoldItems, setMostSoldItems] = useState([]);
+  const [leastSoldItems, setLeastSoldItems] = useState([]);
   const [mostSalesHour, setMostSalesHour] = useState("");
   const [leastSalesHour, setLeastSalesHour] = useState("");
   const [discountHours, setDiscountHours] = useState(0);
@@ -35,17 +35,26 @@ const Dashboard = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-    // Check local storage for button state
-    const storedDisabledState = localStorage.getItem("discountButtonDisabled");
-    if (storedDisabledState === "true") {
-      setIsDisabled(true);
-      // Set timeout to re-enable button after 1 hour
-      setTimeout(() => {
+    const discountAppliedTime = localStorage.getItem("discountButtonDisabled");
+
+    if (discountAppliedTime) {
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - discountAppliedTime;
+
+      if (elapsedTime >= 3600000) {
+        // If more than 1 hour has passed, enable the button
         setIsDisabled(false);
         localStorage.removeItem("discountButtonDisabled");
-      }, 3600000); // 1 hour
+      } else {
+        // If less than 1 hour has passed, keep the button disabled and set a timeout for the remaining time
+        setIsDisabled(true);
+        setTimeout(() => {
+          setIsDisabled(false);
+          localStorage.removeItem("discountButtonDisabled");
+        }, 3600000 - elapsedTime);
+      }
     }
-  });
+  }, []);
 
   // Fetch dashboard data
   useEffect(() => {
@@ -57,8 +66,8 @@ const Dashboard = () => {
         setItemSalesData(data.itemSales);
         setMostSalesHour(data.mostSalesHour);
         setLeastSalesHour(data.leastSalesHour);
-        setMostSoldItem(data.mostSoldItems);
-        setLeastSoldItem(data.leastSoldItems);
+        setMostSoldItems(data.mostSoldItems);
+        setLeastSoldItems(data.leastSoldItems);
         setDiscountHours(data.discountedHours);
         setDiscountItems(data.discountedItems);
       })
@@ -66,9 +75,10 @@ const Dashboard = () => {
   }, []);
 
   const handleDiscountNow = (type) => {
-    // Disable the button and save state to local storage
+    // Disable the button and save the current time to local storage
     setIsDisabled(true);
-    localStorage.setItem("discountButtonDisabled", "true");
+    const discountAppliedTime = Date.now(); // Get the current timestamp
+    localStorage.setItem("discountButtonDisabled", discountAppliedTime);
 
     // Apply discount now function
     axios
@@ -106,11 +116,11 @@ const Dashboard = () => {
 
   // Prepare chart data for item sales graph
   const itemSalesChartData = {
-    labels: itemSalesData.map((item) => item.name),
+    labels: itemSalesData.map((item) => item.item_id),
     datasets: [
       {
         label: "Sales per Item",
-        data: itemSalesData.map((item) => item.sales),
+        data: itemSalesData.map((item) => item.soldCount),
         borderColor: "rgba(153, 102, 255, 1)",
         backgroundColor: "rgba(153, 102, 255, 0.2)",
         tension: 0.4,
@@ -118,10 +128,23 @@ const Dashboard = () => {
     ],
   };
 
-  // Function to check if discount time has passed
-  const isDiscountCompleted = (discountHour) => {
-    const currentHour = new Date().getHours();
-    return currentHour >= discountHour;
+  const chartOptions = {
+    scales: {
+      y: {
+        beginAtZero: true, // Ensures values start from 0
+        ticks: {
+          stepSize: 1, // Forces full integer steps
+          callback: function (value) {
+            if (value % 1 === 0 && value >= 0) {
+              // Shows only positive integers
+              return value;
+            }
+          },
+        },
+        min: 0,
+        max: 5,
+      },
+    },
   };
 
   return (
@@ -141,7 +164,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex">
-            <Line data={hourlySalesChartData} />
+            <Line data={hourlySalesChartData} options={chartOptions} />
           </div>
           <div className="flex gap-2 text-sm">
             <div className="text-gray-500">Most Sales Hour:</div>
@@ -166,20 +189,26 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex">
-            <Line data={itemSalesChartData} />
+            <Line data={itemSalesChartData} options={chartOptions} />
           </div>
-          <div className="flex gap-2 text-sm">
-            <div className="text-gray-500">Most Sold Item:</div>
-            <span className="text-green-500 flex items-center">
-              {mostSoldItem.name} ({mostSoldItem.sales} sales)
-            </span>
-          </div>
-          <div className="flex gap-2 text-sm">
-            <div className="text-gray-500">Least Sold Item:</div>
-            <span className="text-red-500 flex items-center">
-              {leastSoldItem.name} ({leastSoldItem.sales} sales)
-            </span>
-          </div>
+          <div className="text-gray-500">Most Sold Item:</div>
+          {mostSoldItems.map((mostSoldItem) => (
+            <div key={mostSoldItem.item_id} className="flex gap-2 text-sm">
+              <div className="text-green-500 flex items-center">
+                {mostSoldItem.item_id} ({mostSoldItem.soldCount} sales)
+              </div>
+              <br />
+            </div>
+          ))}
+          <div className="text-gray-500">Least Sold Item:</div>
+          {leastSoldItems.map((leastSoldItem) => (
+            <div key={leastSoldItem.item_id} className="flex gap-2 text-sm">
+              <div className="text-red-500 flex items-center">
+                {leastSoldItem.item_id} ({leastSoldItem.soldCount} sales)
+              </div>
+              <br />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -276,7 +305,7 @@ const Dashboard = () => {
             >
               <thead>
                 <tr style={{ backgroundColor: "#F3F4F6" }}>
-                  <th style={{ padding: "12px" }}>Item name</th>
+                  <th style={{ padding: "12px" }}>Item ID</th>
                   <th style={{ padding: "12px" }}>Sales</th>
                   <th style={{ padding: "12px" }}>Discount</th>
                 </tr>
@@ -289,27 +318,30 @@ const Dashboard = () => {
                         padding: "12px",
                         fontWeight: "bold",
                         color: "#4B5563",
+                        textAlign: "center",
                       }}
                     >
-                      {item.name}
+                      {item.item_id}
                     </td>
                     <td
                       style={{
                         padding: "12px",
                         fontWeight: "bold",
                         color: "#4B5563",
+                        textAlign: "center",
                       }}
                     >
-                      {item.sales}
+                      {item.soldCount}
                     </td>
                     <td
                       style={{
                         padding: "12px",
                         fontWeight: "bold",
                         color: "#4B5563",
+                        textAlign: "center",
                       }}
                     >
-                      {item.discount_percentage}%
+                      {item.discount_precentage}%
                     </td>
                   </tr>
                 ))}
