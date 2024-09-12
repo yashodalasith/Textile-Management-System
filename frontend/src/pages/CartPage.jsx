@@ -6,7 +6,7 @@ import {
   Card,
   Typography,
 } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,15 +29,16 @@ export default function CartPage() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showLoading, setShowLoading] = useState(true); // Track if loading spinner should be shown
   const userId = "mockUser123"; // Mock user ID
   const navigate = useNavigate();
+  const startTimeRef = useRef(Date.now());
 
   const handleNavigate = () => {
     setOpen(false);
     navigate("/confirm-order");
   };
 
-  //makeorde hadler
   const handleMakeOrder = async () => {
     try {
       const response = await axios.post(`${baseUrl1}/confirm-order`, {
@@ -48,15 +49,15 @@ export default function CartPage() {
         setOpen(true);
         console.log("Order details:", response.data);
       } else {
+        setOpen(true);
         alert(response.data.message || "Failed to place order.");
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("An error occurred while placing the order.");
+      alert("Cart is Empty.");
     }
   };
 
-  //cancel hadler
   const handleCancelOrder = async () => {
     try {
       const response = await axios.delete(`${baseUrl}/clear`, {
@@ -67,15 +68,14 @@ export default function CartPage() {
         alert("Cart cleared");
         console.log(response.data);
       } else {
-        alert(response.data.message || "dayumn Failed to clear.");
+        alert(response.data.message || "Failed to clear cart.");
       }
     } catch (error) {
-      console.error("ahh mata baaa Error clearing cart:", error);
-      alert("An error occurred ,clearing the cart.");
+      console.error("Error clearing cart:", error);
+      alert("An error occurred clearing the cart.");
     }
   };
 
-  //Remove hadler
   const handleRemoveItem = async (productId) => {
     try {
       const response = await axios.delete(`${baseUrl}/remove`, {
@@ -83,8 +83,8 @@ export default function CartPage() {
       });
 
       if (response.status === 200) {
-        alert("Item removed successfully!");
         setCart(response.data.cart); // Update the cart
+        window.location.reload();
       } else {
         alert(response.data.message || "Failed to remove item.");
       }
@@ -95,21 +95,36 @@ export default function CartPage() {
 
   useEffect(() => {
     const fetchCart = async () => {
+      startTimeRef.current = Date.now(); // Track the start time
       try {
         const response = await api.get(`/cart/${userId}`);
         setCart(response.data.items);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cart");
       } finally {
-        setLoading(false);
+        // Ensure loading spinner is shown for at least 1 second
+        setTimeout(() => {
+          setLoading(false);
+          setShowLoading(false);
+        }, Math.max(1000 - (Date.now() - startTimeRef.current), 0));
       }
     };
-
     fetchCart();
   }, [userId]);
 
   return (
     <div>
+      {showLoading && (
+        <div className="fixed inset-0 flex  justify-center bg-gray-700 bg-opacity-50 z-50">
+          <div className="flex flex-col ">
+            <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
+            <p className="mt-4 text-lg font-semibold text-black z-60">
+              Loading...
+            </p>{" "}
+            {/* Added z-60 */}
+          </div>
+        </div>
+      )}
       <div className="flex justify-between">
         <div>
           <img
@@ -120,141 +135,165 @@ export default function CartPage() {
           />
         </div>
         <div className="m-5 text-center text-3xl mt-4">My cart</div>
-        <button className="mr-4 text-center text-sm mt-4">Add more</button>
+        <Link to={"/"}>
+          <button className="mr-4 text-center text-sm mt-4">Add more</button>
+        </Link>
       </div>
-      <div className="flex justify-center">
-        <Card className="h-full w-auto overflow-scroll shadow-2xl p-5 border rounded-lg">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-b border-blue-100 bg-black p-4"
-                  >
-                    <Typography
-                      variant="small"
-                      color="white"
-                      className="font-sans leading-none opacity-70 mt-4"
-                    >
-                      {head}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {cart.map((item, index) => (
-                <tr key={index}>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      {item.productName || "N/A"}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      {item.price}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      {item.quantity}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      {item.price * item.quantity}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      Discounts
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal mt-4 p-4"
-                    >
-                      {item.price * item.quantity}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography
-                      as="a"
-                      href="#"
-                      variant="small"
-                      color="red"
-                      className="font-medium mt-4 p-4"
-                    >
-                      <button
-                        className="text-red-700"
-                        onClick={() => handleRemoveItem(item.productId)}
-                      >
-                        Remove Item
-                      </button>
-                    </Typography>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
 
-          <div className="flex justify-between">
-            <div>
-              <button
-                className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-                onClick={handleMakeOrder}
-              >
-                Make order
-              </button>
-              <Dialog open={open} handler={() => setOpen(false)}>
-                <DialogBody>
-                  <p>Order placed successfully!</p>
-                </DialogBody>
-                <DialogFooter>
-                  <Button
-                    className="bg-blue-500 text-white"
-                    onClick={handleNavigate}
-                  >
-                    Go to Confirmation Page
-                  </Button>
-                </DialogFooter>
-              </Dialog>
-            </div>
-            <div>
-              <Link to={"/"}>
+      <div className="flex justify-between">
+        <div>
+          <img
+            src="https://ahmedstextiles.co.za/wp-content/uploads/2017/08/fabrics-36.jpg"
+            alt="product"
+            style={{ width: "6cm", height: "10cm" }}
+            className="p-4"
+          />
+        </div>
+        {!loading && (
+          <Card className="h-full w-full overflow-scroll shadow-2xl p-5 border rounded-lg">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-b border-blue-100 bg-black p-4"
+                    >
+                      <Typography
+                        variant="small"
+                        color="white"
+                        className="font-sans leading-none opacity-70 mt-4"
+                      >
+                        {head}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {cart.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.productName || "N/A"}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.price}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.price * item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        Discounts
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.price * item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        as="a"
+                        href="#"
+                        variant="small"
+                        color="red"
+                        className="font-medium mt-4 p-4"
+                      >
+                        <Link to={"/cart"}>
+                          <button
+                            className="text-red-700"
+                            onClick={() => handleRemoveItem(item.productId)}
+                          >
+                            Remove Item
+                          </button>
+                        </Link>
+                      </Typography>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="flex justify-between">
+              <div>
                 <button
-                  className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleCancelOrder}
+                  className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleMakeOrder}
                 >
-                  Cancel
+                  Make order
                 </button>
-              </Link>
+                <Dialog open={open} handler={() => setOpen(false)}>
+                  <DialogBody>
+                    <p>Order placed successfully!</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <Button
+                      className="bg-blue-500 text-white"
+                      onClick={handleNavigate}
+                    >
+                      Go to Confirmation Page
+                    </Button>
+                  </DialogFooter>
+                </Dialog>
+              </div>
+              <div>
+                <Link to={"/"}>
+                  <button
+                    className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleCancelOrder}
+                  >
+                    Cancel
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        )}
+
+        <div>
+          <img
+            src="https://wallpaperaccess.com/full/4597148.jpg"
+            alt="product"
+            style={{ width: "6cm", height: "10cm" }}
+            className="p-4"
+          />
+        </div>
       </div>
 
       <div className="flex justify-between m-4"></div>

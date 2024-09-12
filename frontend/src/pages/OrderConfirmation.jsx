@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
 import api from "../../api";
 import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf";
 
 const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
@@ -34,14 +35,50 @@ export default function OrderConfirmation() {
     getOrderDetails();
   }, [userId]);
 
+  // Function to download the bill as a PDF
+  const downloadBillPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Thank You For The Purchase", 20, 20); // Header
+
+    doc.setFontSize(12);
+    let yPosition = 40; // Starting Y position for item listing
+
+    // Adding the bill details
+    items.forEach((item) => {
+      doc.text(
+        `${item.quantity} x ${item.productName} - LKR ${
+          item.quantity * item.price
+        }`,
+        20,
+        yPosition
+      );
+      yPosition += 10;
+    });
+
+    doc.text(`Total Amount: LKR ${totalprice}`, 20, yPosition + 10);
+    doc.text(`Discounts: LKR 0`, 20, yPosition + 20);
+    doc.text(`Amount to be Paid: LKR ${totalprice}`, 20, yPosition + 30);
+    doc.text(`Payment Status: ${paymentStatus}`, 20, yPosition + 40);
+
+    // Download the generated PDF
+    doc.save("bill-summary.pdf");
+  };
+
   return (
-    <div>
+    <div
+      className="min-h-screen bg-top"
+      style={{
+        backgroundImage: `url('https://static.vecteezy.com/system/resources/previews/012/617/311/non_2x/3d-pay-money-with-mobile-phone-banking-online-payments-concept-bill-on-smartphone-transaction-with-credit-card-mobile-with-financial-paper-on-background-3d-bill-payment-icon-illustration-vector.jpg')`,
+      }}
+    >
       <div className="text-center underline font-bold">
         <h1 className="text-3xl p-5 ">Payment Confirmation</h1>
       </div>
 
-      <div className="flex justify-center p-4 m-4 items-center min-h-screen bg-gray-100">
-        <div className="bg-blue-700 p-4 m-4 shadow-2xl rounded-lg p-8 w-96 gap-4">
+      <div className="flex justify-center p-4 m-4 items-center min-h-screen ">
+        <div className="bg-white p-4 m-4 shadow-2xl rounded-lg  w-96 gap-4">
           <h2 className="text-2xl font-bold text-center mb-6">Bill Summary</h2>
           <div className="mb-4">
             <ul className="mb-4">
@@ -79,7 +116,7 @@ export default function OrderConfirmation() {
               <span>LKR {totalprice}</span>
             </div>
 
-            <div className="flex justify-between font-semibold mb-4">
+            <div className="flex justify-center font-semibold mb-4">
               <span>{paymentStatus}</span>
             </div>
             <div className="flex justify-between gap-4 mt-4">
@@ -89,7 +126,10 @@ export default function OrderConfirmation() {
                 </button>
               </Link>
 
-              <button className="w-max bg-red-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
+              <button
+                className="w-max bg-red-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg"
+                onClick={downloadBillPDF}
+              >
                 Download the Bill
               </button>
             </div>
