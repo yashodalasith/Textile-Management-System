@@ -98,8 +98,7 @@ async function applyDiscount() {
         const isDiscounted = item.Discounted;
 
         if (!salesData[itemId]) {
-          salesData[itemId] = { soldCount: 0 };
-          salesData[itemId] = { Discounted: isDiscounted };
+          salesData[itemId] = { soldCount: 0, Discounted: isDiscounted };
         }
         salesData[itemId].soldCount += soldCount;
       });

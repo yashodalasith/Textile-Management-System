@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -17,6 +19,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -122,7 +125,7 @@ const Dashboard = () => {
         label: "Sales per Item",
         data: itemSalesData.map((item) => item.soldCount),
         borderColor: "rgba(153, 102, 255, 1)",
-        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        backgroundColor: "rgba(153, 102, 255, 1)",
         tension: 0.4,
       },
     ],
@@ -142,7 +145,6 @@ const Dashboard = () => {
           },
         },
         min: 0,
-        max: 5,
       },
     },
   };
@@ -153,7 +155,7 @@ const Dashboard = () => {
         Admin Dashboard
       </h1>
 
-      <div className="flex flex-row gap-20 items-start p-32 m-10">
+      <div className="flex flex-row gap-10 max-w-screen justify-evenly items-start p-10 m-10">
         {/* Hourly Sales for Current Day */}
         <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
@@ -189,32 +191,51 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex">
-            <Line data={itemSalesChartData} options={chartOptions} />
+            <Bar data={itemSalesChartData} options={chartOptions} />;
           </div>
-          <div className="text-gray-500">Most Sold Item:</div>
-          {mostSoldItems.map((mostSoldItem) => (
-            <div key={mostSoldItem.item_id} className="flex gap-2 text-sm">
-              <div className="text-green-500 flex items-center">
-                {mostSoldItem.item_id} ({mostSoldItem.soldCount} sales)
-              </div>
-              <br />
-            </div>
-          ))}
-          <div className="text-gray-500">Least Sold Item:</div>
-          {leastSoldItems.map((leastSoldItem) => (
-            <div key={leastSoldItem.item_id} className="flex gap-2 text-sm">
-              <div className="text-red-500 flex items-center">
-                {leastSoldItem.item_id} ({leastSoldItem.soldCount} sales)
-              </div>
-              <br />
-            </div>
-          ))}
+          <div className="flex flex-row">
+            <div className="text-gray-500">Most Sold Item:</div>
+            {mostSoldItems.length > 0 ? (
+              mostSoldItems.map((mostSoldItem) => (
+                <div
+                  key={mostSoldItem.item_id}
+                  className="flex gap-2 text-sm"
+                  style={{ paddingLeft: "1rem" }}
+                >
+                  <span className="text-green-500 flex items-center">
+                    {mostSoldItem.item_id} ({mostSoldItem.soldCount} sales),
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div>No most sold items found.</div> // Fallback message if array is empty
+            )}
+          </div>
+
+          <div className="flex flex-row">
+            <div className="text-gray-500">Least Sold Item:</div>
+            {leastSoldItems.length > 0 ? (
+              leastSoldItems.map((leastSoldItem) => (
+                <div
+                  key={leastSoldItem.item_id}
+                  className="flex gap-2 text-sm"
+                  style={{ paddingLeft: "1rem" }}
+                >
+                  <span className="text-red-500 flex items-center">
+                    {leastSoldItem.item_id} ({leastSoldItem.soldCount} sales),
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div>No least sold items found.</div> // This ensures something is displayed if the array is empty
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-row gap-10 items-start p-10 m-10">
+      <div className="flex flex-row gap-10 justify-evenly items-start p-10 m-10">
         {/* Current Day's Discounting Hours */}
-        <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
+        <div className="flex flex-col p-3 gap-4 justify-center md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
             <div>
               <h3 className="text-gray-500 text-md uppercase">
@@ -252,6 +273,7 @@ const Dashboard = () => {
               )}
             </span>
           </div>
+          <br />
           <div className="flex gap-2 text-sm">
             <button
               onClick={() => handleDiscountNow("hour")}
