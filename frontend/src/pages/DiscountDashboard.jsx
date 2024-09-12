@@ -150,7 +150,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-3 md:mx-auto shadow-lg">
+    <div className="p-4 md:mx-auto">
+      <div className="pt-4"></div>
       <h1 className="text-4xl font-bold text-gray-800 text-center">
         Admin Dashboard
       </h1>
@@ -374,6 +375,7 @@ const Dashboard = () => {
       </div>
 
       {message && <p className="text-sm text-red-500 mt-8">{message}</p>}
+      <div className="pt-4"></div>
     </div>
   );
 };
