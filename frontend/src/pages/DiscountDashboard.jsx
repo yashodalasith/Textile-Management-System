@@ -151,10 +151,10 @@ const Dashboard = () => {
 
   return (
     <div className="p-4 md:mx-auto">
-      <div className="pt-4"></div>
       <h1 className="text-4xl font-bold text-gray-800 text-center">
         Admin Dashboard
       </h1>
+      <div className="pt-4"></div>
 
       <div className="flex flex-row gap-10 max-w-screen justify-evenly items-start p-10 m-10">
         {/* Hourly Sales for Current Day */}
@@ -182,6 +182,8 @@ const Dashboard = () => {
             </span>
           </div>
         </div>
+
+        <div className="px-4"></div>
         {/* Items with their Sales for Current Day */}
         <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
@@ -192,7 +194,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex">
-            <Bar data={itemSalesChartData} options={chartOptions} />;
+            <Bar data={itemSalesChartData} options={chartOptions} />
           </div>
           <div className="flex flex-row">
             <div className="text-gray-500">Most Sold Item:</div>
@@ -234,84 +236,103 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="pt-4"></div>
+      <div className="pt-4"></div>
       <div className="flex flex-row gap-10 justify-evenly items-start p-10 m-10">
+        <div className="pl-4"></div>
         {/* Current Day's Discounting Hours */}
-        <div className="flex flex-col p-3 gap-4 justify-center md:w-96 w-full rounded-md shadow-md">
-          <div className="flex justify-between">
-            <div>
-              <h3 className="text-gray-500 text-md uppercase">
-                Discounting Hours (Current Day)
-              </h3>
+        <div className="flex flex-row p-10 pr-4 justify-between items-start md:w-96 w-full rounded-md shadow-md">
+          <div className="flex flex-col p-3 gap-4 justify-center">
+            <div className="flex justify-between">
+              <div>
+                <h3 className="text-gray-500 text-md uppercase">
+                  Discounting Hours (Current Day)
+                </h3>
+              </div>
+            </div>
+            <div className="flex gap-2 text-sm">
+              <div className="text-gray-500">Discounting Hours:</div>
+              <span className="text-green-500 flex items-center">
+                {!discountHours || discountHours.length < 2 ? (
+                  <>
+                    <div>Most: Data not available</div>
+                    <div className="ml-4 text-red-500">
+                      Least: Data not available
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      Most:{" "}
+                      {(discountHours[0] || "Data not available")
+                        .toString()
+                        .padStart(2, "0")}
+                      {discountHours[0] ? ":00" : ""}
+                    </div>
+                    <div className="ml-4 text-red-500">
+                      Least:{" "}
+                      {(discountHours[1] || "Data not available")
+                        .toString()
+                        .padStart(2, "0")}
+                      {discountHours[1] ? ":00" : ""}
+                    </div>
+                  </>
+                )}
+              </span>
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div className="flex gap-2 text-sm">
+              <button
+                onClick={() => handleDiscountNow("hour")}
+                disabled={isDisabled} // Disable the button based on state
+                style={{
+                  padding: "0.5rem 1rem",
+                  fontSize: "1rem",
+                  borderRadius: "0.375rem",
+                  color: isDisabled
+                    ? "#A0A0A0"
+                    : "linear-gradient(90deg, #EC4899, #FFB037)",
+                  background: "transparent",
+                  border: isDisabled
+                    ? "1px solid #A0A0A0"
+                    : "1px solid #EC4899",
+                  outline: "none",
+                  cursor: isDisabled ? "not-allowed" : "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isDisabled) {
+                    e.target.style.background =
+                      "linear-gradient(90deg, #EC4899, #FFB037)";
+                    e.target.style.color = "white";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isDisabled) {
+                    e.target.style.background = "transparent";
+                    e.target.style.color = "black";
+                  }
+                }}
+              >
+                {isDisabled
+                  ? "Discount Active for an Hour"
+                  : "Apply Discount Now"}
+              </button>
             </div>
           </div>
-          <div className="flex gap-2 text-sm">
-            <div className="text-gray-500">Discounting Hours:</div>
-            <span className="text-green-500 flex items-center">
-              {!discountHours || discountHours.length < 2 ? (
-                <>
-                  <div>Most: Data not available</div>
-                  <div className="ml-4 text-red-500">
-                    Least: Data not available
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    Most:{" "}
-                    {(discountHours[0] || "Data not available")
-                      .toString()
-                      .padStart(2, "0")}
-                    {discountHours[0] ? ":00" : ""}
-                  </div>
-                  <div className="ml-4 text-red-500">
-                    Least:{" "}
-                    {(discountHours[1] || "Data not available")
-                      .toString()
-                      .padStart(2, "0")}
-                    {discountHours[1] ? ":00" : ""}
-                  </div>
-                </>
-              )}
-            </span>
-          </div>
-          <br />
-          <div className="flex gap-2 text-sm">
-            <button
-              onClick={() => handleDiscountNow("hour")}
-              disabled={isDisabled} // Disable the button based on state
-              style={{
-                padding: "0.5rem 1rem",
-                fontSize: "1rem",
-                borderRadius: "0.375rem",
-                color: isDisabled
-                  ? "#A0A0A0"
-                  : "linear-gradient(90deg, #EC4899, #FFB037)",
-                background: "transparent",
-                border: isDisabled ? "1px solid #A0A0A0" : "1px solid #EC4899",
-                outline: "none",
-                cursor: isDisabled ? "not-allowed" : "pointer",
-              }}
-              onMouseEnter={(e) => {
-                if (!isDisabled) {
-                  e.target.style.background =
-                    "linear-gradient(90deg, #EC4899, #FFB037)";
-                  e.target.style.color = "white";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isDisabled) {
-                  e.target.style.background = "transparent";
-                  e.target.style.color = "black";
-                }
-              }}
-            >
-              {isDisabled
-                ? "Discount Active for an Hour"
-                : "Apply Discount Now"}
-            </button>
+          <div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4279/4279552.png"
+              alt="product"
+              style={{ width: "8cm", height: "8cm" }}
+              className="p-4"
+            />
           </div>
         </div>
 
+        <div className="px-4"></div>
         {/* Current Day's Discounting Items */}
         <div className="flex flex-col p-3 gap-4 md:w-96 w-full rounded-md shadow-md">
           <div className="flex justify-between">
