@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import "./Profile.css";
+import { jsPDF } from "jspdf"; // Import jsPDF for PDF generation
+import { FaDownload } from "react-icons/fa";
 
 import api from "../../services/api";
 
@@ -77,8 +79,79 @@ function UserProfile() {
     setOpen(false);
   };
 
+  // Function to download the membership card as a PDF
+  const downloadPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape", // Set to landscape for card-like design
+      unit: "pt", // Points for precise layout control
+      format: [250, 400], // Set custom size to represent a card
+    });
+
+    // Add background color
+    doc.setFillColor(230, 230, 250); // Light lavender background
+    doc.rect(0, 0, 400, 250, "F"); // Draw rectangle filled with color
+
+    // Add border
+    doc.setDrawColor(0, 0, 0); // Black border
+    doc.rect(10, 10, 380, 230); // Draw border within margins
+
+    // Add "Membership Card" title (centered and bold)
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold"); // Bold font
+    doc.setTextColor(54, 69, 79); // Dark slate gray color
+    doc.text("Membership Card", 200, 40, null, null, "center"); // Centered text
+
+    // Add "Thank you" message
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "normal"); // Normal font for the rest
+    doc.setTextColor(0, 102, 204); // Blue color
+    doc.text(
+      "Thank you for becoming our valued member!",
+      200,
+      70,
+      null,
+      null,
+      "center"
+    );
+
+    // Add user details
+    doc.setFontSize(12);
+    doc.setTextColor(54, 69, 79);
+    doc.text(`Name: ${user?.name || "N/A"}`, 70, 110);
+    doc.text(`Email: ${user?.email || "N/A"}`, 70, 130);
+    doc.text(`Phone: ${user?.phone || "N/A"}`, 70, 150);
+    doc.text(`Address: ${user?.address || "N/A"}`, 70, 170);
+
+    // Footer message (centered)
+    doc.setFontSize(10);
+    doc.setTextColor(128, 128, 128); // Gray color
+    doc.text(
+      "We are excited to have you with us!",
+      200,
+      210,
+      null,
+      null,
+      "center"
+    ); // Centered text
+
+    // Save the PDF as "membership-card.pdf"
+    doc.save("membership-card.pdf");
+  };
+
   return (
     <div className="prof-form-container">
+      {/* Download Icon */}
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          cursor: "pointer",
+        }}
+      >
+        <FaDownload size={24} onClick={downloadPDF} />
+      </div>
+
       <form>
         <h2 style={{ fontWeight: "bold", fontSize: "24px" }}>
           Welcome Back😊 <h3 className="user-name">{user ? user.name : ""}</h3>
