@@ -32,6 +32,7 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   optionsSuccessStatus: 200,
 };
+
 mongoose
   .connect(URL)
   .then(() => {
