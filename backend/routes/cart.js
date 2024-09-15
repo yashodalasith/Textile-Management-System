@@ -11,15 +11,17 @@ const mockInventory = [
   { productId: "Item5", productName: "Shorts", price: 3000, stock: 30 },
 ];
 
-// Add item to cart
+/// Add item to cart
 router.post("/add", async (req, res) => {
-  const { userId, productId, quantity } = req.body;
-
-  // Remove
-  const product = mockInventory.find((item) => item.productId === productId);
-  if (!product) return res.status(404).json({ message: "Product not found" });
-
-  const { productName, price } = product; // remove this prt
+  const {
+    userId,
+    productId,
+    productName,
+    quantity,
+    price,
+    displayed_price,
+    discount,
+  } = req.body;
 
   try {
     let cart = await Cart.findOne({ userId });
@@ -27,11 +29,20 @@ router.post("/add", async (req, res) => {
     // Convert quantity to a number
     const parsedQuantity = parseInt(quantity, 10);
 
-    //  cart doesn't exist create one
+    // If cart doesn't exist, create one
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, productName, quantity: parsedQuantity, price }],
+        items: [
+          {
+            productId,
+            productName,
+            quantity: parsedQuantity,
+            price,
+            displayed_price: displayed_price || price, // Use displayed_price if available
+            discount: discount || false,
+          },
+        ],
       });
     } else {
       // If cart exists, update it
@@ -40,15 +51,17 @@ router.post("/add", async (req, res) => {
       );
 
       if (itemIndex > -1) {
-        // Item exists update quantity
+        // Item exists; update quantity
         cart.items[itemIndex].quantity += parsedQuantity;
       } else {
-        // Item does not exist  add it
+        // Item does not exist; add it
         cart.items.push({
           productId,
           productName,
           quantity: parsedQuantity,
           price,
+          displayed_price: displayed_price || price, // Use displayed_price if available
+          discount: discount || false,
         });
       }
     }

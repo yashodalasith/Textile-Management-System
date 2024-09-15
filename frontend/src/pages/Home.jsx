@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
+import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+// Using Heroicons for the cart icon
 
 const URL = "http://localhost:3001/Products/products";
+const CART_URL = "http://localhost:3001/cart"; // Adjust this if needed
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [cartQuantity, setCartQuantity] = useState(0);
+  const userId = "user123"; // Replace this with the dynamic user ID
 
   useEffect(() => {
+    // Fetch Products
     const fetchProducts = async () => {
       try {
         const response = await axios.get(URL);
@@ -18,11 +24,52 @@ const Home = () => {
       }
     };
 
+    // Fetch Cart Quantity
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${CART_URL}/${userId}`);
+        const cart = response.data;
+
+        if (cart && Array.isArray(cart.items)) {
+          // Calculate total quantity in the cart
+          const totalQuantity = cart.items.reduce(
+            (acc, item) => acc + (item.quantity || 0),
+            0
+          );
+          setCartQuantity(totalQuantity);
+        } else {
+          // If cart is not structured as expected, set quantity to 0
+          setCartQuantity(0);
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+        setCartQuantity(0); // Set quantity to 0 on error
+      }
+    };
+
     fetchProducts();
-  }, []);
+    fetchCart();
+  }, [userId]);
 
   return (
     <div className="p-6">
+      {/* Cart Icon with Badge */}
+      <div className="fixed top-4 right-4 z-10">
+        <Link to="/cart">
+          <div className="relative">
+            <ShoppingCartIcon className="w-10 h-10 text-gray-600" />
+            {cartQuantity > 0 && (
+              <span
+                className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
+                style={{ transform: "translate(50%, -50%)" }}
+              >
+                {cartQuantity}
+              </span>
+            )}
+          </div>
+        </Link>
+      </div>
+
       <div className="mt-16 flex flex-wrap justify-center">
         {products.length > 0 &&
           products.map((product) => (
@@ -80,7 +127,6 @@ const Home = () => {
                     <div className="flex flex-col items-end">
                       {product.discount ? (
                         <>
-                          {/* Display discounted price above original price */}
                           <div
                             className="text-red-500"
                             style={{
@@ -91,7 +137,6 @@ const Home = () => {
                           >
                             ${product.displayed_price.toFixed(2)}
                           </div>
-                          {/* Display original price crossed out */}
                           <div
                             className="text-gray-500"
                             style={{
@@ -106,7 +151,6 @@ const Home = () => {
                           </div>
                         </>
                       ) : (
-                        // Display regular price if no discount
                         <div
                           className="text-black"
                           style={{ fontWeight: "bold", fontSize: "16px" }}

@@ -1,29 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
-const URL = 'http://localhost:3001/Products/products';
+const URL = "http://localhost:3001/Products/products";
+const CART_URL = "http://localhost:3001/cart/add";
 
 const ProductDetail = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1); // State to hold the selected quantity
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${URL}/${id}`); 
+        const response = await axios.get(`${URL}/${id}`);
         setProduct(response.data);
       } catch (error) {
-        console.error('Error fetching product details:', error);
+        console.error("Error fetching product details:", error);
       }
     };
 
     fetchProduct();
   }, [id]);
 
+  const handleAddToCart = async () => {
+    try {
+      const userId = "mockUser123"; // Replace with the actual user ID
+      const {
+        _id: productId,
+        productName,
+        price,
+        displayed_price,
+        discount,
+      } = product;
+
+      // Send the product details along with quantity to the backend
+      const response = await axios.post(CART_URL, {
+        userId,
+        productId,
+        productName,
+        quantity,
+        price,
+        displayed_price,
+        discount,
+      });
+
+      if (response.status === 200) {
+        navigate("/"); // Redirect to the cart page if needed
+      }
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+    }
+  };
+
   if (!product) {
-    return <p>Loading...</p>; // Handle loading state
+    return <p>Loading...</p>;
   }
 
   return (
@@ -31,42 +63,43 @@ const ProductDetail = () => {
       <div
         className="bg-white rounded-lg shadow-lg flex relative"
         style={{
-          width: '800px', // Fixed container width
-          height: '500px', // Fixed container height
-          border: '1px solid #e5e7eb', // Tailwind's border-gray-300
+          width: "800px",
+          height: "500px",
+          border: "1px solid #e5e7eb",
         }}
       >
-        {/* Left Side: Product Image */}
         <div className="w-1/2 p-4 flex items-center justify-center">
           <img
             src={product.image}
             alt={product.productName}
             className="object-cover rounded-lg"
-            style={{ width: '100%', height: '100%', maxWidth: '400px', maxHeight: '500px' }}
+            style={{
+              width: "100%",
+              height: "100%",
+              maxWidth: "400px",
+              maxHeight: "500px",
+            }}
           />
         </div>
 
-        {/* Right Side: Product Details */}
         <div className="w-1/2 p-4 flex flex-col justify-start relative">
           <h1 className="text-5xl font-bold mb-4">{product.productName}</h1>
-          
-          {/* Conditional Rendering for Price */}
+
           <div className="mt-4">
             {product.discount ? (
               <div className="flex flex-col">
-                {/* Display discounted price */}
                 <div className="flex items-center mb-1">
                   <p className="text-red-500 text-2xl font-bold mr-5">
                     ${product.displayed_price.toFixed(2)}
                   </p>
-                  <p className="text-gray-500 text-xl font-bold" style={{ textDecoration: 'line-through' }}>
+                  <p
+                    className="text-gray-500 text-xl font-bold"
+                    style={{ textDecoration: "line-through" }}
+                  >
                     ${product.price.toFixed(2)}
                   </p>
                 </div>
-                {/* Discounted Price Label */}
-                <p className="text-gray-700 text-lg mt-1">
-                  Discounted Price
-                </p>
+                <p className="text-gray-700 text-lg mt-1">Discounted Price</p>
               </div>
             ) : (
               <p className="text-black-700 text-2xl font-bold">
@@ -75,46 +108,40 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Horizontal Line */}
-          <div className="relative mt-2" style={{ height: '3px' }}>
+          <div className="relative mt-2" style={{ height: "3px" }}>
             <div
               className="absolute bottom-0 left-0"
               style={{
-                width: '300px', // Line width adjusted
-                marginRight: '20px', // Margin from right
-                borderBottom: '2px solid #e5e7eb',
-                marginTop: '2px', // Line style
+                width: "300px",
+                marginRight: "20px",
+                borderBottom: "2px solid #e5e7eb",
+                marginTop: "2px",
               }}
             ></div>
           </div>
 
-          <p className="text-gray-500 text-2xl mt-2">
-            {product.description}
-          </p>
+          <p className="text-gray-500 text-2xl mt-2">{product.description}</p>
 
           {product.color && (
-            <p className="text-gray-700 mt-2 text-l">
-              Colour: {product.color}
-            </p>
+            <p className="text-gray-700 mt-2 text-l">Colour: {product.color}</p>
           )}
           {product.size && (
             <p className="text-gray-700 mt-2 text-l">
               Available Size: {product.size}
             </p>
           )}
-          {product.discount && (
-            <p className="text-gray-700 mt-2">
-              {product.discount}
-            </p>
-          )}
 
-          {/* Button for navigating to cart */}
-          <div className=" left-4 flex items-center space-x-2" style={{marginTop: '30px'}}>
+          <div
+            className="left-4 flex items-center space-x-2"
+            style={{ marginTop: "30px" }}
+          >
             <select
               id="quantity"
               name="quantity"
               className="border border-gray-300 p-2 text-lg text-center"
-              style={{ width: '50px', height: '35px' }}
+              style={{ width: "50px", height: "35px" }}
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
             >
               <option value="1">1</option>
               <option value="2">2</option>
@@ -123,16 +150,19 @@ const ProductDetail = () => {
               <option value="5">5</option>
             </select>
 
-            {/* Go to Cart Button */}
             <button
               className="text-white text-lg"
-              style={{ padding: '5px 0', width: '150px', backgroundColor: '#072445', borderRadius: '0' }}
-              onClick={() => navigate('')} // Navigate to the cart page
+              style={{
+                padding: "5px 0",
+                width: "150px",
+                backgroundColor: "#072445",
+                borderRadius: "0",
+              }}
+              onClick={handleAddToCart}
             >
               Add to Cart
             </button>
           </div>
-
         </div>
       </div>
     </div>
