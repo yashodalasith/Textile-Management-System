@@ -7,7 +7,6 @@ import Dashboard from "./pages/DiscountDashboard";
 import ProductList from "./components/ProductList";
 import CartPage from "./pages/CartPage";
 import OrderConfirmation from "./pages/OrderConfirmation";
-import { Footer } from "./components/Footer";
 import ViewProducts from "./pages/ViewProducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import ProductDetail from "./pages/ProductDetail";
