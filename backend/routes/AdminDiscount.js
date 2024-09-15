@@ -35,7 +35,7 @@ router.get("/dashboard", async (req, res) => {
     salesToday.forEach((sale) => {
       sale.items.forEach((item) => {
         const saleHour = new Date(sale.createdAt).getHours();
-        hourlySales[saleHour]++;
+        hourlySales[saleHour] += item.quantity;
       });
     });
 
@@ -44,7 +44,7 @@ router.get("/dashboard", async (req, res) => {
     salesYesterday.forEach((sale) => {
       sale.items.forEach((item) => {
         const saleHour = new Date(sale.createdAt).getHours();
-        hourlySalesYesterday[saleHour]++;
+        hourlySalesYesterday[saleHour] += item.quantity;
       });
     });
 
@@ -89,7 +89,7 @@ router.get("/dashboard", async (req, res) => {
         ? sortedItems.slice(-3).map(([productId, data]) => ({
             item_id: productId,
             soldCount: data.soldCount,
-            discount_percentage: 10,
+            discount_precentage: 10,
           }))
         : [];
 
@@ -99,7 +99,7 @@ router.get("/dashboard", async (req, res) => {
       sale.items.forEach((item) => {
         const itemId = item.productId;
         if (!itemSales[itemId]) itemSales[itemId] = { soldCount: 0 };
-        itemSales[itemId].soldCount++;
+        itemSales[itemId].soldCount += item.quantity;
       });
     });
 
