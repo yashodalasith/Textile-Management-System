@@ -120,7 +120,7 @@ export default function OrderConfirmation() {
               <span>{paymentStatus}</span>
             </div>
             <div className="flex justify-between gap-4 mt-4">
-              <Link to={"/"}>
+              <Link to={"/home"}>
                 <button className="w-max bg-blue-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
                   Confirm the Payment
                 </button>

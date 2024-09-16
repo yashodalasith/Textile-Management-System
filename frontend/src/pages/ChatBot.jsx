@@ -25,7 +25,7 @@ function Chatbot() {
         "http://localhost:3001/api/chatbot/submit",
         { message }
       );
-      if (response.request.statusText == "OK") {
+      if (response.request.statusText === "OK") {
         setResponse(response.data.reply);
       } else {
         setResponse("Something went wrong.");
@@ -39,17 +39,25 @@ function Chatbot() {
   };
 
   return (
-    <div>
-      <div className="max-w-md mx-auto mt-10 p-4 border border-gray-300 rounded shadow-lg bg-white">
-        <div className="py-4"></div>
-        <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-md w-full mx-auto mt-10 p-6 border border-gray-300 rounded-lg shadow-xl bg-white">
+        <h2 className="text-3xl font-bold text-center mb-4 text-blue-600">
           AI Fashion Strategist
         </h2>
         <p className="text-center mb-6 text-gray-500">
           Submit your business strategy and get insights on the current fashion
           trends in Sri Lanka.
         </p>
-        <div className="py-4"></div>
+        {/* AI Illustration Image */}
+        <div className="pt-4"></div>
+        <div className="flex justify-center mb-6">
+          <img
+            src="https://reactdigitally.com/img/chatbots-for-website.gif" // Placeholder image URL
+            alt="AI Illustration"
+            className="rounded-full shadow-lg"
+            style={{ width: "150px", height: "150px" }}
+          />
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -62,46 +70,49 @@ function Chatbot() {
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full p-2 border border-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
               placeholder="Describe your fashion strategy..."
               rows="4"
             />
           </div>
+          <div className="py-4"></div>
           {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
-          <div className="py-4"></div>
-          <div className="py-4"></div>
           <button
             type="submit"
-            className={`w-full py-2 px-4 text-white rounded ${
+            className={`w-full py-3 px-4 text-white rounded-lg ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-700"
+                : "bg-blue-500 hover:bg-blue-700 transition duration-200 ease-in-out"
             }`}
+            style={{ marginLeft: "480px", width: "200px" }}
             disabled={loading}
           >
             {loading ? "Generating..." : "Submit"}
           </button>
         </form>
+        <div className="py-4"></div>
         {response ? (
-          <div className="mt-4 p-4 border border-gray-300 rounded bg-gray-50">
-            <h3 className="text-lg font-semibold text-gray-700">
+          <div className="mt-6 p-4 border border-gray-300 rounded-lg bg-gray-900 shadow-inner">
+            <h3 className="text-lg font-semibold text-gray-500">
               AI Insights:
             </h3>
-            <div className="text-gray-700 mt-2">
+            <div className="text-white mt-2">
               <div dangerouslySetInnerHTML={{ __html: response }} />
             </div>
           </div>
         ) : (
-          <div className="mt-4 p-4 border border-dashed border-gray-300 rounded bg-gray-50 text-center">
-            <p className="text-gray-500 italic">
+          <div
+            className="mt-6 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-900 text-center flex items-center justify-center"
+            style={{ height: "120px" }}
+          >
+            <p className="text-white italic">
               No response yet. Submit your strategy to get AI-powered fashion
               insights!
             </p>
           </div>
         )}
+        <div className="py-4"></div>
       </div>
-      <div className="py-4"></div>
-      <div className="py-4"></div>
     </div>
   );
 }

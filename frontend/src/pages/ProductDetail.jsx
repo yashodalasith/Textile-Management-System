@@ -47,7 +47,7 @@ const ProductDetail = () => {
       });
 
       if (response.status === 200) {
-        navigate("/"); // Redirect to the cart page if needed
+        navigate("/home"); // Redirect to the cart page if needed
       }
     } catch (error) {
       console.error("Failed to add item to cart:", error);

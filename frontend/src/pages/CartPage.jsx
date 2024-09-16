@@ -135,7 +135,7 @@ export default function CartPage() {
           />
         </div>
         <div className="m-5 text-center text-3xl mt-4">My cart</div>
-        <Link to={"/"}>
+        <Link to={"/home"}>
           <button className="mr-4 text-center text-sm mt-4">Add more</button>
         </Link>
       </div>
