@@ -160,9 +160,34 @@ function Login() {
         }`}
         ref={containerRef}
         id="container"
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "10px",
+          boxShadow:
+            "0 14px 28px rgba(107, 64, 64, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22)",
+          position: "relative",
+          overflow: "hidden",
+          width: "768px",
+          maxWidth: "100%",
+          minHeight: "600px",
+          margin: "auto",
+        }}
       >
         <div className="form-container sign-up-container">
-          <form action="#" onSubmit={handleRegSubmit}>
+          <form
+            action="#"
+            onSubmit={handleRegSubmit}
+            style={{
+              backgroundColor: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              padding: "0 50px",
+              height: "auto",
+              textAlign: "center",
+            }}
+          >
             <h1
               className="font-mono ..."
               style={{
@@ -185,7 +210,9 @@ function Login() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
-            <span className="clr">or use your email for registration</span>
+            <span className="clr" style={{ fontSize: "12px" }}>
+              or use your email for registration
+            </span>
             <input
               type="text"
               placeholder="Name"
@@ -193,6 +220,15 @@ function Login() {
               required
               onChange={handleReg}
               value={RegUser.name}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="email"
@@ -201,6 +237,15 @@ function Login() {
               required
               onChange={handleReg}
               value={RegUser.email}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="tel"
@@ -212,6 +257,15 @@ function Login() {
               maxLength={10}
               value={RegUser.phone}
               onChange={handleReg}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="text"
@@ -221,6 +275,15 @@ function Login() {
               required
               value={RegUser.address}
               onChange={handleReg}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="password"
@@ -229,6 +292,15 @@ function Login() {
               required
               onChange={handleReg}
               value={RegUser.password}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="password"
@@ -237,14 +309,51 @@ function Login() {
               required
               onChange={handleReg}
               value={RegUser.ConfirmPassword}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
-            <button type="submit" className="btn-clr">
+            <button
+              type="submit"
+              className="btn-clr"
+              style={{
+                borderRadius: "20px",
+                border: "1px solid #469cce",
+                backgroundColor: "#469cce",
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: "bold",
+                padding: "12px 45px",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                transition: "transform 80ms ease-in",
+              }}
+            >
               Sign Up
             </button>
           </form>
         </div>
         <div className="form-container sign-in-container">
-          <form action="#" onSubmit={handleLoginSubmit}>
+          <form
+            action="#"
+            onSubmit={handleLoginSubmit}
+            style={{
+              backgroundColor: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              padding: "0 50px",
+              height: "auto",
+              textAlign: "center",
+            }}
+          >
             <h1
               className="font-mono ..."
               style={{ fontWeight: "bold", fontSize: "50px", color: "#469cce" }}
@@ -262,7 +371,9 @@ function Login() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
-            <span className="clr">or use your account</span>
+            <span className="clr" style={{ fontSize: "12px" }}>
+              or use your account
+            </span>
             <input
               type="email"
               placeholder="Email"
@@ -270,6 +381,15 @@ function Login() {
               name="email"
               required
               value={User.email}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
             <input
               type="password"
@@ -278,9 +398,43 @@ function Login() {
               name="password"
               required
               value={User.password}
+              style={{
+                backgroundColor: "#e0e0e0",
+                border: "none",
+                padding: "12px 15px",
+                margin: "8px 0",
+                width: "100%",
+                color: "#469cce",
+                borderRadius: "10px",
+              }}
             />
-            <a href="#">Forgot your password?</a>
-            <button type="submit" className="btn-clr">
+            <a
+              href="#"
+              style={{
+                color: "#333",
+                fontSize: "14px",
+                textDecoration: "none",
+                margin: "15px 0",
+              }}
+            >
+              Forgot your password?
+            </a>
+            <button
+              type="submit"
+              className="btn-clr"
+              style={{
+                borderRadius: "20px",
+                border: "1px solid #469cce",
+                backgroundColor: "#469cce",
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: "bold",
+                padding: "12px 45px",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                transition: "transform 80ms ease-in",
+              }}
+            >
               Sign In
             </button>
           </form>
@@ -299,10 +453,35 @@ function Login() {
               >
                 Welcome Back!
               </h1>
-              <p>
+              <p
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 100,
+                  lineHeight: "20px",
+                  letterSpacing: "0.5px",
+                  margin: "20px 0 30px",
+                }}
+              >
                 To keep connected with us please login with your personal info
               </p>
-              <button className="ghost" onClick={handleSignInClick}>
+              <button
+                className="ghost"
+                onClick={handleSignInClick}
+                style={{
+                  borderRadius: "20px",
+                  border: "1px solid ",
+
+                  bordercolor: "#FFFFFF",
+                  backgroundColor: "transparent",
+                  color: "#FFFFFF",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "12px 45px",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  transition: "transform 80ms ease-in",
+                }}
+              >
                 Sign In
               </button>
             </div>
@@ -313,8 +492,36 @@ function Login() {
               >
                 Hello, Friend!
               </h1>
-              <p>Enter your personal details and start your journey with us</p>
-              <button className="ghost" onClick={handleSignUpClick}>
+              <p
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 100,
+                  lineHeight: "20px",
+                  letterSpacing: "0.5px",
+                  margin: "20px 0 30px",
+                }}
+              >
+                Enter your personal details and start your journey with us
+              </p>
+              <button
+                className="ghost"
+                onClick={handleSignUpClick}
+                style={{
+                  marginTop: "16px",
+                  borderRadius: "20px",
+                  border: "1px solid ",
+
+                  bordercolor: "#FFFFFF",
+                  backgroundColor: "transparent",
+                  color: "#FFFFFF",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "12px 45px",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  transition: "transform 80ms ease-in",
+                }}
+              >
                 Sign Up
               </button>
             </div>
