@@ -77,8 +77,6 @@ const Dashboard = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  console.log(discountItems);
-
   const handleDiscountNow = (type) => {
     // Disable the button and save the current time to local storage
     setIsDisabled(true);
