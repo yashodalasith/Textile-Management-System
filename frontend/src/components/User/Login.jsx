@@ -28,7 +28,7 @@ function Login() {
 
   const SendRequest = async () => {
     try {
-      const res = await api.post("/login", {
+      const res = await api.post("http://localhost:3001/login/", {
         email: User.email,
         password: User.password,
       });
