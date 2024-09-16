@@ -15,8 +15,8 @@ const TABLE_HEAD = [
   "Product Name",
   "Price",
   "Quantity",
-  "Total Amount",
-  "Discounts",
+  "Selling Price",
+  "Discounted",
   "Final price",
   "",
 ];
@@ -115,7 +115,7 @@ export default function CartPage() {
   return (
     <div>
       {showLoading && (
-        <div className="fixed inset-0 flex  justify-center bg-gray-700 bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-700 bg-opacity-50 z-50">
           <div className="flex flex-col ">
             <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
             <p className="mt-4 text-lg font-semibold text-black z-60">
@@ -160,7 +160,7 @@ export default function CartPage() {
                       className="border-b border-blue-100 bg-black p-4"
                     >
                       <Typography
-                        variant="small"
+                        variant="big"
                         color="white"
                         className="font-sans leading-none opacity-70 mt-4"
                       >
@@ -177,7 +177,7 @@ export default function CartPage() {
                       <Typography
                         variant="small"
                         color="blue-gray"
-                        className="font-normal mt-4 p-4"
+                        className="font-bold mt-4 p-4"
                       >
                         {item.productName || "N/A"}
                       </Typography>
@@ -188,7 +188,7 @@ export default function CartPage() {
                         color="blue-gray"
                         className="font-normal mt-4 p-4"
                       >
-                        {item.price}
+                        ${item.price}
                       </Typography>
                     </td>
                     <td>
@@ -206,7 +206,7 @@ export default function CartPage() {
                         color="blue-gray"
                         className="font-normal mt-4 p-4"
                       >
-                        {item.price * item.quantity}
+                        ${item.displayed_price.toFixed(2)}
                       </Typography>
                     </td>
                     <td>
@@ -215,16 +215,16 @@ export default function CartPage() {
                         color="blue-gray"
                         className="font-normal mt-4 p-4"
                       >
-                        Discounts
+                        {item.discount ? "Yes" : "No"}
                       </Typography>
                     </td>
                     <td>
                       <Typography
                         variant="small"
                         color="blue-gray"
-                        className="font-normal mt-4 p-4"
+                        className="font-bold mt-4 p-4 "
                       >
-                        {item.price * item.quantity}
+                        ${(item.displayed_price * item.quantity).toFixed(2)}
                       </Typography>
                     </td>
                     <td>
