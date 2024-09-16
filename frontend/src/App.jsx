@@ -11,6 +11,10 @@ import { Footer } from "./components/Footer";
 import ViewProducts from "./pages/ViewProducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import ProductDetail from "./pages/ProductDetail";
+import Dashboard from "./pages/DiscountDashboard";
+import Login from "../src/components/User/Login";
+import UserProfile from "../src/components/User/UserProfile";
+import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
 
 export default function App() {
   return (
@@ -18,6 +22,14 @@ export default function App() {
       <NavigationBar />
       <Routes>
         <Route path="/home" element={<Home />} />
+        {/* user routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/user" element={<Login />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/ProductList" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/confirm-order" element={<OrderConfirmation />} />

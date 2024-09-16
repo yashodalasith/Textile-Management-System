@@ -28,6 +28,7 @@ import {
   TagIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
+import ProfileMenu from "./ProfileMenu"; // Import the ProfileMenu component
 
 const navListMenuItems = [
   {
@@ -208,7 +209,42 @@ export function NavigationBar() {
         <div className="hidden lg:block">
           <NavList />
         </div>
-        <div className="hidden gap-2 lg:flex">
+        <div className="flex items-center gap-2">
+          <IconButton
+            variant="text"
+            color="blue-gray"
+            className="lg:hidden"
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+            ) : (
+              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+            )}
+          </IconButton>
+          <ProfileMenu />
+        </div>
+      </div>
+      <Collapse open={openNav}>
+        <NavList />
+        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+          <Button variant="gradient" size="sm" fullWidth>
+            Log out
+          </Button>
+        </div>
+      </Collapse>
+    </Navbar>
+  );
+}
+
+
+
+
+{/* 
+
+
+
+<div className="hidden gap-2 lg:flex">
           <Button variant="text" size="sm" color="blue-gray">
             Log In
           </Button>
@@ -227,19 +263,11 @@ export function NavigationBar() {
           ) : (
             <Bars3Icon className="h-6 w-6" strokeWidth={2} />
           )}
-        </IconButton>
-      </div>
-      <Collapse open={openNav}>
-        <NavList />
-        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
+        </IconButton> 
+        
+        
+         <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
             Log In
           </Button>
           <Button variant="gradient" size="sm" fullWidth>
-            Sign In
-          </Button>
-        </div>
-      </Collapse>
-    </Navbar>
-  );
-}
+            Sign In*/}

@@ -1,7 +1,10 @@
+// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config(); // This loads environment variables
+const discountRoutes = require("./routes/DiscountRoutes");
+const adminDiscountRoutes = require("./routes/AdminDiscount");
 
 const app = express();
 app.use(cors());
@@ -16,6 +19,10 @@ const URL = process.env.MONGODB_URL;
 // Import Routes
 const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/order");
+
+const loginRoutes = require("./routes/UserLoginRoute.js");
+const userRouter = require("./routes/UserManagmentRoute.js");
+const userProfile = require("./routes/UserProfileRoutes.js");
 
 // Use Routes
 app.use("/cart", cartRoutes);
@@ -32,6 +39,15 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   optionsSuccessStatus: 200,
 };
+
+// Discount routes
+app.use("/api/discount", discountRoutes);
+app.use("/api/admindis", adminDiscountRoutes);
+
+//user route
+app.use("/login", loginRoutes);
+app.use("/user", userRouter);
+app.use("/userProfile", userProfile);
 
 mongoose
   .connect(URL)

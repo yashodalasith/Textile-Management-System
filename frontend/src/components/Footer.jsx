@@ -62,9 +62,8 @@ export function Footer() {
           >
             &copy; {currentYear}{" "}
             <a href="https://material-tailwind.com/">
-              Material Tailwind is Overrated
-            </a>
-            .All Rights Reserved.You can Ctrl C + Ctrl V
+              Material Tailwind             </a>
+            .All Rights Reserved
           </Typography>
           <div className="flex gap-4 text-blue-gray-900 sm:justify-center">
             <Typography

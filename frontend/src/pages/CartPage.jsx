@@ -65,7 +65,6 @@ export default function CartPage() {
       });
 
       if (response.status === 200) {
-        alert("Cart cleared");
         console.log(response.data);
       } else {
         alert(response.data.message || "Failed to clear cart.");
@@ -278,7 +277,7 @@ export default function CartPage() {
                   </Dialog>
                 </div>
                 <div>
-                  <Link to={"/"}>
+                  <Link to={"/home"}>
                     <button
                       className="bg-red-500 text-white font-bold py-2 px-4 rounded"
                       onClick={handleCancelOrder}
@@ -306,7 +305,6 @@ export default function CartPage() {
     </div>
   );
 }
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 

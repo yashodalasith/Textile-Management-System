@@ -80,7 +80,6 @@ function ViewProducts() {
   const toggleDetails = (productId) => {
     setExpandedProductId(expandedProductId === productId ? null : productId);
   };
-
   const generateReport = () => {
     const reportContent = `
       <html>
