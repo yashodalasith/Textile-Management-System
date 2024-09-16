@@ -5,6 +5,7 @@ const cors = require("cors");
 require("dotenv").config(); // This loads environment variables
 const discountRoutes = require("./routes/DiscountRoutes");
 const adminDiscountRoutes = require("./routes/AdminDiscount");
+const chatBotRoutes = require("./routes/AiBotRoute.js");
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 // Discount routes
+app.use("/api/chatbot", chatBotRoutes);
 app.use("/api/discount", discountRoutes);
 app.use("/api/admindis", adminDiscountRoutes);
 

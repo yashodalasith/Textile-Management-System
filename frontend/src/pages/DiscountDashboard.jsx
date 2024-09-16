@@ -151,9 +151,21 @@ const Dashboard = () => {
 
   return (
     <div className="p-4 md:mx-auto">
-      <h1 className="text-4xl font-bold text-gray-800 text-center">
-        Admin Dashboard
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
+        <a
+          href="/aibot"
+          className="flex items-center text-gray-600 hover:text-gray-800"
+        >
+          {" "}
+          <span className="text-sm">Get AI Assistant for Your Business</span>
+          <img
+            src="https://platform.ionic.io/icons/chatbots.jpeg"
+            alt="AI Assistant"
+            style={{ width: "50px", height: "50px", marginRight: "10px" }}
+          />
+        </a>
+      </div>
       <div className="pt-4"></div>
 
       <div className="flex flex-row gap-10 max-w-screen justify-evenly items-start p-10 m-10">

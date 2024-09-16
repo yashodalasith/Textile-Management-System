@@ -114,13 +114,13 @@ async function applyDiscount() {
     // Apply discount to most and least sold items
     const allItems = [...mostSoldItems, ...leastSoldItems];
     for (const [itemId, data] of allItems) {
-      const item = await Product.findOne({ productId: itemId });
+      const item = await Product.findOne({ _id: itemId });
       if (!item.discount) {
         const discountPercentage = data.soldCount > 0 ? 5 : 10; // 5% for most, 10% for least
         const displayedPrice = item.price * (1 - discountPercentage / 100);
 
         await Product.updateOne(
-          { productId: itemId },
+          { _id: itemId },
           {
             discount: true,
             discount_percentage: discountPercentage,

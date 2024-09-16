@@ -11,6 +11,7 @@ import ViewProducts from "./pages/ViewProducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import ProductDetail from "./pages/ProductDetail";
 import { Footer } from "./components/Footer";
+import Chatbot from "./pages/ChatBot";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/aibot" element={<Chatbot />} />
         <Route path="/ProductList" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/confirm-order" element={<OrderConfirmation />} />
