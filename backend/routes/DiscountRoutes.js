@@ -3,6 +3,7 @@ const cron = require("node-cron");
 const router = express.Router();
 const Product = require("../models/Products");
 const Order = require("../models/Order1");
+const DiscountSchedule = require("../models/DiscountTime");
 
 // Reset and apply discounts every 24 hours at the most and least sales hours
 router.post("/reset-discount", async (req, res) => {
@@ -57,23 +58,41 @@ router.post("/reset-discount", async (req, res) => {
 router.post("/apply-discount", async (req, res) => {
   try {
     const currentHour = new Date().getHours();
-
     console.log(`Applying discount for current hour (${currentHour}:00)`);
 
     // Apply discount
     await applyDiscount();
 
-    // Schedule to remove the discount in the next hour
-    cron.schedule(`0 ${currentHour + 1} * * *`, async () => {
-      console.log(`Removing discount for hour ${currentHour + 1}:00`);
-      await removeDiscount();
-    });
+    // Store the timestamp when the discount was applied
+    await DiscountSchedule.create({ appliedAt: new Date() });
 
     res.status(200).json({
       message: `Discount applied for the current hour (${currentHour}:00)`,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+cron.schedule("* * * * *", async () => {
+  try {
+    const schedules = await DiscountSchedule.find();
+    for (const schedule of schedules) {
+      const currentTime = new Date();
+      const appliedTime = new Date(schedule.appliedAt);
+
+      // Check if one hour has passed
+      if (currentTime - appliedTime >= 3600000) {
+        // 1 hour in milliseconds
+        console.log("Removing discount after one hour");
+        await removeDiscount();
+
+        // Remove the schedule record
+        await DiscountSchedule.deleteOne({ _id: schedule._id });
+      }
+    }
+  } catch (error) {
+    console.error("Error checking discount schedule:", error.message);
   }
 });
 
@@ -161,11 +180,8 @@ function scheduleDiscount(hour) {
     // Apply discount logic here
     await applyDiscount();
 
-    // Remove discount after an hour
-    cron.schedule(`0 ${hour + 1} * * *`, async () => {
-      console.log(`Removing discount for hour ${hour + 1}:00`);
-      await removeDiscount();
-    });
+    // Store the schedule in the database
+    await DiscountSchedule.create({ appliedAt: new Date() });
   });
 }
 
