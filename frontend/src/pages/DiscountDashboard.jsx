@@ -89,10 +89,12 @@ const Dashboard = () => {
       .then((response) => {
         setMessage(`Discount applied successfully for ${type} items.`);
         // Refetch updated data
-        axios.get("/api/admindis/dashboard").then((res) => {
-          setSalesData(res.data.hourlySales);
-          setDiscountItems(res.data.discountedItems);
-        });
+        axios
+          .get("http://localhost:3001/api/admindis/dashboard")
+          .then((res) => {
+            setSalesData(res.data.hourlySales);
+            setDiscountItems(res.data.discountedItems);
+          });
       })
       .catch((err) => setMessage(`Error applying discount: ${err.message}`));
 
