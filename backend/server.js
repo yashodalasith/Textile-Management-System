@@ -33,7 +33,6 @@ app.get("/", (req, res) => {
 app.use("/api/discount", discountRoutes);
 app.use("/api/admindis", adminDiscountRoutes);
 
-
 mongoose
   .connect(URL)
   .then(() => {
