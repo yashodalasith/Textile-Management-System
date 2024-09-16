@@ -10,7 +10,7 @@ const OrderSchema = new mongoose.Schema({
       price: { type: Number, required: true },
       productName: { type: String, required: true },
       Discounted: { type: Boolean, default: false },
-      sold_count: { type: Number },
+      sold_count: { type: Number, default: 0 },
       displayed_price: { type: Number, default: null },
       discount: { type: Boolean, default: false },
     },

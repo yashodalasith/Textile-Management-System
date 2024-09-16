@@ -111,7 +111,6 @@ export default function CartPage() {
     };
     fetchCart();
   }, [userId]);
-
   return (
     <div>
       {showLoading && (
@@ -120,8 +119,7 @@ export default function CartPage() {
             <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
             <p className="mt-4 text-lg font-semibold text-black z-60">
               Loading...
-            </p>{" "}
-            {/* Added z-60 */}
+            </p>
           </div>
         </div>
       )}
@@ -135,7 +133,7 @@ export default function CartPage() {
           />
         </div>
         <div className="m-5 text-center text-3xl mt-4">My cart</div>
-        <Link to={"/"}>
+        <Link to={"/home"}>
           <button className="mr-4 text-center text-sm mt-4">Add more</button>
         </Link>
       </div>
@@ -151,138 +149,146 @@ export default function CartPage() {
         </div>
         {!loading && (
           <Card className="h-full w-full overflow-scroll shadow-2xl p-5 border rounded-lg">
-            <table className="w-full min-w-max table-auto text-left">
-              <thead>
-                <tr>
-                  {TABLE_HEAD.map((head) => (
-                    <th
-                      key={head}
-                      className="border-b border-blue-100 bg-black p-4"
-                    >
-                      <Typography
-                        variant="big"
-                        color="white"
-                        className="font-sans leading-none opacity-70 mt-4"
+            {cart.length === 0 ? (
+              <p className="text-center text-lg font-semibold text-gray-500">
+                Your cart is empty.
+              </p>
+            ) : (
+              <table className="w-full min-w-max table-auto text-left">
+                <thead>
+                  <tr>
+                    {TABLE_HEAD.map((head) => (
+                      <th
+                        key={head}
+                        className="border-b border-blue-100 bg-black p-4"
                       >
-                        {head}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {cart.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-bold mt-4 p-4"
-                      >
-                        {item.productName || "N/A"}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        ${item.price}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.quantity}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        ${item.displayed_price.toFixed(2)}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.discount ? "Yes" : "No"}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-bold mt-4 p-4 "
-                      >
-                        ${(item.displayed_price * item.quantity).toFixed(2)}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        as="a"
-                        href="#"
-                        variant="small"
-                        color="red"
-                        className="font-medium mt-4 p-4"
-                      >
-                        <Link to={"/cart"}>
-                          <button
-                            className="text-red-700"
-                            onClick={() => handleRemoveItem(item.productId)}
-                          >
-                            Remove Item
-                          </button>
-                        </Link>
-                      </Typography>
-                    </td>
+                        <Typography
+                          variant="big"
+                          color="white"
+                          className="font-sans leading-none opacity-70 mt-4"
+                        >
+                          {head}
+                        </Typography>
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {cart.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-bold mt-4 p-4"
+                        >
+                          {item.productName || "N/A"}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          ${item.price}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          {item.quantity}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          ${item.displayed_price.toFixed(2)}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          {item.discount ? "Yes" : "No"}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-bold mt-4 p-4"
+                        >
+                          ${(item.displayed_price * item.quantity).toFixed(2)}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          as="a"
+                          href="#"
+                          variant="small"
+                          color="red"
+                          className="font-medium mt-4 p-4"
+                        >
+                          <Link to={"/cart"}>
+                            <button
+                              className="text-red-700"
+                              onClick={() => handleRemoveItem(item.productId)}
+                            >
+                              Remove Item
+                            </button>
+                          </Link>
+                        </Typography>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
 
-            <div className="flex justify-between">
-              <div>
-                <button
-                  className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleMakeOrder}
-                >
-                  Make order
-                </button>
-                <Dialog open={open} handler={() => setOpen(false)}>
-                  <DialogBody>
-                    <p>Order placed successfully!</p>
-                  </DialogBody>
-                  <DialogFooter>
-                    <Button
-                      className="bg-blue-500 text-white"
-                      onClick={handleNavigate}
-                    >
-                      Go to Confirmation Page
-                    </Button>
-                  </DialogFooter>
-                </Dialog>
-              </div>
-              <div>
-                <Link to={"/"}>
+            {cart.length > 0 && (
+              <div className="flex justify-between">
+                <div>
                   <button
-                    className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleCancelOrder}
+                    className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleMakeOrder}
                   >
-                    Cancel
+                    Make order
                   </button>
-                </Link>
+                  <Dialog open={open} handler={() => setOpen(false)}>
+                    <DialogBody>
+                      <p>Order placed successfully!</p>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button
+                        className="bg-blue-500 text-white"
+                        onClick={handleNavigate}
+                      >
+                        Go to Confirmation Page
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </div>
+                <div>
+                  <Link to={"/"}>
+                    <button
+                      className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleCancelOrder}
+                    >
+                      Cancel
+                    </button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </Card>
         )}
 

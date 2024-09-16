@@ -17,7 +17,7 @@ export default function App() {
     <BrowserRouter>
       <NavigationBar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/ProductList" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/confirm-order" element={<OrderConfirmation />} />

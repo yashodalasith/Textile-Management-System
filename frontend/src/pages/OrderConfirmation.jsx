@@ -101,16 +101,6 @@ export default function OrderConfirmation() {
           </div>
 
           <div className="border-t-2 border-black mt-4 pt-4  gap-x-8">
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">Total Amount:</span>
-              <span>LKR {totalprice}</span>
-            </div>
-
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">Discounts:</span>
-              <span>LKR 0</span>
-            </div>
-
             <div className="flex justify-between mb-4">
               <span className="font-medium">Amount to be paid:</span>
               <span>LKR {totalprice}</span>
@@ -120,7 +110,7 @@ export default function OrderConfirmation() {
               <span>{paymentStatus}</span>
             </div>
             <div className="flex justify-between gap-4 mt-4">
-              <Link to={"/"}>
+              <Link to={"/home"}>
                 <button className="w-max bg-blue-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
                   Confirm the Payment
                 </button>
