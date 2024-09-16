@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
+import api from "../../api";
+import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf";
 
 const TABLE_HEAD = ["Product", "Quantity", "Price"];
 
 export default function OrderConfirmation() {
-  const [orders, setOrders] = useState([]);
-  const userId = "mockUser123"; // Replace with actual userId or pass as a prop
-  const orderId = "66de80de51e8101e332f76cd"; // Replace with actual orderId
+  const [items, setItems] = useState([]);
+  const [totalprice, setPrice] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const userId = "mockUser123";
 
   useEffect(() => {
     const getOrderDetails = async () => {
       try {
-        const res = await fetch(
-          `/api/order/order-details/${userId}/${orderId}`
-        );
-        const data = await res.json();
-        if (res.ok) {
-          setOrders(data.items || []); // Adjust based on the API response
+        const res = await api.get(`/order/order-details/${userId}`);
+
+        if (res.status === 200) {
+          const data = res.data; // Access the data
+          console.log(data);
+
+          setItems(data.items);
+          setPrice(data.totalPrice);
+          setPaymentStatus(data.paymentStatus);
         } else {
           throw new Error("Network response was not ok");
         }
@@ -24,54 +31,112 @@ export default function OrderConfirmation() {
         console.error("Error fetching order data:", error.message);
       }
     };
+
     getOrderDetails();
-  }, [userId, orderId]);
+  }, [userId]);
+
+  // Function to download the bill as a PDF
+  const downloadBillPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Thank You For The Purchase", 20, 20); // Header
+
+    doc.setFontSize(12);
+    let yPosition = 40; // Starting Y position for item listing
+
+    // Adding the bill details
+    items.forEach((item) => {
+      doc.text(
+        `${item.quantity} x ${item.productName} - LKR ${
+          item.quantity * item.price
+        }`,
+        20,
+        yPosition
+      );
+      yPosition += 10;
+    });
+
+    doc.text(`Total Amount: LKR ${totalprice}`, 20, yPosition + 10);
+    doc.text(`Discounts: LKR 0`, 20, yPosition + 20);
+    doc.text(`Amount to be Paid: LKR ${totalprice}`, 20, yPosition + 30);
+    doc.text(`Payment Status: ${paymentStatus}`, 20, yPosition + 40);
+
+    // Download the generated PDF
+    doc.save("bill-summary.pdf");
+  };
 
   return (
-    <div className="">
-      <div className="text-center font-bold">
-        <h1 className="text-3xl p-5 underline">Payment Confirmation</h1>
+    <div
+      className="min-h-screen bg-top"
+      style={{
+        backgroundImage: `url('https://static.vecteezy.com/system/resources/previews/012/617/311/non_2x/3d-pay-money-with-mobile-phone-banking-online-payments-concept-bill-on-smartphone-transaction-with-credit-card-mobile-with-financial-paper-on-background-3d-bill-payment-icon-illustration-vector.jpg')`,
+      }}
+    >
+      <div className="text-center underline font-bold">
+        <h1 className="text-3xl p-5 ">Payment Confirmation</h1>
       </div>
-      <div className="  shadow-2xl p-5 border rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 flex  items-center ">
-          Bill Summary
-        </h2>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Products Purchased:</span>
-          <span>shirt 1, jeans 1</span>
-        </div>
+      <div className="flex justify-center p-4 m-4 items-center min-h-screen ">
+        <div className="bg-white p-4 m-4 shadow-2xl rounded-lg  w-96 gap-4">
+          <h2 className="text-2xl font-bold text-center mb-6">Bill Summary</h2>
+          <div className="mb-4">
+            <ul className="mb-4">
+              <li className="flex justify-between font-semibold gap-4">
+                <span>Items Purchased</span>
+                <span>- Amount</span>
+              </li>
+              {items.map((item) => (
+                <li
+                  key={item.productId}
+                  className="flex justify-between mt-2 gap-4"
+                >
+                  <span>
+                    {item.quantity} x {item.productName}
+                  </span>
+                  <span>= LKR {item.quantity * item.price}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Total Amount:</span>
-          <span>$120.00</span>
-        </div>
+          <div className="border-t-2 border-black mt-4 pt-4  gap-x-8">
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">Total Amount:</span>
+              <span>LKR {totalprice}</span>
+            </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Discounts:</span>
-          <span>$20.00</span>
-        </div>
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">Discounts:</span>
+              <span>LKR 0</span>
+            </div>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-medium">Amount to be paid:</span>
-          <span>$100.00</span>
-        </div>
+            <div className="flex justify-between mb-4">
+              <span className="font-medium">Amount to be paid:</span>
+              <span>LKR {totalprice}</span>
+            </div>
 
-        <div className="flex justify-between mt-4 mb-4">
-          <span className="font-medium">Payment Method:</span>
-          <span>Cash on Delivery</span>
-        </div>
+            <div className="flex justify-center font-semibold mb-4">
+              <span>{paymentStatus}</span>
+            </div>
+            <div className="flex justify-between gap-4 mt-4">
+              <Link to={"/"}>
+                <button className="w-max bg-blue-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg">
+                  Confirm the Payment
+                </button>
+              </Link>
 
-        {/* Confirm Payment Button */}
-        <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">
-            Confirm Payment
-          </button>
+              <button
+                className="w-max bg-red-500 hover:bg-blue-600 text-white font-bold  py-2 px-2 rounded-lg"
+                onClick={downloadBillPDF}
+              >
+                Download the Bill
+              </button>
+            </div>
+          </div>
         </div>
-      </div>{" "}
-      <div className="pt-4">
-        <p>Additional notes</p>
       </div>
+      <div className="pt-4"></div>
     </div>
   );
 }

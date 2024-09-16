@@ -2,12 +2,15 @@
 const mongoose = require("mongoose");
 
 const CartSchema = new mongoose.Schema({
-  userId: { type: String, required: true }, // Temporary mock userId
+  userId: { type: String, required: true },
   items: [
     {
-      productId: { type: String, required: true }, // Use String temporarily, not ObjectId
+      productId: { type: String, required: true },
       quantity: { type: Number, required: true },
-      price: { type: Number, required: true }, // Price included in cart
+      price: { type: Number, required: true },
+      productName: { type: String, required: true },
+      displayed_price: { type: Number, default: null },
+      discount: { type: Boolean, default: false },
     },
   ],
 });

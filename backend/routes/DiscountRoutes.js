@@ -117,14 +117,14 @@ async function applyDiscount() {
         const isDiscounted = item.Discounted;
 
         if (!salesData[itemId]) {
-          salesData[itemId] = { soldCount: 0, Discounted: isDiscounted };
+          salesData[itemId] = { sold_count: 0, Discounted: isDiscounted };
         }
-        salesData[itemId].soldCount += soldCount;
+        salesData[itemId].sold_count += soldCount;
       });
     });
 
     let sortedItems = Object.entries(salesData).sort(
-      (a, b) => b[1].soldCount - a[1].soldCount
+      (a, b) => b[1].sold_count - a[1].sold_count
     );
 
     const mostSoldItems = sortedItems.slice(0, 2); // 2 most sold items
@@ -135,7 +135,7 @@ async function applyDiscount() {
     for (const [itemId, data] of allItems) {
       const item = await Product.findOne({ _id: itemId });
       if (!item.discount) {
-        const discountPercentage = data.soldCount > 0 ? 5 : 10; // 5% for most, 10% for least
+        const discountPercentage = data.sold_count > 0 ? 5 : 10; // 5% for most, 10% for least
         const displayedPrice = item.price * (1 - discountPercentage / 100);
 
         await Product.updateOne(

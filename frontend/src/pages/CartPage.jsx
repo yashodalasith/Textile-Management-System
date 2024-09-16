@@ -1,240 +1,306 @@
-import { Button, Card, Typography } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Button,
+  Card,
+  Typography,
+} from "@material-tailwind/react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import api from "../../api";
+import { Link, useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
-  "Image",
   "Product Name",
   "Price",
   "Quantity",
-  "Total Amount",
-  "Discounts",
+  "Selling Price",
+  "Discounted",
   "Final price",
   "",
-  "",
 ];
 
-const TABLE_ROWS = [
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-  {
-    Image: "",
-    name: "Jeans",
-    Price: "1000 LKR",
-    Quantity: "2",
-    Total: "2000",
-    Discounts: "0",
-    Final: "2000",
-  },
-];
+const baseUrl = "http://localhost:3001/cart";
+const baseUrl1 = "http://localhost:3001/order";
 
 export default function CartPage() {
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const userId = "mockuser123"; // Mock user ID
+  const [showLoading, setShowLoading] = useState(true); // Track if loading spinner should be shown
+  const userId = "mockUser123"; // Mock user ID
+  const navigate = useNavigate();
+  const startTimeRef = useRef(Date.now());
 
-  // Fetch the cart data when the component mounts
+  const handleNavigate = () => {
+    setOpen(false);
+    navigate("/confirm-order");
+  };
+
+  const handleMakeOrder = async () => {
+    try {
+      const response = await axios.post(`${baseUrl1}/confirm-order`, {
+        userId,
+      });
+
+      if (response.status === 200) {
+        setOpen(true);
+        console.log("Order details:", response.data);
+      } else {
+        setOpen(true);
+        alert(response.data.message || "Failed to place order.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Cart is Empty.");
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    try {
+      const response = await axios.delete(`${baseUrl}/clear`, {
+        data: { userId },
+      });
+
+      if (response.status === 200) {
+        alert("Cart cleared");
+        console.log(response.data);
+      } else {
+        alert(response.data.message || "Failed to clear cart.");
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      alert("An error occurred clearing the cart.");
+    }
+  };
+
+  const handleRemoveItem = async (productId) => {
+    try {
+      const response = await axios.delete(`${baseUrl}/remove`, {
+        data: { userId, productId },
+      });
+
+      if (response.status === 200) {
+        setCart(response.data.cart); // Update the cart
+        window.location.reload();
+      } else {
+        alert(response.data.message || "Failed to remove item.");
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCart = async () => {
+      startTimeRef.current = Date.now(); // Track the start time
       try {
-        const response = await axios.get(`/cart/${userId}`);
-        console.log(response);
-        setCart(response.data);
+        const response = await api.get(`/cart/${userId}`);
+        setCart(response.data.items);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cart");
       } finally {
-        setLoading(false);
+        // Ensure loading spinner is shown for at least 1 second
+        setTimeout(() => {
+          setLoading(false);
+          setShowLoading(false);
+        }, Math.max(1000 - (Date.now() - startTimeRef.current), 0));
       }
     };
-
     fetchCart();
   }, [userId]);
+
   return (
-    <div className="">
+    <div>
+      {showLoading && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-700 bg-opacity-50 z-50">
+          <div className="flex flex-col ">
+            <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
+            <p className="mt-4 text-lg font-semibold text-black z-60">
+              Loading...
+            </p>{" "}
+            {/* Added z-60 */}
+          </div>
+        </div>
+      )}
       <div className="flex justify-between">
         <div>
           <img
             src="https://static.vecteezy.com/system/resources/previews/000/356/583/original/vector-shopping-cart-icon.jpg"
             alt="product"
-            style={{
-              width: "2cm",
-              height: "2cm",
-            }}
+            style={{ width: "2cm", height: "2cm" }}
             className="p-4"
           />
-        </div>{" "}
+        </div>
         <div className="m-5 text-center text-3xl mt-4">My cart</div>
-        <button className="mr-4 text-center text-sm mt-4">Add more</button>
+        <Link to={"/"}>
+          <button className="mr-4 text-center text-sm mt-4">Add more</button>
+        </Link>
       </div>
-      <div className="flex justify-center">
-        <Card className="h-full w-auto overflow-scroll shadow-2xl p-5 border rounded-lg">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-b  border-blue-100 bg-black p-4"
-                  >
-                    <Typography
-                      variant="small"
-                      color="white"
-                      className="font-sans leading-none opacity-70 mt-4"
+
+      <div className="flex justify-between">
+        <div>
+          <img
+            src="https://ahmedstextiles.co.za/wp-content/uploads/2017/08/fabrics-36.jpg"
+            alt="product"
+            style={{ width: "6cm", height: "10cm" }}
+            className="p-4"
+          />
+        </div>
+        {!loading && (
+          <Card className="h-full w-full overflow-scroll shadow-2xl p-5 border rounded-lg">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-b border-blue-100 bg-black p-4"
                     >
-                      {head}
-                    </Typography>
-                  </th>
+                      <Typography
+                        variant="big"
+                        color="white"
+                        className="font-sans leading-none opacity-70 mt-4"
+                      >
+                        {head}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {cart.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold mt-4 p-4"
+                      >
+                        {item.productName || "N/A"}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        ${item.price}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        ${item.displayed_price.toFixed(2)}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal mt-4 p-4"
+                      >
+                        {item.discount ? "Yes" : "No"}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold mt-4 p-4 "
+                      >
+                        ${(item.displayed_price * item.quantity).toFixed(2)}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        as="a"
+                        href="#"
+                        variant="small"
+                        color="red"
+                        className="font-medium mt-4 p-4"
+                      >
+                        <Link to={"/cart"}>
+                          <button
+                            className="text-red-700"
+                            onClick={() => handleRemoveItem(item.productId)}
+                          >
+                            Remove Item
+                          </button>
+                        </Link>
+                      </Typography>
+                    </td>
+                  </tr>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
-              {TABLE_ROWS.map(
-                (
-                  { Image, name, Price, Quantity, Total, Discounts, Final },
-                  index
-                ) => {
-                  const isLast = index === TABLE_ROWS.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
+              </tbody>
+            </table>
 
-                  return (
-                    <tr key={name}>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Image}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {name}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Price}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Quantity}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Total}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Discounts}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {Final}
-                        </Typography>
-                      </td>
+            <div className="flex justify-between">
+              <div>
+                <button
+                  className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleMakeOrder}
+                >
+                  Make order
+                </button>
+                <Dialog open={open} handler={() => setOpen(false)}>
+                  <DialogBody>
+                    <p>Order placed successfully!</p>
+                  </DialogBody>
+                  <DialogFooter>
+                    <Button
+                      className="bg-blue-500 text-white"
+                      onClick={handleNavigate}
+                    >
+                      Go to Confirmation Page
+                    </Button>
+                  </DialogFooter>
+                </Dialog>
+              </div>
+              <div>
+                <Link to={"/"}>
+                  <button
+                    className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleCancelOrder}
+                  >
+                    Cancel
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        )}
 
-                      <td className={classes}>
-                        <Typography
-                          as="a"
-                          href="#"
-                          variant="small"
-                          color="red"
-                          className="font-medium"
-                        >
-                          Remove
-                        </Typography>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-          <div className="flex justify-between">
-            <div>
-              <button className="bg-green-500 text-white font-bold py-2 px-4 rounded">
-                Make order
-              </button>
-            </div>
-            <div>
-              <button className="bg-red-500 text-white font-bold py-2 px-4 rounded">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </Card>
+        <div>
+          <img
+            src="https://wallpaperaccess.com/full/4597148.jpg"
+            alt="product"
+            style={{ width: "6cm", height: "10cm" }}
+            className="p-4"
+          />
+        </div>
       </div>
 
       <div className="flex justify-between m-4"></div>
     </div>
   );
 }
+
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 

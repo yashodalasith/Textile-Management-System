@@ -21,7 +21,10 @@ function Chatbot() {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      const response = await axios.post("/api/chatbot/submit", { message });
+      const response = await axios.post(
+        "http://localhost:3001/api/chatbot/submit",
+        { message }
+      );
       if (response.request.statusText == "OK") {
         setResponse(response.data.reply);
       } else {

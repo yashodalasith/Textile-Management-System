@@ -1,33 +1,48 @@
-// routes/cart.js
 const express = require("express");
 const router = express.Router();
 const Cart = require("../models/Cart");
 
-// Mock inventory data for testing
-const mockInventory = [
-  { productId: "1", name: "T-Shirt", price: 10, stock: 50 },
-  { productId: "2", name: "Jeans", price: 20, stock: 30 },
-];
+// dummy data for testing
+// const mockInventory = [
+//   { productId: "Item1", productName: "T-Shirt", price: 1000, stock: 50 },
+//   { productId: "Item2", productName: "Jeans", price: 2000, stock: 30 },
+//   { productId: "Item3", productName: "Pants", price: 1500, stock: 30 },
+//   { productId: "Item4", productName: "Trunks", price: 4800, stock: 30 },
+//   { productId: "Item5", productName: "Shorts", price: 3000, stock: 30 },
+// ];
 
-// Add item to cart
+/// Add item to cart
 router.post("/add", async (req, res) => {
-  const { userId, productId, quantity } = req.body;
-
-  // Check mock inventory for product
-  const product = mockInventory.find((item) => item.productId === productId);
-  if (!product) return res.status(404).json({ message: "Product not found" });
+  const {
+    userId,
+    productId,
+    productName,
+    quantity,
+    price,
+    displayed_price,
+    discount,
+  } = req.body;
 
   try {
     let cart = await Cart.findOne({ userId });
 
-    // Convert quantity to a number to prevent string concatenation
+    // Convert quantity to a number
     const parsedQuantity = parseInt(quantity, 10);
 
-    // If the cart doesn't exist, create a new one
+    // If cart doesn't exist, create one
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, quantity: parsedQuantity, price: product.price }],
+        items: [
+          {
+            productId,
+            productName,
+            quantity: parsedQuantity,
+            price,
+            displayed_price: displayed_price || price, // Use displayed_price if available
+            discount: discount || false,
+          },
+        ],
       });
     } else {
       // If cart exists, update it
@@ -36,14 +51,17 @@ router.post("/add", async (req, res) => {
       );
 
       if (itemIndex > -1) {
-        // Item exists in the cart, update quantity
+        // Item exists; update quantity
         cart.items[itemIndex].quantity += parsedQuantity;
       } else {
-        // Item does not exist in the cart, add it
+        // Item does not exist; add it
         cart.items.push({
           productId,
+          productName,
           quantity: parsedQuantity,
-          price: product.price,
+          price,
+          displayed_price: displayed_price || price, // Use displayed_price if available
+          discount: discount || false,
         });
       }
     }
@@ -61,7 +79,7 @@ router.get("/:userId", async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ userId });
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
+    if (!cart) return res.status(404).json({ message: "bruh Cart not found" });
 
     res.status(200).json(cart);
   } catch (error) {
@@ -69,7 +87,7 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// Remove item from cart
+// Remove item  cart
 router.delete("/remove", async (req, res) => {
   const { userId, productId } = req.body;
 
@@ -108,7 +126,7 @@ router.delete("/clear", async (req, res) => {
     const cart = await Cart.findOne({ userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    // Clear all items in the cart
+    // Clear  the cart
     cart.items = [];
     await cart.save();
 

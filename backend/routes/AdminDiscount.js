@@ -70,25 +70,31 @@ router.get("/dashboard", async (req, res) => {
       sale.items.forEach((item) => {
         const productId = item.productId;
         if (!itemSalesYesterday[productId]) {
-          itemSalesYesterday[productId] = { soldCount: 0 };
+          itemSalesYesterday[productId] = {
+            sold_count: 0,
+            productName: item.productName,
+          };
         }
-        itemSalesYesterday[productId].soldCount += item.quantity; // Aggregate sold quantities
+        itemSalesYesterday[productId].productName = item.productName;
+        itemSalesYesterday[productId].sold_count += item.quantity; // Aggregate sold quantities
       });
     });
 
     const sortedItems = Object.entries(itemSalesYesterday).sort(
-      (a, b) => b[1].soldCount - a[1].soldCount
+      (a, b) => b[1].sold_count - a[1].sold_count
     );
     const mostSoldItemsy = sortedItems.slice(0, 2).map(([productId, data]) => ({
       item_id: productId,
-      soldCount: data.soldCount,
+      item_name: data.productName,
+      soldCount: data.sold_count,
       discount_precentage: 5,
     }));
     const leastSoldItemsy =
       sortedItems.length >= 5
         ? sortedItems.slice(-3).map(([productId, data]) => ({
             item_id: productId,
-            soldCount: data.soldCount,
+            item_name: data.productName,
+            soldCount: data.sold_count,
             discount_precentage: 10,
           }))
         : [];
@@ -98,28 +104,33 @@ router.get("/dashboard", async (req, res) => {
     salesToday.forEach((sale) => {
       sale.items.forEach((item) => {
         const itemId = item.productId;
-        if (!itemSales[itemId]) itemSales[itemId] = { soldCount: 0 };
-        itemSales[itemId].soldCount += item.quantity;
+        if (!itemSales[itemId])
+          itemSales[itemId] = { sold_count: 0, productName: item.productName };
+        itemSales[itemId].productName = item.productName;
+        itemSales[itemId].sold_count += item.quantity;
       });
     });
 
     const itemSalesData = Object.entries(itemSales).map(([itemId, data]) => ({
       item_id: itemId,
-      soldCount: data.soldCount,
+      item_name: data.productName,
+      soldCount: data.sold_count,
     }));
 
     const sortedItems2 = Object.entries(itemSales).sort(
-      (a, b) => b[1].soldCount - a[1].soldCount
+      (a, b) => b[1].sold_count - a[1].sold_count
     );
     const mostSoldItems = sortedItems2.slice(0, 2).map(([itemId, data]) => ({
       item_id: itemId,
-      soldCount: data.soldCount,
+      item_name: data.productName,
+      soldCount: data.sold_count,
     }));
     const leastSoldItems =
       sortedItems2.length >= 5
         ? sortedItems2.slice(-3).map(([itemId, data]) => ({
             item_id: itemId,
-            soldCount: data.soldCount,
+            item_name: data.productName,
+            soldCount: data.sold_count,
           }))
         : [];
 

@@ -62,7 +62,7 @@ const Dashboard = () => {
   // Fetch dashboard data
   useEffect(() => {
     axios
-      .get("/api/admindis/dashboard")
+      .get("http://localhost:3001/api/admindis/dashboard")
       .then((response) => {
         const data = response.data;
         setSalesData(data.hourlySales);
@@ -77,6 +77,8 @@ const Dashboard = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  console.log(discountItems);
+
   const handleDiscountNow = (type) => {
     // Disable the button and save the current time to local storage
     setIsDisabled(true);
@@ -85,7 +87,7 @@ const Dashboard = () => {
 
     // Apply discount now function
     axios
-      .post("/api/discount/apply-discount", { type })
+      .post("http://localhost:3001/api/discount/apply-discount", { type })
       .then((response) => {
         setMessage(`Discount applied successfully for ${type} items.`);
         // Refetch updated data
@@ -119,7 +121,7 @@ const Dashboard = () => {
 
   // Prepare chart data for item sales graph
   const itemSalesChartData = {
-    labels: itemSalesData.map((item) => item.item_id),
+    labels: itemSalesData.map((item) => item.item_name),
     datasets: [
       {
         label: "Sales per Item",
@@ -218,7 +220,7 @@ const Dashboard = () => {
                   style={{ paddingLeft: "1rem" }}
                 >
                   <span className="text-green-500 flex items-center">
-                    {mostSoldItem.item_id} ({mostSoldItem.soldCount} sales),
+                    {mostSoldItem.item_name} ({mostSoldItem.soldCount} sales),
                   </span>
                 </div>
               ))
@@ -237,7 +239,7 @@ const Dashboard = () => {
                   style={{ paddingLeft: "1rem" }}
                 >
                   <span className="text-red-500 flex items-center">
-                    {leastSoldItem.item_id} ({leastSoldItem.soldCount} sales),
+                    {leastSoldItem.item_name} ({leastSoldItem.soldCount} sales),
                   </span>
                 </div>
               ))
@@ -361,7 +363,7 @@ const Dashboard = () => {
             >
               <thead>
                 <tr style={{ backgroundColor: "#F3F4F6" }}>
-                  <th style={{ padding: "12px" }}>Item ID</th>
+                  <th style={{ padding: "12px" }}>Item Name</th>
                   <th style={{ padding: "12px" }}>Sales</th>
                   <th style={{ padding: "12px" }}>Discount</th>
                 </tr>
@@ -377,7 +379,7 @@ const Dashboard = () => {
                         textAlign: "center",
                       }}
                     >
-                      {item.item_id}
+                      {item.item_name}
                     </td>
                     <td
                       style={{
