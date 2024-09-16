@@ -84,7 +84,9 @@ function Chatbot() {
             <h3 className="text-lg font-semibold text-gray-700">
               AI Insights:
             </h3>
-            <p className="text-gray-700 mt-2">{response}</p>
+            <p className="text-gray-700 mt-2">
+              <div dangerouslySetInnerHTML={{ __html: response }} />
+            </p>
           </div>
         ) : (
           <div className="mt-4 p-4 border border-dashed border-gray-300 rounded bg-gray-50 text-center">

@@ -41,8 +41,10 @@ const getChatbotResponse = async (req, res) => {
     // Send the user's message
     let result = await chat.sendMessage(message);
 
-    // Send the response from Gemini AI
-    res.json({ reply: result.response.text() });
+    // Send the response as HTML
+    res.json({
+      reply: result.response.text().replace(/\*/g, "").replace(/\n/g, "<br />"),
+    });
   } catch (error) {
     console.error("Error:", error);
     res
