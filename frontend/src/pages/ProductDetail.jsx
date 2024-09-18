@@ -137,10 +137,15 @@ const ProductDetail = () => {
             className="left-4 flex items-center space-x-2"
             style={{ marginTop: "30px" }}
           >
-            {product.discount && <p className="text-gray-700 mt-2">{product.discount}</p>}
+            {product.discount && (
+              <p className="text-gray-700 mt-2">{product.discount}</p>
+            )}
 
             {/* Quantity Selector and Add to Cart Button */}
-            <div className="left-4 flex items-center space-x-2" style={{ marginTop: '30px' }}>
+            <div
+              className="left-4 flex items-center space-x-2"
+              style={{ marginTop: "30px" }}
+            >
               <select
                 id="quantity"
                 name="quantity"

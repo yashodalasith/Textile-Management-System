@@ -15,7 +15,7 @@ import Dashboard from "./pages/DiscountDashboard";
 import Login from "../src/components/User/Login";
 import UserProfile from "../src/components/User/UserProfile";
 import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
-
+import OrdersDoneByTheUser from "../src/pages/OrdersDoneByTheUser";
 export default function App() {
   return (
     <BrowserRouter>
@@ -27,7 +27,7 @@ export default function App() {
         <Route path="/user" element={<Login />} />
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
-
+        <Route path="/OrdersDoneByTheUser" element={<OrdersDoneByTheUser />} />
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/ProductList" element={<ProductList />} />

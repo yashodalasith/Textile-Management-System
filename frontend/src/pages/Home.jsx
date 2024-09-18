@@ -13,8 +13,28 @@ const Home = () => {
   const [cartQuantity, setCartQuantity] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
-  const userId = "user123"; // Replace this with the dynamic user ID
+  const userId = "mockUser123"; // Replace this with the dynamic user ID
   const startTimeRef = useRef(Date.now());
+
+  useEffect(() => {
+    async function fetchUserDetails() {
+      const token = localStorage.getItem("token");
+      console.log("Token:", token);
+      try {
+        const response = await api.post("/userProfile", { token });
+        if (response.data.status === "ok") {
+          setUser(response.data.user);
+        } else {
+          console.error("Error retrieving user details", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error retrieving user details:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     // Fetch Products
@@ -29,7 +49,7 @@ const Home = () => {
         setTimeout(() => {
           setLoading(false);
           setShowLoading(false);
-        }, Math.max(1000 - (Date.now() - startTimeRef.current), 0));
+        }, Math.max(500 - (Date.now() - startTimeRef.current), 0));
       }
     };
 
@@ -79,14 +99,28 @@ const Home = () => {
         <Link to="/cart">
           <div className="relative">
             <ShoppingCartIcon className="w-10 h-10 text-gray-600" />
-            {/* {cartQuantity > 0 && (
-              <spans
-                className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
-                style={{ transform: "translate(50%, -50%)" }}
+            {cartQuantity > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  right: "0",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "20px",
+                  height: "20px",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#f56565", // A shade of red
+                  borderRadius: "50%",
+                  transform: "translate(50%, -50%)",
+                }}
               >
                 {cartQuantity}
-              </spans>
-            )} */}
+              </span>
+            )}
           </div>
         </Link>
       </div>

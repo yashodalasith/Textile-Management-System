@@ -131,12 +131,14 @@ export default function CartPage() {
             className="p-4"
           />
         </div>
-        <div className="m-5 text-center text-3xl mt-4">My cart</div>
+        <div className=" text-center text-3xl mt-4">My cart</div>
         <Link to={"/home"}>
-          <button className="mr-4 text-center text-sm mt-4">Add more</button>
+          <button className="mr-4 text-center text-sm mt-4 ">Add more</button>
         </Link>
       </div>
-
+      <Link to={"/OrdersDoneByTheUser"} className="flex justify-end mr-4 ">
+        <Button>view previous orders</Button>
+      </Link>
       <div className="flex justify-between">
         <div>
           <img
@@ -147,11 +149,21 @@ export default function CartPage() {
           />
         </div>
         {!loading && (
-          <Card className="h-full w-full overflow-scroll shadow-2xl p-5 border rounded-lg">
+          <Card className="h-full w-auto overflow-scroll shadow-2xl p-5 border rounded-lg">
             {cart.length === 0 ? (
-              <p className="text-center text-lg font-semibold text-gray-500">
-                Your cart is empty.
-              </p>
+              <div>
+                <div>
+                  <p className="text-center text-lg font-semibold text-gray-500">
+                    Your cart is empty.
+                  </p>
+                </div>
+
+                <div className="flex justify-center p-4">
+                  <Link to={"/home"}>
+                    <Button>Shop Items</Button>
+                  </Link>
+                </div>
+              </div>
             ) : (
               <table className="w-full min-w-max table-auto text-left">
                 <thead>
