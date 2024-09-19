@@ -10,7 +10,7 @@ export default function OrderConfirmation() {
   const [items, setItems] = useState([]);
   const [totalprice, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
-  const userId = "mockUser123";
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const getOrderDetails = async () => {

@@ -10,7 +10,7 @@ export default function OrdersDoneByTheUser() {
   const [error, setError] = useState(null);
   const [searchDate, setSearchDate] = useState(""); // State for search input
   const [visibleOrders, setVisibleOrders] = useState(5); // Initially show 7 orders
-  const userId = "mockUser123";
+  const userId = localStorage.getItem("userId");
   const baseUrl1 = "http://localhost:3001/order";
 
   useEffect(() => {

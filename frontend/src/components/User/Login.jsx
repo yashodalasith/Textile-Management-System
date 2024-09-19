@@ -45,6 +45,7 @@ function Login() {
       if (response.token) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("role", response.role);
+        localStorage.setItem("userId", response.userId);
         if (response.role === "admin") {
           setMessage("Hello Admin!!");
         } else {

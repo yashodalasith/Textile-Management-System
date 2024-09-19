@@ -26,7 +26,7 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     try {
-      const userId = "mockUser123"; // Replace with the actual user ID
+      const userId = localStorage.getItem("userId"); // Replace with the actual user ID
       const {
         _id: productId,
         productName,

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 // Using Heroicons for the cart icon
+// import { jwtDecode } from "jwt-decode";
 
 const URL = "http://localhost:3001/Products/products";
 const CART_URL = "http://localhost:3001/cart"; // Adjust this if needed
@@ -13,28 +14,23 @@ const Home = () => {
   const [cartQuantity, setCartQuantity] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
-  const userId = "mockUser123"; // Replace this with the dynamic user ID
+  const userId = localStorage.getItem("userId"); // Replace this with the dynamic user ID
   const startTimeRef = useRef(Date.now());
-
-  useEffect(() => {
-    async function fetchUserDetails() {
-      const token = localStorage.getItem("token");
-      console.log("Token:", token);
-      try {
-        const response = await api.post("/userProfile", { token });
-        if (response.data.status === "ok") {
-          setUser(response.data.user);
-        } else {
-          console.error("Error retrieving user details", response.data.message);
-        }
-      } catch (error) {
-        console.error("Error retrieving user details:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUserDetails();
-  }, []);
+  // const [userId, setUserId] = useState(null);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     try {
+  //       const decoded = jwtDecode(token);
+  //       setUserId(decoded._id); // Set userId in state
+  //       console.log(userId)
+  //     } catch (error) {
+  //       console.error("Invalid token:", error);
+  //     }
+  //   } else {
+  //     console.error("No token found in local storage.");
+  //   }
+  // }, []);
 
   useEffect(() => {
     // Fetch Products

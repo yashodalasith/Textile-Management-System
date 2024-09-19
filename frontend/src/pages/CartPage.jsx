@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
+// import { jwtDecode } from "jwt-decode";
 
 const TABLE_HEAD = [
   "Product Name",
@@ -30,10 +31,29 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showLoading, setShowLoading] = useState(true); // Track if loading spinner should be shown
-  const userId = "mockUser123"; // Mock user ID
   const navigate = useNavigate();
+  // const [userId, setUserId] = useState(null);
   const startTimeRef = useRef(Date.now());
-
+  const userId = localStorage.getItem("userId");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     try {
+  //       const decoded = jwtDecode(token);
+  //       setUserId(decoded._id); // Set userId in state
+  //     } catch (error) {
+  //       console.error("Invalid token:", error);
+  //     }
+  //   } else {
+  //     console.error("No token found in local storage.");
+  //   }
+  // }, []);
+  // // Decode the token to get the user ID
+  // const token = localStorage.getItem("userToken");
+  // console.log(token);
+  // const userId = token ? jwtDecode(token)._id : null;
+  // console.log(token); // Extract _id from the token
+  // // const userId = "mockUser123";
   const handleNavigate = () => {
     setOpen(false);
     navigate("/confirm-order");
@@ -96,6 +116,10 @@ export default function CartPage() {
     const fetchCart = async () => {
       startTimeRef.current = Date.now(); // Track the start time
       try {
+        if (!userId) {
+          throw new Error("User ID not found.");
+        }
+
         const response = await api.get(`/cart/${userId}`);
         setCart(response.data.items);
       } catch (err) {
@@ -110,6 +134,7 @@ export default function CartPage() {
     };
     fetchCart();
   }, [userId]);
+
   return (
     <div>
       {showLoading && (
