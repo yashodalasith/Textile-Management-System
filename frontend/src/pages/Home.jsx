@@ -79,24 +79,76 @@ const Home = () => {
   }, [userId]);
 
   return (
-    <div className="p-6">
-      <HomeGallery />
+    <div
+      style={{
+        padding: "20px",
+        backgroundColor: "#f5f5f5",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Home Gallery Section */}
+      <div style={{ marginBottom: "40px" }}>
+        <HomeGallery />
+      </div>
+
+      {/* Loading Spinner Overlay */}
       {showLoading && (
-        <div className="fixed inset-0 flex  justify-center items-center bg-gray-700 bg-opacity-50 z-50">
-          <div className="flex flex-col ">
-            <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
-            {/* <p className="mt-4 text-lg font-semibold text-black z-60">
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            zIndex: 50,
+          }}
+        >
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                borderTop: "4px solid #3498db",
+                borderRadius: "50%",
+                width: "60px",
+                height: "60px",
+                animation: "spin 1s linear infinite",
+              }}
+            ></div>
+            <p
+              style={{
+                marginTop: "20px",
+                color: "#fff",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
               Loading...
-            </p>{" "} */}
-            {/* Added z-60 */}
+            </p>
           </div>
         </div>
       )}
+
       {/* Cart Icon with Badge */}
-      <div className="fixed bottom-4 right-4 z-10">
-        <Link to="/cart">
-          <div className="relative">
-            <ShoppingCartIcon className="w-10 h-10 text-gray-600" />
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 10,
+          backgroundColor: "#fff",
+          padding: "10px",
+          borderRadius: "50%",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+        }}
+      >
+        <Link
+          to="/cart"
+          style={{ display: "inline-flex", alignItems: "center" }}
+        >
+          <div style={{ position: "relative" }}>
+            <ShoppingCartIcon
+              style={{ width: "40px", height: "40px", color: "#333" }}
+            />
             {cartQuantity > 0 && (
               <span
                 style={{
@@ -106,12 +158,12 @@ const Home = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "20px",
-                  height: "20px",
+                  width: "22px",
+                  height: "22px",
                   fontSize: "12px",
                   fontWeight: "bold",
                   color: "#fff",
-                  backgroundColor: "#f56565", // A shade of red
+                  backgroundColor: "#f56565",
                   borderRadius: "50%",
                   transform: "translate(50%, -50%)",
                 }}
@@ -122,99 +174,182 @@ const Home = () => {
           </div>
         </Link>
       </div>
+
+      {/* Products Listing */}
       {!loading && (
-        <div className="mt-16 flex flex-wrap justify-center">
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "30px",
+            marginTop: "50px",
+          }}
+        >
           {products.length > 0 &&
             products.map((product) => (
-              <Link key={product._id} to={`/product/${product._id}`}>
-                <Card
-                  className="bg-white shadow-md rounded-lg overflow-hidden"
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  width: "300px",
+                  height: "500px",
+                }}
+              >
+                <div
                   style={{
-                    width: "300px",
-                    height: "425px",
-                    margin: "15px",
-                    padding: "4px",
+                    backgroundColor: "#fff",
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    overflow: "hidden",
+                    transition: "transform 0.2s",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    position: "relative", // Added for Sale Tag positioning
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.transform = "scale(1)")
+                  }
                 >
-                  <CardBody
-                    style={{ padding: "10px", height: "calc(100% - 40px)" }}
-                  >
-                    <div className="w-full h-64 flex items-center justify-center bg-gray-100">
-                      <img
-                        src={product.image}
-                        alt={product.productName}
-                        className="w-48 h-48 object-cover"
-                        style={{
-                          borderRadius: "8px",
-                          height: "250px",
-                          width: "270px",
-                          marginTop: "15px",
-                        }}
-                      />
+                  {/* Sale Tag */}
+                  {product.discount && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "20px",
+                        left: "-20px",
+                        backgroundColor: "#e74c3c",
+                        color: "#fff",
+                        padding: "5px 20px",
+                        fontWeight: "bold",
+                        fontSize: "14px",
+                        transform: "rotate(-45deg)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      Sale
                     </div>
-                    <Typography
-                      variant="h6"
-                      className="mt-4 text-left font-semibold"
-                      style={{ color: "black" }}
+                  )}
+
+                  {/* Product Image */}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "300px",
+                      backgroundColor: "#f9f9f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.productName}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "100%",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  </div>
+
+                  {/* Product Information */}
+                  <div style={{ padding: "20px" }}>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        color: "#333",
+                      }}
                     >
                       {product.productName}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      className="mt-2 text-left truncate"
-                      style={{ color: "gray" }}
+                    </h3>
+                    <p
+                      style={{
+                        margin: "10px 0",
+                        fontSize: "14px",
+                        color: "#666",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
                     >
                       {product.description}
-                    </Typography>
-                    <div className="flex justify-between items-center mt-4">
-                      <div
-                        className="text-gray-400"
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <span
                         style={{
-                          fontWeight: "bold",
                           fontSize: "16px",
-                          color: "gray",
+                          color: "#999",
+                          fontWeight: "bold",
                         }}
                       >
                         {product.quantity} pcs
-                      </div>
-                      <div className="flex flex-col items-end">
-                        {product.discount ? (
-                          <>
+                      </span>
+                      <div style={{ textAlign: "right" }}>
+                        <div
+                          style={{
+                            height: "40px", // Fixed height for price container
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {product.discount ? (
+                            <>
+                              <div
+                                style={{
+                                  color: "#e74c3c",
+                                  fontWeight: "bold",
+                                  fontSize: "18px",
+                                }}
+                              >
+                                ${product.displayed_price.toFixed(2)}
+                              </div>
+                              <div
+                                style={{
+                                  textDecoration: "line-through",
+                                  color: "#999",
+                                  fontWeight: "bold",
+                                  fontSize: "16px",
+                                  marginTop: "5px",
+                                }}
+                              >
+                                ${product.price.toFixed(2)}
+                              </div>
+                            </>
+                          ) : (
                             <div
-                              className="text-red-500"
                               style={{
+                                fontSize: "18px",
                                 fontWeight: "bold",
-                                fontSize: "16px",
-                                marginBottom: "2px",
-                              }}
-                            >
-                              ${product.displayed_price.toFixed(2)}
-                            </div>
-                            <div
-                              className="text-gray-500"
-                              style={{
-                                textDecoration: "line-through",
-                                fontWeight: "bold",
-                                fontSize: "16px",
-                                marginTop: "-4px",
-                                marginBottom: "10px",
+                                color: "#333",
                               }}
                             >
                               ${product.price.toFixed(2)}
                             </div>
-                          </>
-                        ) : (
-                          <div
-                            className="text-black"
-                            style={{ fontWeight: "bold", fontSize: "16px" }}
-                          >
-                            ${product.price.toFixed(2)}
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </CardBody>
-                </Card>
+                  </div>
+                </div>
               </Link>
             ))}
         </div>
