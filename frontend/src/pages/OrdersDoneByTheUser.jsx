@@ -58,42 +58,59 @@ export default function OrdersDoneByTheUser() {
     }
 
     const doc = new jsPDF();
+    doc.setFillColor(173, 216, 230); // Light blue background color
+    doc.rect(10, 10, 190, 280, "F"); // Full page background
 
+    // Header with green font and underline
+    doc.setTextColor(0, 128, 0); // Green font color
     doc.setFontSize(18);
-    doc.text("Old Bills Use only for Confirmation Purposes", 20, 20); // Header
+    doc.text("Old Bills Use only for Confirmation Purposes", 20, 20);
+    doc.setLineWidth(0.5);
+    doc.line(20, 22, 190, 22); // Underline
 
     doc.setFontSize(12);
     let yPosition = 40; // Starting Y position for item listing
 
-    // Adding the bill details
-    order.items.forEach((item) => {
+    // Adding the bill details with numbering and padding
+    order.items.forEach((item, index) => {
+      doc.rect(15, yPosition - 5, 180, 10); // Border around each item with padding
       doc.text(
-        `${item.quantity} x ${item.productName} - $${(
+        `${index + 1}) ${item.quantity} x ${item.productName} - $${(
           item.quantity * item.price
         ).toFixed(2)}`,
-        20,
+        25, // Adding padding to the left (x-axis)
         yPosition
       );
-      yPosition += 10;
+      yPosition += 15; // Adjust line height for padding
     });
 
+    // Total price in red font color
+    doc.setTextColor(255, 0, 0); // Red font color for total price
     doc.text(
       `Total Amount: $${order.totalPrice.toFixed(2)}`,
       20,
       yPosition + 10
     );
+
     const purchaseDate = new Date(order.createdAt);
     const formattedDate = purchaseDate.toLocaleDateString();
     const formattedTime = purchaseDate.toLocaleTimeString();
+
+    // Reset text color for the remaining text
+    doc.setTextColor(0, 0, 0);
     doc.text(`Purchased date: ${formattedDate}`, 20, yPosition + 30);
     doc.text(`Time of Purchase: ${formattedTime}`, 20, yPosition + 40);
-
     doc.text(
       `Amount to be Paid: $${order.totalPrice.toFixed(2)}`,
       20,
       yPosition + 50
     );
     doc.text(`Payment Status: ${order.paymentStatus}`, 20, yPosition + 60);
+
+    // Add signature area
+    doc.setLineWidth(0.2);
+    doc.text("Customer Signature:", 20, yPosition + 80);
+    doc.line(60, yPosition + 80, 180, yPosition + 80); // Signature line
 
     // Download the generated PDF
     doc.save(`order_${order._id}_bill.pdf`);
