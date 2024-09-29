@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { HomeGallery } from "../components/HomeGallery";
 // Using Heroicons for the cart icon
 // import { jwtDecode } from "jwt-decode";
 
@@ -79,13 +80,14 @@ const Home = () => {
 
   return (
     <div className="p-6">
+      <HomeGallery />
       {showLoading && (
         <div className="fixed inset-0 flex  justify-center items-center bg-gray-700 bg-opacity-50 z-50">
           <div className="flex flex-col ">
             <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
-            <p className="mt-4 text-lg font-semibold text-black z-60">
+            {/* <p className="mt-4 text-lg font-semibold text-black z-60">
               Loading...
-            </p>{" "}
+            </p>{" "} */}
             {/* Added z-60 */}
           </div>
         </div>
