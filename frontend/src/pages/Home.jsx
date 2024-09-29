@@ -93,7 +93,7 @@ const Home = () => {
         </div>
       )}
       {/* Cart Icon with Badge */}
-      <div className="fixed top-4 right-4 z-10">
+      <div className="fixed bottom-4 right-4 z-10">
         <Link to="/cart">
           <div className="relative">
             <ShoppingCartIcon className="w-10 h-10 text-gray-600" />

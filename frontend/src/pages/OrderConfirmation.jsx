@@ -36,31 +36,51 @@ export default function OrderConfirmation() {
   }, [userId]);
 
   // Function to download the bill as a PDF
+  // download the bill as a PDF
   const downloadBillPDF = () => {
     const doc = new jsPDF();
 
+    doc.setFillColor(173, 216, 230);
+    doc.rect(10, 10, 190, 280, "F");
+
+    // Underlined Header with Green Font
+    doc.setTextColor(0, 128, 0); // Green color (RGB: 0, 128, 0)
     doc.setFontSize(18);
-    doc.text("Thank You For The Purchase", 20, 20); // Header
+    doc.text("Thank You For The Purchase", 20, 30);
+    doc.setLineWidth(0.5);
+    doc.line(20, 32, 190, 32); // Underline for header
 
+    // Bill Content with Padding and Borders
+    doc.setTextColor(0, 0, 0); // Reset to black text for item details
     doc.setFontSize(12);
-    let yPosition = 40; // Starting Y position for item listing
+    let yPosition = 50; // Starting Y position for item listing
 
-    // Adding the bill details
-    items.forEach((item) => {
+    items.forEach((item, index) => {
+      // Border around each item with padding
       doc.text(
-        `${item.quantity} x ${item.productName} - LKR ${
+        `${index + 1}) ${item.quantity} x ${item.productName} - LKR ${
           item.quantity * item.price
         }`,
-        20,
+        25, // Adding padding to the left (x-axis)
         yPosition
       );
-      yPosition += 10;
+      yPosition += 7; // Adjust line height for padding
     });
 
-    doc.text(`Total Amount: LKR ${totalprice}`, 20, yPosition + 10);
-    doc.text(`Discounts: LKR 0`, 20, yPosition + 20);
-    doc.text(`Amount to be Paid: LKR ${totalprice}`, 20, yPosition + 30);
-    doc.text(`Payment Status: ${paymentStatus}`, 20, yPosition + 40);
+    // Border around total amount section with padding
+
+    // Red Font for Total Price
+    doc.setTextColor(255, 0, 0); // Red color (RGB: 255, 0, 0)
+    doc.text(`-Total Amount: LKR ${totalprice}`, 25, yPosition + 15);
+
+    // Reset to black font for other details
+    doc.setTextColor(0, 0, 0);
+    doc.text(`-Amount to be Paid: LKR ${totalprice}`, 25, yPosition + 25);
+    doc.text(`-Payment Status: ${paymentStatus}`, 25, yPosition + 35);
+
+    // Signature Section
+    doc.text("Signature: _________", 25, yPosition + 65);
+    doc.text("Date: ___________", 25, yPosition + 75);
 
     // Download the generated PDF
     doc.save("bill-summary.pdf");
