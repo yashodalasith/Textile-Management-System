@@ -10,7 +10,7 @@ export default function OrderConfirmation() {
   const [items, setItems] = useState([]);
   const [totalprice, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
-  const userId = "mockUser123";
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -101,16 +101,6 @@ export default function OrderConfirmation() {
           </div>
 
           <div className="border-t-2 border-black mt-4 pt-4  gap-x-8">
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">Total Amount:</span>
-              <span>LKR {totalprice}</span>
-            </div>
-
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">Discounts:</span>
-              <span>LKR 0</span>
-            </div>
-
             <div className="flex justify-between mb-4">
               <span className="font-medium">Amount to be paid:</span>
               <span>LKR {totalprice}</span>
@@ -140,7 +130,6 @@ export default function OrderConfirmation() {
     </div>
   );
 }
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import { useSelector } from "react-redux";

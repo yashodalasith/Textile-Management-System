@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 // Using Heroicons for the cart icon
+// import { jwtDecode } from "jwt-decode";
 
 const URL = "http://localhost:3001/Products/products";
 const CART_URL = "http://localhost:3001/cart"; // Adjust this if needed
@@ -13,8 +14,23 @@ const Home = () => {
   const [cartQuantity, setCartQuantity] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
-  const userId = "user123"; // Replace this with the dynamic user ID
+  const userId = localStorage.getItem("userId"); // Replace this with the dynamic user ID
   const startTimeRef = useRef(Date.now());
+  // const [userId, setUserId] = useState(null);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     try {
+  //       const decoded = jwtDecode(token);
+  //       setUserId(decoded._id); // Set userId in state
+  //       console.log(userId)
+  //     } catch (error) {
+  //       console.error("Invalid token:", error);
+  //     }
+  //   } else {
+  //     console.error("No token found in local storage.");
+  //   }
+  // }, []);
 
   useEffect(() => {
     // Fetch Products
@@ -29,7 +45,7 @@ const Home = () => {
         setTimeout(() => {
           setLoading(false);
           setShowLoading(false);
-        }, Math.max(1000 - (Date.now() - startTimeRef.current), 0));
+        }, Math.max(500 - (Date.now() - startTimeRef.current), 0));
       }
     };
 
@@ -79,14 +95,28 @@ const Home = () => {
         <Link to="/cart">
           <div className="relative">
             <ShoppingCartIcon className="w-10 h-10 text-gray-600" />
-            {/* {cartQuantity > 0 && (
-              <spans
-                className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
-                style={{ transform: "translate(50%, -50%)" }}
+            {cartQuantity > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  right: "0",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "20px",
+                  height: "20px",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#f56565", // A shade of red
+                  borderRadius: "50%",
+                  transform: "translate(50%, -50%)",
+                }}
               >
                 {cartQuantity}
-              </spans>
-            )} */}
+              </span>
+            )}
           </div>
         </Link>
       </div>

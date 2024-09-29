@@ -1,14 +1,10 @@
-/* @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800'); */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
-/* 
 * {
     box-sizing: border-box;
-} */
+}
 
-/* body {
+body {
     background-color: #f6f5f7;
     display: flex;
     justify-content: center;
@@ -16,9 +12,9 @@
     flex-direction: column;
     height: 100vh;
     margin: 0;
-} */
+}
 
-/* 
+
 h1 {
     font-weight: bold;
     margin: 0;
@@ -106,10 +102,10 @@ input {
     max-width: 100%;
     min-height: 600px;
     margin: auto;
+    /* Center the container */
+}
 
-} */
-
-/* .form-container {
+.form-container {
     position: absolute;
     top: 0;
     height: 100%;
@@ -214,8 +210,8 @@ input {
     width: 50%;
     transform: translateX(0);
     transition: transform 0.6s ease-in-out;
-} */
-/* 
+}
+
 .overlay-left {
     transform: translateX(-20%);
 }
@@ -235,8 +231,8 @@ input {
 
 .social-container {
     margin: 20px 0;
-} */
-/* 
+}
+
 .social-container a {
     border: 1px solid #DDDDDD;
     border-radius: 50%;
@@ -246,4 +242,4 @@ input {
     margin: 0 5px;
     height: 40px;
     width: 40px;
-} */
+}

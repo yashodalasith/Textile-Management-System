@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
+// import { jwtDecode } from "jwt-decode";
 
 const TABLE_HEAD = [
   "Product Name",
@@ -30,10 +31,29 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showLoading, setShowLoading] = useState(true); // Track if loading spinner should be shown
-  const userId = "mockUser123"; // Mock user ID
   const navigate = useNavigate();
+  // const [userId, setUserId] = useState(null);
   const startTimeRef = useRef(Date.now());
-
+  const userId = localStorage.getItem("userId");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     try {
+  //       const decoded = jwtDecode(token);
+  //       setUserId(decoded._id); // Set userId in state
+  //     } catch (error) {
+  //       console.error("Invalid token:", error);
+  //     }
+  //   } else {
+  //     console.error("No token found in local storage.");
+  //   }
+  // }, []);
+  // // Decode the token to get the user ID
+  // const token = localStorage.getItem("userToken");
+  // console.log(token);
+  // const userId = token ? jwtDecode(token)._id : null;
+  // console.log(token); // Extract _id from the token
+  // // const userId = "mockUser123";
   const handleNavigate = () => {
     setOpen(false);
     navigate("/confirm-order");
@@ -65,7 +85,6 @@ export default function CartPage() {
       });
 
       if (response.status === 200) {
-        alert("Cart cleared");
         console.log(response.data);
       } else {
         alert(response.data.message || "Failed to clear cart.");
@@ -97,6 +116,10 @@ export default function CartPage() {
     const fetchCart = async () => {
       startTimeRef.current = Date.now(); // Track the start time
       try {
+        if (!userId) {
+          throw new Error("User ID not found.");
+        }
+
         const response = await api.get(`/cart/${userId}`);
         setCart(response.data.items);
       } catch (err) {
@@ -120,8 +143,7 @@ export default function CartPage() {
             <div className="animate-spin rounded-full h-2 w-16 border-t-4 border-blue-500 border-solid"></div>
             <p className="mt-4 text-lg font-semibold text-black z-60">
               Loading...
-            </p>{" "}
-            {/* Added z-60 */}
+            </p>
           </div>
         </div>
       )}
@@ -134,12 +156,14 @@ export default function CartPage() {
             className="p-4"
           />
         </div>
-        <div className="m-5 text-center text-3xl mt-4">My cart</div>
+        <div className=" text-center text-3xl mt-4">My cart</div>
         <Link to={"/home"}>
-          <button className="mr-4 text-center text-sm mt-4">Add more</button>
+          <button className="mr-4 text-center text-sm mt-4 ">Add more</button>
         </Link>
       </div>
-
+      <Link to={"/OrdersDoneByTheUser"} className="flex justify-end mr-4 ">
+        <Button>view previous orders</Button>
+      </Link>
       <div className="flex justify-between">
         <div>
           <img
@@ -150,139 +174,157 @@ export default function CartPage() {
           />
         </div>
         {!loading && (
-          <Card className="h-full w-full overflow-scroll shadow-2xl p-5 border rounded-lg">
-            <table className="w-full min-w-max table-auto text-left">
-              <thead>
-                <tr>
-                  {TABLE_HEAD.map((head) => (
-                    <th
-                      key={head}
-                      className="border-b border-blue-100 bg-black p-4"
-                    >
-                      <Typography
-                        variant="big"
-                        color="white"
-                        className="font-sans leading-none opacity-70 mt-4"
-                      >
-                        {head}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {cart.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-bold mt-4 p-4"
-                      >
-                        {item.productName || "N/A"}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        ${item.price}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.quantity}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        ${item.displayed_price.toFixed(2)}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal mt-4 p-4"
-                      >
-                        {item.discount ? "Yes" : "No"}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-bold mt-4 p-4 "
-                      >
-                        ${(item.displayed_price * item.quantity).toFixed(2)}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Typography
-                        as="a"
-                        href="#"
-                        variant="small"
-                        color="red"
-                        className="font-medium mt-4 p-4"
-                      >
-                        <Link to={"/cart"}>
-                          <button
-                            className="text-red-700"
-                            onClick={() => handleRemoveItem(item.productId)}
-                          >
-                            Remove Item
-                          </button>
-                        </Link>
-                      </Typography>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <Card className="h-full w-auto overflow-scroll shadow-2xl p-5 border rounded-lg">
+            {cart.length === 0 ? (
+              <div>
+                <div>
+                  <p className="text-center text-lg font-semibold text-gray-500">
+                    Your cart is empty.
+                  </p>
+                </div>
 
-            <div className="flex justify-between">
-              <div>
-                <button
-                  className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleMakeOrder}
-                >
-                  Make order
-                </button>
-                <Dialog open={open} handler={() => setOpen(false)}>
-                  <DialogBody>
-                    <p>Order placed successfully!</p>
-                  </DialogBody>
-                  <DialogFooter>
-                    <Button
-                      className="bg-blue-500 text-white"
-                      onClick={handleNavigate}
-                    >
-                      Go to Confirmation Page
-                    </Button>
-                  </DialogFooter>
-                </Dialog>
+                <div className="flex justify-center p-4">
+                  <Link to={"/home"}>
+                    <Button>Shop Items</Button>
+                  </Link>
+                </div>
               </div>
-              <div>
-                <Link to={"/"}>
+            ) : (
+              <table className="w-full min-w-max table-auto text-left">
+                <thead>
+                  <tr>
+                    {TABLE_HEAD.map((head) => (
+                      <th
+                        key={head}
+                        className="border-b border-blue-100 bg-black p-4"
+                      >
+                        <Typography
+                          variant="big"
+                          color="white"
+                          className="font-sans leading-none opacity-70 mt-4"
+                        >
+                          {head}
+                        </Typography>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {cart.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-bold mt-4 p-4"
+                        >
+                          {item.productName || "N/A"}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          ${item.price}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          {item.quantity}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          ${item.displayed_price.toFixed(2)}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal mt-4 p-4"
+                        >
+                          {item.discount ? "Yes" : "No"}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-bold mt-4 p-4"
+                        >
+                          ${(item.displayed_price * item.quantity).toFixed(2)}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          as="a"
+                          href="#"
+                          variant="small"
+                          color="red"
+                          className="font-medium mt-4 p-4"
+                        >
+                          <Link to={"/cart"}>
+                            <button
+                              className="text-red-700"
+                              onClick={() => handleRemoveItem(item.productId)}
+                            >
+                              Remove Item
+                            </button>
+                          </Link>
+                        </Typography>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {cart.length > 0 && (
+              <div className="flex justify-between">
+                <div>
                   <button
-                    className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleCancelOrder}
+                    className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleMakeOrder}
                   >
-                    Cancel
+                    Make order
                   </button>
-                </Link>
+                  <Dialog open={open} handler={() => setOpen(false)}>
+                    <DialogBody>
+                      <p>Order placed successfully!</p>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button
+                        className="bg-blue-500 text-white"
+                        onClick={handleNavigate}
+                      >
+                        Go to Confirmation Page
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </div>
+                <div>
+                  <Link to={"/home"}>
+                    <button
+                      className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleCancelOrder}
+                    >
+                      Cancel
+                    </button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </Card>
         )}
 
@@ -300,7 +342,6 @@ export default function CartPage() {
     </div>
   );
 }
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 

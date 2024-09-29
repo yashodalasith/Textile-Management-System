@@ -12,7 +12,10 @@ import UpdateProduct from "./pages/UpdateProduct";
 import ProductDetail from "./pages/ProductDetail";
 import { Footer } from "./components/Footer";
 import Chatbot from "./pages/ChatBot";
-
+import Login from "../src/components/User/Login";
+import UserProfile from "../src/components/User/UserProfile";
+import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
+import OrdersDoneByTheUser from "../src/pages/OrdersDoneByTheUser";
 export default function App() {
   return (
     <BrowserRouter>
@@ -21,6 +24,13 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/aibot" element={<Chatbot />} />
+        {/* user routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/user" element={<Login />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
+        <Route path="/OrdersDoneByTheUser" element={<OrdersDoneByTheUser />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/ProductList" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/confirm-order" element={<OrderConfirmation />} />
