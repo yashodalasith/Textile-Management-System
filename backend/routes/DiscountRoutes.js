@@ -163,6 +163,7 @@ async function removeDiscount() {
     for (const product of discountedProducts) {
       product.discount = false;
       product.displayed_price = product.price;
+      product.discount_percentage = 0;
       await product.save();
     }
 
