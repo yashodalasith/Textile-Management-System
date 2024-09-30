@@ -28,6 +28,7 @@ function UpdateProduct() {
 
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -46,11 +47,20 @@ function UpdateProduct() {
   }, [id]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    // Check if the field is meant to be a number and handle it appropriately
+    const numericValue =
+      name === 'price' || name === 'quantity' || name === 'discount_percentage' || name === 'displayed_price'
+        ? value === "" ? "" : Number(value) // Check if value is empty, if so keep it empty
+        : value;
+  
     setInputs((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value,
+      [name]: numericValue,
     }));
   };
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -69,35 +79,59 @@ function UpdateProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendRequest().then(() => navigate('/products'));
+    
+    const newErrors = {};
+    if (inputs.quantity !== "" && inputs.quantity < 0) newErrors.quantity = "Quantity cannot be negative"; // Only validate if not empty
+    if (inputs.price !== "" && inputs.price < 0) newErrors.price = "Price cannot be negative"; // Only validate if not empty
+  
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+  
+    sendRequest().then(() => {
+      alert('Product updated successfully'); // Add this line to show a Windows-style alert
+      navigate('/products');
+    });
   };
+  
+  
 
   const sendRequest = async () => {
-    await axios.put(`http://localhost:3001/Products/products-update/${id}`, {
-      productId: String(inputs.productId),
-      productName: String(inputs.productName),
-      description: String(inputs.description),
-      price: Number(inputs.price),
-      quantity: Number(inputs.quantity),
-      color: String(inputs.color),
-      size: String(inputs.size),
-      discount: inputs.discount === "true",
-      discount_percentage: Number(inputs.discount_percentage),
-      image: String(inputs.image),
-      displayed_price: Number(inputs.displayed_price),
-    });
+    try {
+      await axios.put(`http://localhost:3001/Products/products-update/${id}`, {
+        productId: String(inputs.productId),
+        productName: String(inputs.productName),
+        description: String(inputs.description),
+        price: Number(inputs.price),
+        quantity: Number(inputs.quantity),
+        color: String(inputs.color),
+        size: String(inputs.size),
+        discount: inputs.discount === "true",
+        discount_percentage: Number(inputs.discount_percentage),
+        image: String(inputs.image),
+        displayed_price: Number(inputs.displayed_price),
+      });
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
   };
 
   if (loading) {
     return <div>Loading...</div>;
   }
+  
+  const handleCancel = () => {
+    navigate('/products');
+  };
+
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginTop: '20px' }}>
       </div>
       <div style={{ padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(10px)', marginBottom: '30px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '30px', fontWeight: 'bold', color: 'black',fontsize:'20px' }}>Update Product</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '30px', fontWeight: 'bold', color: 'black', fontSize: '20px' }}>Update Product</h2>
         <Card className="w-full p-6 shadow-lg">
           <CardBody>
             <form onSubmit={handleSubmit}>
@@ -137,23 +171,27 @@ function UpdateProduct() {
                 <div style={{ flex: '1 1 20%' }}>
                   <Input
                     label="Price"
+                    onWheel={(e) => e.target.blur()}
                     type="number"
                     name="price"
                     onChange={handleChange}
                     value={inputs.price}
                     style={{ fontSize: 'small', marginBottom: '5px' }}
                   />
+                  {errors.price && <p style={{ color: 'red', fontSize: '12px' }}>{errors.price}</p>}
                 </div>
 
                 <div style={{ flex: '1 1 20%' }}>
                   <Input
                     label="Quantity"
+                    onWheel={(e) => e.target.blur()}
                     type="number"
                     name="quantity"
                     onChange={handleChange}
                     value={inputs.quantity}
                     style={{ fontSize: 'small', marginBottom: '5px' }}
                   />
+                  {errors.quantity && <p style={{ color: 'red', fontSize: '12px' }}>{errors.quantity}</p>}
                 </div>
 
                 <div style={{ flex: '1 1 20%' }}>
@@ -192,6 +230,7 @@ function UpdateProduct() {
                 <div style={{ flex: '1 1 20%' }}>
                   <Input
                     label="Discount Percentage"
+                    onWheel={(e) => e.target.blur()}
                     type="number"
                     name="discount_percentage"
                     onChange={handleChange}
@@ -218,6 +257,7 @@ function UpdateProduct() {
               <div style={{ marginTop: '5px', marginBottom: '15px' }}>
                 <Input
                   label="Displayed Price"
+                  onWheel={(e) => e.target.blur()}
                   type="number"
                   name="displayed_price"
                   onChange={handleChange}
@@ -226,9 +266,18 @@ function UpdateProduct() {
                 />
               </div>
 
-              <Button type="submit" style={{ backgroundColor: '#007bff', color: '#fff', borderRadius: '5px', padding: '10px 20px', margin: '0 auto', display: 'block' }}>
-                Update Product
-              </Button>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                <Button type="submit" style={{ backgroundColor: '#248FDD', color: '#fff', borderRadius: '5px', padding: '10px 20px' }}>
+                  Update Product
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleCancel}
+                  style={{ backgroundColor: '#d3d3d3', color: '#000', borderRadius: '5px', padding: '10px 20px' }}
+                >
+                  Cancel
+                </Button>
+              </div>
             </form>
           </CardBody>
         </Card>
