@@ -40,8 +40,9 @@ export default function OrderConfirmation() {
   const downloadBillPDF = () => {
     const doc = new jsPDF();
 
-    doc.setFillColor(173, 216, 230);
-    doc.rect(10, 10, 190, 280, "F");
+    // Set Background Color (Light Blue)
+    doc.setFillColor(173, 216, 230); // Light blue background (RGB: 173, 216, 230)
+    doc.rect(10, 10, 190, 280, "F"); // Full-page background with padding
 
     // Underlined Header with Green Font
     doc.setTextColor(0, 128, 0); // Green color (RGB: 0, 128, 0)
