@@ -176,6 +176,7 @@ export default function OrdersDoneByTheUser() {
           </button>
         )}
       </div>
+      <div></div>
     </div>
   );
 }

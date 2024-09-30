@@ -29,6 +29,7 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import ProfileMenu from "./ProfileMenu"; // Import the ProfileMenu component
+import { Link } from "react-router-dom";
 
 const navListMenuItems = [
   {
@@ -42,39 +43,9 @@ const navListMenuItems = [
     icon: UserGroupIcon,
   },
   {
-    title: "Blog",
-    description: "Find the perfect solution for your needs.",
-    icon: Bars4Icon,
-  },
-  {
-    title: "Services",
-    description: "Learn how we can help you achieve your goals.",
-    icon: SunIcon,
-  },
-  {
-    title: "Support",
-    description: "Reach out to us for assistance or inquiries",
-    icon: GlobeAmericasIcon,
-  },
-  {
     title: "Contact",
     description: "Find the perfect solution for your needs.",
     icon: PhoneIcon,
-  },
-  {
-    title: "News",
-    description: "Read insightful articles, tips, and expert opinions.",
-    icon: NewspaperIcon,
-  },
-  {
-    title: "Products",
-    description: "Find the perfect solution for your needs.",
-    icon: RectangleGroupIcon,
-  },
-  {
-    title: "Special Offers",
-    description: "Explore limited-time deals and bundles",
-    icon: TagIcon,
   },
 ];
 
@@ -198,14 +169,17 @@ export function NavigationBar() {
   return (
     <Navbar className="mx-auto max-w-screen-xl px-4 py-2">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <Typography
-          as="a"
-          href="#"
-          variant="h6"
-          className="mr-4 cursor-pointer py-1.5 lg:ml-2"
-        >
-          Material Tailwind
-        </Typography>
+        <Link to={"/home"}>
+          <Typography
+            as="a"
+            href="#"
+            variant="h6"
+            className="mr-4 cursor-pointer py-1.5 lg:ml-2"
+          >
+            Home
+          </Typography>
+        </Link>
+
         <div className="hidden lg:block">
           <NavList />
         </div>
@@ -237,10 +211,8 @@ export function NavigationBar() {
   );
 }
 
-
-
-
-{/* 
+{
+  /* 
 
 
 
@@ -270,4 +242,5 @@ export function NavigationBar() {
             Log In
           </Button>
           <Button variant="gradient" size="sm" fullWidth>
-            Sign In*/}
+            Sign In*/
+}

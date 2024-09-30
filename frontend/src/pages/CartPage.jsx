@@ -32,33 +32,64 @@ export default function CartPage() {
   const [error, setError] = useState(null);
   const [showLoading, setShowLoading] = useState(true); // Track if loading spinner should be shown
   const navigate = useNavigate();
-  // const [userId, setUserId] = useState(null);
+  const [editMode, setEditMode] = useState(false); // Toggle edit mode
+  const [updatedCart, setUpdatedCart] = useState([]);
+  const [openOrderConfirm, setOpenOrderConfirm] = useState(false); // State for order confirmation dialog
   const startTimeRef = useRef(Date.now());
   const userId = localStorage.getItem("userId");
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     try {
-  //       const decoded = jwtDecode(token);
-  //       setUserId(decoded._id); // Set userId in state
-  //     } catch (error) {
-  //       console.error("Invalid token:", error);
-  //     }
-  //   } else {
-  //     console.error("No token found in local storage.");
-  //   }
-  // }, []);
-  // // Decode the token to get the user ID
-  // const token = localStorage.getItem("userToken");
-  // console.log(token);
-  // const userId = token ? jwtDecode(token)._id : null;
-  // console.log(token); // Extract _id from the token
-  // // const userId = "mockUser123";
+  const [openConfirm, setOpenConfirm] = useState(false); // State for confirmation dialog
+  const [itemToRemove, setItemToRemove] = useState(null);
+
   const handleNavigate = () => {
     setOpen(false);
     navigate("/confirm-order");
   };
 
+  const handleOrderConfirmation = () => {
+    setOpenOrderConfirm(true); // Open the order confirmation dialog
+  };
+  const confirmMakeOrder = async () => {
+    await handleMakeOrder(); // Call the original make order function
+    setOpenOrderConfirm(false); // Close the confirmation dialog
+  };
+  const handleDoneEditing = async () => {
+    try {
+      // Send updated cart to the backend
+      const response = await axios.put(`${baseUrl}/update-quantities`, {
+        userId,
+        updatedCart,
+      });
+
+      if (response.status === 200) {
+        setCart(updatedCart); // Update the local cart with new quantities
+        setEditMode(false); // Exit edit mode
+        console.log("Cart updated successfully");
+      } else {
+        alert(response.data.message || "Failed to update cart.");
+      }
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      alert("An error occurred while updating the cart.");
+    }
+  };
+
+  const handleQuantityChange = (index, operation) => {
+    setUpdatedCart((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              quantity:
+                operation === "increase"
+                  ? item.quantity + 1
+                  : item.quantity > 1
+                  ? item.quantity - 1
+                  : 1, // Prevent quantity from going below 1
+            }
+          : item
+      )
+    );
+  };
   const handleMakeOrder = async () => {
     try {
       const response = await axios.post(`${baseUrl1}/confirm-order`, {
@@ -97,7 +128,7 @@ export default function CartPage() {
 
   const handleRemoveItem = async (productId) => {
     try {
-      const response = await axios.delete(`${baseUrl}/remove`, {
+      const response = await axios.delete(`${baseUrl}/remove-item`, {
         data: { userId, productId },
       });
 
@@ -112,6 +143,17 @@ export default function CartPage() {
     }
   };
 
+  const handleRemoveConfirmation = (productId) => {
+    setItemToRemove(productId); // Set the item to remove
+    setOpenConfirm(true); // Open the confirmation dialog
+  };
+
+  const confirmRemoveItem = async () => {
+    if (itemToRemove) {
+      await handleRemoveItem(itemToRemove); // Call the original remove function
+      setOpenConfirm(false); // Close the confirmation dialog
+    }
+  };
   useEffect(() => {
     const fetchCart = async () => {
       startTimeRef.current = Date.now(); // Track the start time
@@ -122,6 +164,7 @@ export default function CartPage() {
 
         const response = await api.get(`/cart/${userId}`);
         setCart(response.data.items);
+        setUpdatedCart(response.data.items);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch cart");
       } finally {
@@ -161,9 +204,20 @@ export default function CartPage() {
           <button className="mr-4 text-center text-sm mt-4 ">Add more</button>
         </Link>
       </div>
-      <Link to={"/OrdersDoneByTheUser"} className="flex justify-end mr-4 ">
-        <Button>view previous orders</Button>
-      </Link>
+      {cart.length > 0 && !editMode ? (
+        <Button
+          className="flex justify-end mr-4 ml-4 mb-2"
+          onClick={() => setEditMode(true)}
+        >
+          Edit Cart
+        </Button>
+      ) : null}
+      <div className="flex justify-start mt-4 ml-4 mb-1">
+        <Link to={"/OrdersDoneByTheUser"}>
+          <Button>view previous orders</Button>
+        </Link>
+      </div>
+
       <div className="flex justify-between">
         <div>
           <img
@@ -209,17 +263,22 @@ export default function CartPage() {
                     ))}
                   </tr>
                 </thead>
-                <tbody>
-                  {cart.map((item, index) => (
+                <tbody className="shadow-2xl">
+                  {updatedCart.map((item, index) => (
                     <tr key={index}>
                       <td>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-bold mt-4 p-4"
+                        <Link
+                          to={`http://localhost:5173/product/${item.productId}`}
                         >
-                          {item.productName || "N/A"}
-                        </Typography>
+                          {" "}
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-bold mt-4 p-4"
+                          >
+                            {item.productName || "N/A"}
+                          </Typography>
+                        </Link>
                       </td>
                       <td>
                         <Typography
@@ -231,6 +290,37 @@ export default function CartPage() {
                         </Typography>
                       </td>
                       <td>
+                        {!editMode ? (
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal mt-4 p-4"
+                          >
+                            {item.quantity}
+                          </Typography>
+                        ) : (
+                          <div className="flex items-center mt-4">
+                            <button
+                              onClick={() =>
+                                handleQuantityChange(index, "decrease")
+                              }
+                              className="px-2 py-1 bg-gray-300 rounded-md"
+                            >
+                              -
+                            </button>
+                            <span className="mx-4">{item.quantity}</span>
+                            <button
+                              onClick={() =>
+                                handleQuantityChange(index, "increase")
+                              }
+                              className="px-2 py-1 bg-gray-300 rounded-md"
+                            >
+                              +
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                      {/* <td>
                         <Typography
                           variant="small"
                           color="blue-gray"
@@ -238,7 +328,7 @@ export default function CartPage() {
                         >
                           {item.quantity}
                         </Typography>
-                      </td>
+                      </td> */}
                       <td>
                         <Typography
                           variant="small"
@@ -277,10 +367,37 @@ export default function CartPage() {
                           <Link to={"/cart"}>
                             <button
                               className="text-red-700"
-                              onClick={() => handleRemoveItem(item.productId)}
+                              onClick={() =>
+                                handleRemoveConfirmation(item.productId)
+                              }
                             >
                               Remove Item
                             </button>
+                            <Dialog
+                              open={openConfirm}
+                              handler={() => setOpenConfirm(false)}
+                            >
+                              <DialogBody>
+                                <p>
+                                  Do you wish to completely remove this item?
+                                </p>
+                              </DialogBody>
+                              <DialogFooter>
+                                <Button
+                                  className="mr-4"
+                                  color="red"
+                                  onClick={() => setOpenConfirm(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  color="green"
+                                  onClick={confirmRemoveItem}
+                                >
+                                  Confirm
+                                </Button>
+                              </DialogFooter>
+                            </Dialog>
                           </Link>
                         </Typography>
                       </td>
@@ -290,39 +407,77 @@ export default function CartPage() {
               </table>
             )}
 
-            {cart.length > 0 && (
-              <div className="flex justify-between">
-                <div>
-                  <button
-                    className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleMakeOrder}
-                  >
-                    Make order
-                  </button>
-                  <Dialog open={open} handler={() => setOpen(false)}>
-                    <DialogBody>
-                      <p>Order placed successfully!</p>
-                    </DialogBody>
-                    <DialogFooter>
-                      <Button
-                        className="bg-blue-500 text-white"
-                        onClick={handleNavigate}
-                      >
-                        Go to Confirmation Page
-                      </Button>
-                    </DialogFooter>
-                  </Dialog>
-                </div>
-                <div>
-                  <Link to={"/home"}>
+            {cart.length > 0 &&
+              !editMode && ( // Hide this section when in edit mode
+                <div className="flex justify-between mt-4">
+                  <div>
                     <button
-                      className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleCancelOrder}
+                      className="bg-green-500 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleOrderConfirmation}
                     >
-                      Cancel
+                      Make order
                     </button>
-                  </Link>
+                    <Dialog
+                      open={openOrderConfirm}
+                      handler={() => setOpenOrderConfirm(false)}
+                    >
+                      <DialogBody>
+                        <p>Do you really want to place this order?</p>
+                      </DialogBody>
+                      <DialogFooter>
+                        <Button
+                          className="mr-4"
+                          color="red"
+                          onClick={() => setOpenOrderConfirm(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button color="green" onClick={confirmMakeOrder}>
+                          Confirm
+                        </Button>
+                      </DialogFooter>
+                    </Dialog>
+                    <Dialog open={open} handler={() => setOpen(false)}>
+                      <DialogBody>
+                        <p>Order placed successfully!</p>
+                      </DialogBody>
+                      <DialogFooter>
+                        <Button
+                          className="bg-blue-500 text-white"
+                          onClick={handleNavigate}
+                        >
+                          Confirm Order
+                        </Button>
+                      </DialogFooter>
+                    </Dialog>
+                  </div>
+                  <div>
+                    <Link to={"/home"}>
+                      <button
+                        className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleCancelOrder}
+                      >
+                        Cancel
+                      </button>
+                    </Link>
+                  </div>
                 </div>
+              )}
+            {editMode && (
+              <div className="flex justify-center mt-4">
+                <Button
+                  style={{
+                    height: "40px",
+                    width: "120px",
+                    justifyContent: "center",
+                    marginRight: "1rem",
+                    marginLeft: "1rem",
+                    marginBottom: "0.5rem",
+                  }}
+                  onClick={handleDoneEditing}
+                >
+                  Done
+                </Button>
               </div>
             )}
           </Card>
@@ -342,109 +497,3 @@ export default function CartPage() {
     </div>
   );
 }
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// const Cart = ({ userId }) => {
-//   const [cart, setCart] = useState(null); // Default is null
-//   const [loading, setLoading] = useState(true);
-//   // const userId = "mockUser123";
-
-//   useEffect(() => {
-//     // Fetch the cart data from the backend
-
-//     const fetchCart = async () => {
-//       try {
-//         const response = await axios.get(`/cart/${userId}`);
-//         setCart(response.data);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error("Failed to fetch cart", error);
-//         setLoading(false);
-//       }
-//     };
-//     fetchCart();
-//   }, [userId]);
-
-//   const confirmOrder = async () => {
-//     try {
-//       const response = await axios.post("/confirm-order", { userId });
-//       alert("Order confirmed!");
-//       window.location.href = "/confirm-order"; // Redirect to confirm-order page
-//     } catch (error) {
-//       console.error("Failed to confirm order", error);
-//     }
-//   };
-
-//   if (loading) return <div>Loading...</div>;
-
-//   return (
-//     <div className="p-6 bg-white rounded-lg shadow-md">
-//       <h2 className="text-xl font-bold mb-4">Your Cart</h2>
-//       {/* Check if cart exists and if cart.items exists */}
-//       {cart && cart.items && cart.items.length > 0 ? (
-//         <div>
-//           <ul className="divide-y divide-gray-200">
-//             {cart.items.map((item) => (
-//               <li key={item.productId} className="py-4">
-//                 <div className="flex justify-between">
-//                   <span>{item.name}</span>
-//                   <span>
-//                     {item.quantity} x ${item.price} = $
-//                     {item.quantity * item.price}
-//                   </span>
-//                 </div>
-//               </li>
-//             ))}
-//           </ul>
-//           <div className="mt-4">
-//             <button
-//               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-//               onClick={confirmOrder}
-//             >
-//               Confirm Order
-//             </button>
-//           </div>
-//         </div>
-//       ) : (
-//         <p>Your cart is empty </p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Cart;
-
-// import React, { useState, useEffect } from "react";
-// import api from "../services/api";
-
-// const CartPage = () => {
-//   const [cart, setCart] = useState([]);
-
-//   useEffect(() => {
-//     const fetchCart = async () => {
-//       const response = await api.get("/api/cart/123");
-//       setCart(response.data.items);
-//     };
-//     fetchCart();
-//   }, []);
-
-//   const removeFromCart = async (productId) => {
-//     await api.delete(`/api/cart/123/remove`, { data: { productId } });
-//   };
-
-//   return (
-//     <div>
-//       <h1>Your Cart</h1>
-//       {cart.map((item) => (
-//         <div key={item.productId}>
-//           <p>Product: {item.productId}</p>
-//           <p>Quantity: {item.quantity}</p>
-//           <button onClick={() => removeFromCart(item.productId)}>Remove</button>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default CartPage;

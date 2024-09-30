@@ -115,7 +115,7 @@ export default function OrderConfirmation() {
                   <span>
                     {item.quantity} x {item.productName}
                   </span>
-                  <span>= LKR {item.quantity * item.price}</span>
+                  <span>= $ {item.quantity * item.price}</span>
                 </li>
               ))}
             </ul>
@@ -124,7 +124,7 @@ export default function OrderConfirmation() {
           <div className="border-t-2 border-black mt-4 pt-4  gap-x-8">
             <div className="flex justify-between mb-4">
               <span className="font-medium">Amount to be paid:</span>
-              <span>LKR {totalprice}</span>
+              <span>$ {totalprice}</span>
             </div>
 
             <div className="flex justify-center font-semibold mb-4">
