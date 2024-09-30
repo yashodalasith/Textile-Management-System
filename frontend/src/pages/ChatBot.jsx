@@ -77,18 +77,26 @@ function Chatbot() {
           </div>
           <div className="py-4"></div>
           {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
-          <button
-            type="submit"
-            className={`w-full py-3 px-4 text-white rounded-lg ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-700 transition duration-200 ease-in-out"
-            }`}
-            style={{ marginLeft: "480px", width: "200px" }}
-            disabled={loading}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            {loading ? "Generating..." : "Submit"}
-          </button>
+            <button
+              type="submit"
+              className={`w-full py-3 px-4 text-white rounded-lg ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-700 transition duration-200 ease-in-out"
+              }`}
+              style={{ width: "220px" }}
+              disabled={loading}
+            >
+              {loading ? "Generating..." : "Submit"}
+            </button>
+          </div>
         </form>
         <div className="py-4"></div>
         {response ? (

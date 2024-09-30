@@ -93,7 +93,10 @@ function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      sendRequest().then(() => history("/products"));
+      sendRequest().then(() => {
+        alert("Product added successfully!"); // Alert message on successful addition
+        history("/products");
+      });
     }
   };
 
@@ -146,7 +149,13 @@ function AddProduct() {
         >
           Add New Product
         </h2>
-        <Card className="w-full p-6 shadow-lg">
+        <Card
+          className="w-full p-6 shadow-lg"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
           <CardBody>
             <form onSubmit={handleSubmit}>
               <div style={{ marginTop: "5px", marginBottom: "15px" }}>
@@ -224,6 +233,7 @@ function AddProduct() {
                   <Input
                     label="Price"
                     type="number"
+                    onWheel={(e) => e.target.blur()}
                     name="price"
                     min="0" // Prevents negative values
                     onChange={handleChange}
@@ -246,6 +256,7 @@ function AddProduct() {
                   <Input
                     label="Quantity"
                     type="number"
+                    onWheel={(e) => e.target.blur()}
                     name="quantity"
                     min="0" // Prevents negative values
                     onChange={handleChange}
@@ -328,6 +339,7 @@ function AddProduct() {
                   <Input
                     type="number"
                     name="discount_percentage"
+                    onWheel={(e) => e.target.blur()}
                     min="0" // Prevents negative values
                     max="100" // Ensures percentage does not exceed 100
                     onChange={handleChange}
@@ -380,6 +392,7 @@ function AddProduct() {
                 <Input
                   type="number"
                   name="displayed_price"
+                  onWheel={(e) => e.target.blur()}
                   min="0" // Prevents negative values
                   onChange={handleChange}
                   value={inputs.displayed_price}
@@ -394,7 +407,7 @@ function AddProduct() {
               <Button
                 type="submit"
                 style={{
-                  backgroundColor: "#007bff",
+                  backgroundColor: "#248FDD",
                   color: "#fff",
                   borderRadius: "5px",
                   padding: "10px 20px",
