@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Input,
   Button,
@@ -8,7 +8,7 @@ import {
   Card,
   CardBody,
   Typography,
-} from '@material-tailwind/react';
+} from "@material-tailwind/react";
 
 // Function to generate a unique product ID with 'PROD-' prefix and 6 numeric characters
 const generateProductId = () => {
@@ -56,12 +56,14 @@ function AddProduct() {
     if (!inputs.size) newErrors.size = "Size is required";
     if (!inputs.discount) newErrors.discount = "Discount status is required";
     if (inputs.discount_percentage < 0 || inputs.discount_percentage > 100)
-      newErrors.discount_percentage = "Discount percentage must be between 0 and 100";
+      newErrors.discount_percentage =
+        "Discount percentage must be between 0 and 100";
     if (!inputs.image) newErrors.image = "Image is required";
-    if (!inputs.displayed_price) newErrors.displayed_price = "Displayed price is required";
+    if (!inputs.displayed_price)
+      newErrors.displayed_price = "Displayed price is required";
     if (inputs.discount !== "true" && inputs.discount !== "false")
       newErrors.discount = "Discount must be true or false";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -91,7 +93,7 @@ function AddProduct() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      sendRequest().then(() => history('/products'));
+      sendRequest().then(() => history("/products"));
     }
   };
 
@@ -113,86 +115,132 @@ function AddProduct() {
       .then((res) => res.data);
   };
 
- 
-
- 
-
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginTop: '20px' }}>
-      
-      </div>
-      <div style={{ padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(10px)', marginBottom: '30px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '30px', fontWeight: 'bold', color: 'black',fontSize:'20px' }}>Add New Product</h2>
+    <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "20px",
+          marginTop: "20px",
+        }}
+      ></div>
+      <div
+        style={{
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          backdropFilter: "blur(10px)",
+          marginBottom: "30px",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "bold",
+            color: "black",
+            fontSize: "20px",
+          }}
+        >
+          Add New Product
+        </h2>
         <Card className="w-full p-6 shadow-lg">
           <CardBody>
             <form onSubmit={handleSubmit}>
-              <div style={{ marginTop: '5px', marginBottom: '15px' }}>
-              <label htmlFor="productId" className="block text-sm font-medium text-gray-700 mb-1">
+              <div style={{ marginTop: "5px", marginBottom: "15px" }}>
+                <label
+                  htmlFor="productId"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Product ID
                 </label>
                 <Input
-                
                   type="text"
                   name="productId"
                   value={inputs.productId}
                   readOnly
-                  style={{ marginTop: '5px', marginBottom: '15px' }}
+                  style={{ marginTop: "5px", marginBottom: "15px" }}
                 />
               </div>
 
-              <div style={{ marginTop: '5px', marginBottom: '15px' }}>
-              <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
+              <div style={{ marginTop: "5px", marginBottom: "15px" }}>
+                <label
+                  htmlFor="productName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Product Name
                 </label>
                 <Input
-                   label="Product Name"
+                  label="Product Name"
                   type="text"
                   name="productName"
                   onChange={handleChange}
                   value={inputs.productName}
                   required
-                  style={{ marginTop: '5px', marginBottom: '5px' }}
+                  style={{ marginTop: "5px", marginBottom: "5px" }}
                 />
-                {errors.productName && <p className="text-red-500">{errors.productName}</p>}
+                {errors.productName && (
+                  <p className="text-red-500">{errors.productName}</p>
+                )}
               </div>
 
-              <div style={{ marginTop: '5px', marginBottom: '15px' }}>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <div style={{ marginTop: "5px", marginBottom: "15px" }}>
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Description
                 </label>
                 <Textarea
-                 
                   label="Description"
                   name="description"
                   onChange={handleChange}
                   value={inputs.description}
                   required
-                  style={{ marginTop: '5px', marginBottom: '15px' }}
+                  style={{ marginTop: "5px", marginBottom: "15px" }}
                 />
-                {errors.description && <p className="text-red-500">{errors.description}</p>}
+                {errors.description && (
+                  <p className="text-red-500">{errors.description}</p>
+                )}
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginBottom: '15px' }}>
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "15px",
+                  marginBottom: "15px",
+                }}
+              >
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Price
                   </label>
                   <Input
-                   label="Price"
+                    label="Price"
                     type="number"
                     name="price"
                     min="0" // Prevents negative values
                     onChange={handleChange}
                     value={inputs.price}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
-                  {errors.price && <p className="text-red-500">{errors.price}</p>}
+                  {errors.price && (
+                    <p className="text-red-500">{errors.price}</p>
+                  )}
                 </div>
 
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="quantity"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Quantity
                   </label>
                   <Input
@@ -203,13 +251,18 @@ function AddProduct() {
                     onChange={handleChange}
                     value={inputs.quantity}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
-                  {errors.quantity && <p className="text-red-500">{errors.quantity}</p>}
+                  {errors.quantity && (
+                    <p className="text-red-500">{errors.quantity}</p>
+                  )}
                 </div>
 
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="color"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Color
                   </label>
                   <Input
@@ -219,13 +272,18 @@ function AddProduct() {
                     onChange={handleChange}
                     value={inputs.color}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
-                  {errors.color && <p className="text-red-500">{errors.color}</p>}
+                  {errors.color && (
+                    <p className="text-red-500">{errors.color}</p>
+                  )}
                 </div>
 
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-1">
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="size"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Size
                   </label>
                   <Input
@@ -235,29 +293,36 @@ function AddProduct() {
                     onChange={handleChange}
                     value={inputs.size}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
                   {errors.size && <p className="text-red-500">{errors.size}</p>}
                 </div>
 
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="discount"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Discount
                   </label>
                   <Input
-                  
                     type="text"
                     name="discount"
                     onChange={handleChange}
                     value={inputs.discount}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
-                  {errors.discount && <p className="text-red-500">{errors.discount}</p>}
+                  {errors.discount && (
+                    <p className="text-red-500">{errors.discount}</p>
+                  )}
                 </div>
 
-                <div style={{ flex: '1 1 20%' }}>
-                <label htmlFor="discount_percentage" className="block text-sm font-medium text-gray-700 mb-1">
+                <div style={{ flex: "1 1 20%" }}>
+                  <label
+                    htmlFor="discount_percentage"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Discount Percentage
                   </label>
                   <Input
@@ -268,49 +333,75 @@ function AddProduct() {
                     onChange={handleChange}
                     value={inputs.discount_percentage}
                     required
-                    style={{ fontSize: 'small', marginBottom: '5px' }}
+                    style={{ fontSize: "small", marginBottom: "5px" }}
                   />
-                  {errors.discount_percentage && <p className="text-red-500">{errors.discount_percentage}</p>}
+                  {errors.discount_percentage && (
+                    <p className="text-red-500">{errors.discount_percentage}</p>
+                  )}
                 </div>
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-              <label htmlFor="displayed_price" className="block text-sm font-medium text-gray-700 mb-1">
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="displayed_price"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Image
-                  </label>
+                </label>
                 <Input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  style={{ marginTop: '5px', marginBottom: '15px' }}
+                  style={{ marginTop: "5px", marginBottom: "15px" }}
                 />
                 {imagePreview && (
-                  <div style={{ marginTop: '10px' }}>
-                    <img src={imagePreview} alt="Preview" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                  <div style={{ marginTop: "10px" }}>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
                   </div>
                 )}
                 {errors.image && <p className="text-red-500">{errors.image}</p>}
               </div>
 
-              <div style={{ marginTop: '5px', marginBottom: '15px' }}>
-              <label htmlFor="displayed_price" className="block text-sm font-medium text-gray-700 mb-1">
-                    Displayed Price
-                  </label>
+              <div style={{ marginTop: "5px", marginBottom: "15px" }}>
+                <label
+                  htmlFor="displayed_price"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Displayed Price
+                </label>
                 <Input
-                 
                   type="number"
                   name="displayed_price"
                   min="0" // Prevents negative values
                   onChange={handleChange}
                   value={inputs.displayed_price}
                   required
-                  style={{ marginTop: '5px', marginBottom: '5px' }}
+                  style={{ marginTop: "5px", marginBottom: "5px" }}
                 />
-                {errors.displayed_price && <p className="text-red-500">{errors.displayed_price}</p>}
+                {errors.displayed_price && (
+                  <p className="text-red-500">{errors.displayed_price}</p>
+                )}
               </div>
-              
 
-              <Button type="submit" style={{ backgroundColor: '#007bff', color: '#fff', borderRadius: '5px', padding: '10px 20px', margin: '0 auto', display: 'block' }}>
+              <Button
+                type="submit"
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  margin: "0 auto",
+                  display: "block",
+                }}
+              >
                 Add Product
               </Button>
             </form>
