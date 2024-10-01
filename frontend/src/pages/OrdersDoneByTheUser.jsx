@@ -128,8 +128,8 @@ export default function OrdersDoneByTheUser() {
   return (
     <div>
       <div className="flex justify-end mr-5 mt-4">
-        <Link to={"/home"}>
-          <Button>Home</Button>
+        <Link to={"/MostLeastSoldItems"}>
+          <Button>Summary</Button>
         </Link>
       </div>{" "}
       <div style={OrdersDoneByTheUserStyles.container}>

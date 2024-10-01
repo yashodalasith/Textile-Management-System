@@ -16,6 +16,8 @@ import Login from "../src/components/User/Login";
 import UserProfile from "../src/components/User/UserProfile";
 import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
 import OrdersDoneByTheUser from "../src/pages/OrdersDoneByTheUser";
+import MostLeastSoldItems from "../src/pages/MostLeastSoldItems";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -28,6 +30,7 @@ export default function App() {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
         <Route path="/OrdersDoneByTheUser" element={<OrdersDoneByTheUser />} />
+        <Route path="/MostLeastSoldItems" element={<MostLeastSoldItems />} />
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/ProductList" element={<ProductList />} />
