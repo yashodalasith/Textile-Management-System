@@ -16,6 +16,7 @@ import Login from "../src/components/User/Login";
 import UserProfile from "../src/components/User/UserProfile";
 import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
 import OrdersDoneByTheUser from "../src/pages/OrdersDoneByTheUser";
+import AboutUs from "./pages/AboutUs";
 export default function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/aibot" element={<Chatbot />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         {/* user routes */}
         <Route path="/" element={<Login />} />
         <Route path="/user" element={<Login />} />
