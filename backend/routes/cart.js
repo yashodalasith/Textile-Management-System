@@ -137,4 +137,51 @@ router.delete("/clear", async (req, res) => {
   }
 });
 
+//update cart
+router.put("/update-quantities", async (req, res) => {
+  const { userId, updatedCart } = req.body;
+
+  try {
+    // Logic to update the cart quantities in the database
+    const updatedCartData = await Cart.updateMany(
+      { userId },
+      { $set: { items: updatedCart } }
+    );
+    res.status(200).json({
+      message: "Cart updated successfully",
+      updatedCart: updatedCartData,
+    });
+  } catch (error) {
+    console.error("Error updating cart quantities:", error);
+    res.status(500).json({ message: "Failed to update cart" });
+  }
+});
+
+// Remove entire item from cart
+router.delete("/remove-item", async (req, res) => {
+  const { userId, productId } = req.body;
+
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    // Filter out the item with the matching productId
+    const updatedItems = cart.items.filter(
+      (item) => item.productId !== productId
+    );
+
+    // If no changes were made, the item wasn't found in the cart
+    if (updatedItems.length === cart.items.length) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    cart.items = updatedItems;
+    await cart.save();
+
+    res.status(200).json({ message: "Item removed from cart", cart });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to remove item from cart" });
+  }
+});
+
 module.exports = router;
