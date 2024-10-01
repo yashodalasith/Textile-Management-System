@@ -18,31 +18,41 @@ import UpdateUserProfile from "../src/components/User/UpdateUserDetails";
 import OrdersDoneByTheUser from "../src/pages/OrdersDoneByTheUser";
 import AboutUs from "./pages/AboutUs";
 import MostLeastSoldItems from "../src/pages/MostLeastSoldItems";
+import PrivateRoute from "./components/PrivateRoute/PrivateRouteUser";
+import AdminPrivateRoute from "./components/PrivateRoute/PrivateRouteAdmin";
 
 export default function App() {
   return (
     <BrowserRouter>
       <NavigationBar />
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/aibot" element={<Chatbot />} />
-        <Route path="/aboutus" element={<AboutUs />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route element={<AdminPrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/aibot" element={<Chatbot />} />
+          </Route>
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/userProfile" element={<UserProfile />} />
+          <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
+          <Route
+            path="/OrdersDoneByTheUser"
+            element={<OrdersDoneByTheUser />}
+          />
+          <Route path="/MostLeastSoldItems" element={<MostLeastSoldItems />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/ProductList" element={<ProductList />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/confirm-order" element={<OrderConfirmation />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/products" element={<ViewProducts />} />
+          <Route path="/update-product/:id" element={<UpdateProduct />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+        </Route>
+
         {/* user routes */}
         <Route path="/" element={<Login />} />
         <Route path="/user" element={<Login />} />
-        <Route path="/userProfile" element={<UserProfile />} />
-        <Route path="/updateProfile/:id" element={<UpdateUserProfile />} />
-        <Route path="/OrdersDoneByTheUser" element={<OrdersDoneByTheUser />} />
-        <Route path="/MostLeastSoldItems" element={<MostLeastSoldItems />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/ProductList" element={<ProductList />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/confirm-order" element={<OrderConfirmation />} />
-        <Route path="/add-product" element={<AddProduct />} />
-        <Route path="/products" element={<ViewProducts />} />
-        <Route path="/update-product/:id" element={<UpdateProduct />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
       <Footer />
     </BrowserRouter>

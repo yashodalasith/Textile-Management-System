@@ -25,19 +25,7 @@ const profileMenuItems = [
     icon: UserCircleIcon,
     path: "/userProfile",
   },
-  // {
-  //   label: "Edit Profile",
-  //   icon: Cog6ToothIcon,
-  //   path: "/updateProfile",
-  // },
-  {
-    label: "Inbox",
-    icon: InboxArrowDownIcon,
-  },
-  {
-    label: "Help",
-    icon: LifebuoyIcon,
-  },
+
   {
     label: "Sign Out",
     icon: PowerIcon,
@@ -67,18 +55,29 @@ function ProfileMenu() {
   };
 
   const logoutHandler = () => {
-    // Remove the token from localStorage
-    localStorage.removeItem("token");
+    // Check if userId exists in localStorage
+    const userId = localStorage.getItem("userId");
 
-    // Show Snackbar alert
-    setMessage("Logged out successfully!");
-    setSeverity("success");
-    setOpen(true);
+    if (userId) {
+      // Remove the userId from localStorage
+      localStorage.removeItem("userId");
+      localStorage.removeItem("role");
+      // Remove the token from localStorage
+      localStorage.removeItem("token");
 
-    // Redirect to the login page after delay
-    setTimeout(() => {
-      navigate("/"); // Redirect after delay
-    }, 3000); // Match Snackbar duration
+      // Show Snackbar alert
+      setMessage("Logged out successfully!");
+      setSeverity("success");
+      setOpen(true);
+
+      // Redirect to the login page after delay
+      setTimeout(() => {
+        navigate("/"); // Redirect after delay
+      }, 3000); // Match Snackbar duration
+    } else {
+      // Alert that the user is already logged out
+      alert("You have already logged out.");
+    }
   };
 
   return (
@@ -151,3 +150,16 @@ function ProfileMenu() {
 }
 
 export default ProfileMenu;
+// {
+//   label: "Edit Profile",
+//   icon: Cog6ToothIcon,
+//   path: "/updateProfile",
+// },
+// {
+//   label: "Inbox",
+//   icon: InboxArrowDownIcon,
+// },
+// {
+//   label: "Help",
+//   icon: LifebuoyIcon,
+// },

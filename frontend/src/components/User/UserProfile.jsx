@@ -60,6 +60,8 @@ function UserProfile() {
   const logoutHandler = () => {
     // Remove the token from localStorage
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
 
     // Show Snackbar alert
     setMessage("Logged out successfully!");
@@ -144,7 +146,7 @@ function UserProfile() {
       <div
         style={{
           position: "absolute",
-          top: "10px",
+          top: "80px",
           left: "10px",
           cursor: "pointer",
         }}

@@ -51,6 +51,7 @@ const ProductDetail = () => {
       }
     } catch (error) {
       console.error("Failed to add item to cart:", error);
+      alert("You must log in first");
     }
   };
 
