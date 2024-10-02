@@ -495,15 +495,27 @@ const Dashboard = () => {
       </div>
 
       {message && <p className="text-sm text-red-500 mt-8">{message}</p>}
-      {/* Generate Report Button */}
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={generatePDF}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Generate Report
-        </button>
+      <div className="flex flex-row justify-between pt-4">
+        {/* Generate Report Button */}
+        <div className="flex mt-4 pl-4">
+          <button
+            onClick={generatePDF}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Generate Report
+          </button>
+        </div>
+        {/* <div className="pr-4"></div> */}
+        {/* View products Button */}
+        <Link to={"/products"}>
+          <div className="flex mt-4 pr-4">
+            <button className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              View Products
+            </button>
+          </div>
+        </Link>
       </div>
+
       <div className="py-4"></div>
     </div>
   );
