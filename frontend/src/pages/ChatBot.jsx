@@ -262,6 +262,14 @@ function Chatbot() {
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  // Prevent default new line behavior
+                  e.preventDefault();
+                  // Call the function to submit or handle form logic here
+                  handleSubmit(); // Replace this with your submit function
+                }
+              }}
               placeholder="Describe your fashion strategy..."
               rows="4"
             />
@@ -296,20 +304,6 @@ function Chatbot() {
             </button>
           </div>
         </form>
-
-        {/* {response && (
-          <div
-            style={{
-              marginTop: "20px",
-              padding: "10px",
-              backgroundColor: "#d1fae5",
-              borderRadius: "8px",
-              border: "1px solid #6ee7b7",
-            }}
-          >
-            <strong>Response:</strong> {response}
-          </div>
-        )} */}
       </div>
     </div>
   );

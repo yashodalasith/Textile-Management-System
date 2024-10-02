@@ -434,11 +434,46 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody style={{ backgroundColor: "grey" }}>
-                  {discountItems.map((item) => (
-                    <tr
-                      style={{ backgroundColor: "#FFFFFF" }}
-                      key={item.item_id}
-                    >
+                  {discountItems.length > 0 ? (
+                    discountItems.map((item) => (
+                      <tr
+                        style={{ backgroundColor: "#FFFFFF" }}
+                        key={item.item_id}
+                      >
+                        <td
+                          style={{
+                            padding: "12px",
+                            fontWeight: "bold",
+                            color: "#4B5563",
+                            textAlign: "center",
+                          }}
+                        >
+                          {item.item_name}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px",
+                            fontWeight: "bold",
+                            color: "#4B5563",
+                            textAlign: "center",
+                          }}
+                        >
+                          {item.soldCount}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px",
+                            fontWeight: "bold",
+                            color: "#4B5563",
+                            textAlign: "center",
+                          }}
+                        >
+                          {item.discount_precentage}%
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr style={{ backgroundColor: "#FFFFFF" }}>
                       <td
                         style={{
                           padding: "12px",
@@ -446,31 +481,12 @@ const Dashboard = () => {
                           color: "#4B5563",
                           textAlign: "center",
                         }}
+                        colSpan={3} // Merging all columns for a unified message
                       >
-                        {item.item_name}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: "bold",
-                          color: "#4B5563",
-                          textAlign: "center",
-                        }}
-                      >
-                        {item.soldCount}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: "bold",
-                          color: "#4B5563",
-                          textAlign: "center",
-                        }}
-                      >
-                        {item.discount_precentage}%
+                        No data available for discount items.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
