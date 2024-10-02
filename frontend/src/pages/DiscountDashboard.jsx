@@ -90,6 +90,15 @@ const Dashboard = () => {
     axios
       .post("http://localhost:3001/api/discount/apply-discount", { type })
       .then((response) => {
+        // Check if the response contains any items
+        if (!response.data || response.data.length === 0) {
+          alert("No eligible items available for discount.");
+          setMessage("No eligible items available for discount.");
+          setIsDisabled(false);
+          localStorage.removeItem("discountButtonDisabled");
+          return;
+        }
+
         setMessage(`Discount applied successfully for ${type} items.`);
         // Refetch updated data
         axios
@@ -99,7 +108,11 @@ const Dashboard = () => {
             setDiscountItems(res.data.discountedItems);
           });
       })
-      .catch((err) => setMessage(`Error applying discount: ${err.message}`));
+      .catch((err) => {
+        setMessage(`Error applying discount: ${err.message}`);
+        setIsDisabled(false);
+        localStorage.removeItem("discountButtonDisabled");
+      });
 
     // Re-enable the button after 1 hour (3600000 ms)
     setTimeout(() => {
