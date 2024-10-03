@@ -2,6 +2,14 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import api from "../../services/api";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Button,
+} from "@mui/material";
+import { ArrowForward } from "@mui/icons-material";
 
 function Login() {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -38,6 +46,9 @@ function Login() {
     }
   };
 
+  const [adminNavigationDialog, setAdminNavigationDialog] = useState(false);
+  const [navigationPath, setNavigationPath] = useState("");
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -46,32 +57,43 @@ function Login() {
         localStorage.setItem("token", response.token);
         localStorage.setItem("role", response.role);
         localStorage.setItem("userId", response.userId);
+
         if (response.role === "admin") {
           setMessage("Hello Admin!!");
+          setSeverity("success");
+          setOpen(true);
+
+          // Open dialog to ask where admin wants to navigate
+          setAdminNavigationDialog(true);
         } else if (response.role === "InventoryManager") {
           setMessage("Hello Inventory Manager!!");
+          setSeverity("success");
+          setOpen(true);
+          setTimeout(() => {
+            window.location.href = "/products";
+          }, 3000);
         } else {
           setMessage("Login Success!");
-        }
-        setSeverity("success");
-        setOpen(true);
-
-        // Delay navigation by 3 seconds (match Snackbar duration)
-        setTimeout(() => {
-          if (response.role === "admin") {
-            window.location.href = "/dashboard"; // Navigate after delay
-          } else if (response.role === "InventoryManager") {
-            window.location.href = "/products";
-          } else {
+          setSeverity("success");
+          setOpen(true);
+          setTimeout(() => {
             window.location.href = "/home";
-          }
-        }, 3000);
+          }, 3000);
+        }
       }
     } catch (error) {
       setMessage("Error: " + error.message);
       setSeverity("error");
       setOpen(true);
     }
+  };
+
+  const handleAdminNavigation = (path) => {
+    setAdminNavigationDialog(false);
+    setNavigationPath(path);
+    setTimeout(() => {
+      window.location.href = path;
+    }, 3000);
   };
 
   // Control Register
@@ -533,6 +555,67 @@ function Login() {
           </div>
         </div>
 
+        <Dialog
+          open={adminNavigationDialog}
+          onClose={() => setAdminNavigationDialog(false)}
+          PaperProps={{
+            style: {
+              padding: "20px",
+              borderRadius: "10px",
+              maxWidth: "400px",
+              textAlign: "center",
+            },
+          }}
+        >
+          <DialogTitle style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+            Hello Admin 👋
+          </DialogTitle>
+
+          <DialogContent>
+            <DialogContentText
+              style={{ marginBottom: "20px", fontSize: "1.1rem" }}
+            >
+              Where would you like to navigate?
+            </DialogContentText>
+
+            <Button
+              onClick={() => handleAdminNavigation("/dashboard")}
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{
+                marginBottom: "10px",
+                padding: "10px",
+                fontSize: "1rem",
+                borderRadius: "8px",
+                display: "flex",
+                justifyContent: "space-between", // Space between text and icon
+                alignItems: "center", // Align icon and text vertically
+              }}
+            >
+              Dashboard
+              <ArrowForward /> {/* Icon placed at the end */}
+            </Button>
+
+            <Button
+              onClick={() => handleAdminNavigation("/products")}
+              variant="contained"
+              color="secondary"
+              fullWidth
+              style={{
+                padding: "10px",
+                fontSize: "1rem",
+                borderRadius: "8px",
+                display: "flex",
+                justifyContent: "space-between", // Space between text and icon
+                alignItems: "center", // Align icon and text vertically
+              }}
+            >
+              Products
+              <ArrowForward /> {/* Icon placed at the end */}
+            </Button>
+          </DialogContent>
+        </Dialog>
         {/* Snackbar component */}
         <Snackbar
           open={open}
