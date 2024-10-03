@@ -144,7 +144,7 @@ function Login() {
 
         // Delay navigation by 3 seconds (match Snackbar duration)
         setTimeout(() => {
-          window.location.href = "/home";
+          window.location.href = "/";
         }, 3000);
       }
     } catch (error) {
