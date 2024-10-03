@@ -48,6 +48,8 @@ function Login() {
         localStorage.setItem("userId", response.userId);
         if (response.role === "admin") {
           setMessage("Hello Admin!!");
+        } else if (response.role === "InventoryManager") {
+          setMessage("Hello Inventory Manager!!");
         } else {
           setMessage("Login Success!");
         }
@@ -58,6 +60,8 @@ function Login() {
         setTimeout(() => {
           if (response.role === "admin") {
             window.location.href = "/dashboard"; // Navigate after delay
+          } else if (response.role === "InventoryManager") {
+            window.location.href = "/products";
           } else {
             window.location.href = "/home";
           }
@@ -118,7 +122,7 @@ function Login() {
 
         // Delay navigation by 3 seconds (match Snackbar duration)
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/home";
         }, 3000);
       }
     } catch (error) {

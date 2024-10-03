@@ -141,63 +141,183 @@ function UserProfile() {
   };
 
   return (
-    <div className="prof-form-container">
+    <div
+      className="prof-form-container"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // Full screen height for centering
+        backgroundColor: "#f7f7f7", // Light background color for contrast
+        position: "relative", // Needed for positioning the download icon
+      }}
+    >
       {/* Download Icon */}
       <div
         style={{
           position: "absolute",
-          top: "80px",
-          left: "10px",
+          top: "20px",
+          left: "20px",
           cursor: "pointer",
         }}
       >
         <FaDownload size={24} onClick={downloadPDF} />
       </div>
 
-      <form>
-        <h2 style={{ fontWeight: "bold", fontSize: "24px" }}>
-          Welcome Back😊 <h3 className="user-name">{user ? user.name : ""}</h3>
+      <form
+        style={{
+          backgroundColor: "#fff",
+          padding: "40px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          width: "400px", // Fixed width for the form
+          textAlign: "center",
+        }}
+      >
+        {/* Title */}
+        <h2
+          style={{
+            fontWeight: "bold",
+            fontSize: "24px",
+            color: "#333",
+            marginBottom: "20px",
+          }}
+        >
+          Welcome Back😊
+          <h3
+            className="user-name"
+            style={{
+              fontSize: "20px",
+              color: "#555",
+              marginBottom: "30px",
+            }}
+          >
+            {user ? user.name : ""}
+          </h3>
         </h2>
-        <div className="circle">
+
+        {/* Circle with user's initial */}
+        <div
+          className="circle"
+          style={{
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
+            backgroundColor: "#4A90E2",
+            color: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "36px",
+            fontWeight: "bold",
+            margin: "0 auto 30px", // Centered and with margin
+          }}
+        >
           {user ? user.name.charAt(0).toUpperCase() : ""}
         </div>
-        <div className="user-details">
-          <table>
+
+        {/* User Details Table */}
+        <div className="user-details" style={{ marginBottom: "20px" }}>
+          <table style={{ width: "100%" }}>
             <tbody>
               <tr>
-                <td>Name:</td>
+                <td style={{ textAlign: "left", paddingBottom: "10px" }}>
+                  Name:
+                </td>
                 <td>{user ? user.name : ""}</td>
               </tr>
               <tr>
-                <td>Email:</td>
+                <td style={{ textAlign: "left", paddingBottom: "10px" }}>
+                  Email:
+                </td>
                 <td>{user ? user.email : ""}</td>
               </tr>
               <tr>
-                <td>Phone:</td>
+                <td style={{ textAlign: "left", paddingBottom: "10px" }}>
+                  Phone:
+                </td>
                 <td>{user ? user.phone : ""}</td>
               </tr>
               <tr>
-                <td>Address:</td>
+                <td style={{ textAlign: "left", paddingBottom: "10px" }}>
+                  Address:
+                </td>
                 <td>{user ? user.address : ""}</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div className="actions flex gap-2" style={{ color: "white" }}>
-          <button className="btn update px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600">
-            {user && <Link to={`/updateProfile/${user._id}`}>Update</Link>}
+
+        {/* Actions */}
+        <div
+          className="actions"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          <button
+            className="btn update"
+            style={{
+              width: "150px",
+              padding: "10px",
+              backgroundColor: "#4A90E2",
+              color: "#fff",
+              borderRadius: "5px",
+              border: "none",
+              fontSize: "16px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
+          >
+            {user && (
+              <Link
+                to={`/updateProfile/${user._id}`}
+                style={{ color: "#fff", textDecoration: "none" }}
+              >
+                Update
+              </Link>
+            )}
           </button>
 
           <button
             type="button"
-            className="btn delete px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+            className="btn delete"
             onClick={deleteHandler}
+            style={{
+              width: "150px",
+              padding: "10px",
+              backgroundColor: "#E74C3C",
+              color: "#fff",
+              borderRadius: "5px",
+              border: "none",
+              fontSize: "16px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
           >
             Delete
           </button>
         </div>
 
-        <button type="button" className="btn logout" onClick={logoutHandler}>
+        <button
+          type="button"
+          className="btn logout"
+          onClick={logoutHandler}
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#333",
+            color: "#fff",
+            borderRadius: "5px",
+            border: "none",
+            fontSize: "16px",
+            cursor: "pointer",
+            transition: "background-color 0.3s ease",
+          }}
+        >
           Logout
         </button>
       </form>
