@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { HomeGallery } from "../components/HomeGallery";
+import api from "../services/api";
 // Using Heroicons for the cart icon
 // import { jwtDecode } from "jwt-decode";
-
-const URL = "http://localhost:3001/Products/products";
-const CART_URL = "http://localhost:3001/cart"; // Adjust this if needed
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -38,7 +35,7 @@ const Home = () => {
     const fetchProducts = async () => {
       startTimeRef.current = Date.now();
       try {
-        const response = await axios.get(URL);
+        const response = await api.get("/Products/products");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -53,7 +50,7 @@ const Home = () => {
     // Fetch Cart Quantity
     const fetchCart = async () => {
       try {
-        const response = await axios.get(`${CART_URL}/${userId}`);
+        const response = await api.get(`/cart/${userId}`);
         const cart = response.data;
 
         if (cart && Array.isArray(cart.items)) {

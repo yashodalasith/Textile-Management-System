@@ -2,9 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const Products = require("../models/Products");
+const { adminAuth } = require("../middleware/auth");
 
 // CREATE operation - Add a new product
-router.post("/product-add", async (req, res) => {
+router.post("/product-add", adminAuth, async (req, res) => {
   try {
     const {
       productId,
@@ -75,7 +76,7 @@ router.get("/products", async (req, res) => {
 });
 
 // UPDATE operation - Update a product by ID
-router.put("/products-update/:id", async (req, res) => {
+router.put("/products-update/:id", adminAuth, async (req, res) => {
   try {
     const {
       productName,
@@ -117,7 +118,7 @@ router.put("/products-update/:id", async (req, res) => {
 });
 
 // DELETE operation - Delete a product by ID
-router.delete("/products-delete/:id", async (req, res) => {
+router.delete("/products-delete/:id", adminAuth, async (req, res) => {
   try {
     const productId = req.params.id;
     const deletedProduct = await Products.findByIdAndDelete(productId);

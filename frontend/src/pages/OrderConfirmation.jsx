@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
-import api from "../../api";
+import api from "../services/api";
 import { Link } from "react-router-dom";
 import { jsPDF } from "jspdf";
 

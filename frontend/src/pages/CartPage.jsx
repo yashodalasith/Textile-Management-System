@@ -7,9 +7,8 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
 // import { jwtDecode } from "jwt-decode";
 
 const TABLE_HEAD = [
@@ -21,9 +20,6 @@ const TABLE_HEAD = [
   "Final price",
   "",
 ];
-
-const baseUrl = "http://localhost:3001/cart";
-const baseUrl1 = "http://localhost:3001/order";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -55,7 +51,7 @@ export default function CartPage() {
   const handleDoneEditing = async () => {
     try {
       // Send updated cart to the backend
-      const response = await axios.put(`${baseUrl}/update-quantities`, {
+      const response = await api.put(`/cart/update-quantities`, {
         userId,
         updatedCart,
       });
@@ -92,7 +88,7 @@ export default function CartPage() {
   };
   const handleMakeOrder = async () => {
     try {
-      const response = await axios.post(`${baseUrl1}/confirm-order`, {
+      const response = await api.post(`/order/confirm-order`, {
         userId,
       });
 
@@ -111,7 +107,7 @@ export default function CartPage() {
 
   const handleCancelOrder = async () => {
     try {
-      const response = await axios.delete(`${baseUrl}/clear`, {
+      const response = await api.delete(`/cart/clear`, {
         data: { userId },
       });
 
@@ -128,7 +124,7 @@ export default function CartPage() {
 
   const handleRemoveItem = async (productId) => {
     try {
-      const response = await axios.delete(`${baseUrl}/remove-item`, {
+      const response = await api.delete(`/cart/remove-item`, {
         data: { userId, productId },
       });
 

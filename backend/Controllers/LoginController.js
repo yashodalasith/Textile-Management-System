@@ -21,6 +21,12 @@ const loginUser = async (req, res, next) => {
     const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "1h",
     });
+
+    // Set session data
+    req.session.userId = user._id;
+    req.session.userRole = user.role;
+    req.session.userEmail = user.email;
+
     res.json({ token, role: user.role, userId: user._id });
   } catch (err) {
     console.log(err);
@@ -59,6 +65,17 @@ const inventoryAuth = (req, res, next) => {
   }
 };
 
+const logoutUser = async (req, res, next) => {
+  // Clear session data
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Could not log out" });
+    }
+    res.json({ message: "Logout successful" });
+  });
+};
+
 exports.loginUser = loginUser;
+exports.logoutUser = logoutUser;
 exports.adminAuth = adminAuth;
 exports.inventoryAuth = inventoryAuth;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Line } from "react-chartjs-2";
+import api from "../services/api";
 import { Bar } from "react-chartjs-2";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -64,8 +64,8 @@ const Dashboard = () => {
 
   // Fetch dashboard data
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/admindis/dashboard")
+    api
+      .get("/api/admindis/dashboard")
       .then((response) => {
         const data = response.data;
         setSalesData(data.hourlySales);
@@ -87,8 +87,8 @@ const Dashboard = () => {
     localStorage.setItem("discountButtonDisabled", discountAppliedTime);
 
     // Apply discount now function
-    axios
-      .post("http://localhost:3001/api/discount/apply-discount", { type })
+    api
+      .post("/api/discount/apply-discount", { type })
       .then((response) => {
         // Check if the response contains any items
         if (!response.data || response.data.length === 0) {
@@ -101,12 +101,10 @@ const Dashboard = () => {
 
         setMessage(`Discount applied successfully for ${type} items.`);
         // Refetch updated data
-        axios
-          .get("http://localhost:3001/api/admindis/dashboard")
-          .then((res) => {
-            setSalesData(res.data.hourlySales);
-            setDiscountItems(res.data.discountedItems);
-          });
+        api.get("/api/admindis/dashboard").then((res) => {
+          setSalesData(res.data.hourlySales);
+          setDiscountItems(res.data.discountedItems);
+        });
       })
       .catch((err) => {
         setMessage(`Error applying discount: ${err.message}`);

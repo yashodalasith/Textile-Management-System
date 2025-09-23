@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order1");
 const Cart = require("../models/Cart");
+const { auth } = require("../middleware/auth");
 
 // Confirm and place an order
-router.post("/confirm-order", async (req, res) => {
+router.post("/confirm-order", auth, async (req, res) => {
   const { userId } = req.body;
 
   try {
@@ -39,7 +40,7 @@ router.post("/confirm-order", async (req, res) => {
 });
 
 // Fetch the latest order details for a user
-router.get("/order-details/:userId", async (req, res) => {
+router.get("/order-details/:userId", auth, async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -58,7 +59,7 @@ router.get("/order-details/:userId", async (req, res) => {
   }
 });
 
-router.get("/orders/:userId", async (req, res) => {
+router.get("/orders/:userId", auth, async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -76,7 +77,7 @@ router.get("/orders/:userId", async (req, res) => {
   }
 });
 
-router.get("/:userId/most-least-sold-item", async (req, res) => {
+router.get("/:userId/most-least-sold-item", auth, async (req, res) => {
   const { userId } = req.params;
 
   try {

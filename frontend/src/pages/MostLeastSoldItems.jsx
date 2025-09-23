@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import axios from "axios";
 import { Button } from "@material-tailwind/react";
+import api from "../services/api";
 import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -30,14 +30,11 @@ export default function MostLeastSoldItems() {
   const [itemsSummary, setItemsSummary] = useState([]);
   const [error, setError] = useState(null);
   const userId = localStorage.getItem("userId"); // Assuming userId is stored in localStorage
-  const baseUrl = "http://localhost:3001/order";
 
   useEffect(() => {
     const fetchSoldItems = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/${userId}/most-least-sold-item`
-        );
+        const response = await api.get(`/order/${userId}/most-least-sold-item`);
         const { mostSold, leastSold, dailySpending, itemsSummary } =
           response.data;
         setMostSoldItem(mostSold);
