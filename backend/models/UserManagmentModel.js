@@ -22,10 +22,6 @@ const UserSchema = new schema({
     type: String,
     required: true,
   },
-  ConfirmPassword: {
-    type: String,
-    required: true,
-  },
   role: {
     type: String,
     enum: ["user", "admin", "InventoryManager"],

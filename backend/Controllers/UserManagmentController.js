@@ -101,28 +101,50 @@ const deleteUser = async (req, res, next) => {
   return res.status(200).json({ user });
 };
 
-const updateUser = async (req, res, next) => {
-  const id = req.params.id;
+const updateUser = async (req, res) => {
+  const { id } = req.params;
   const { name, email, phone, address, password, ConfirmPassword } = req.body;
-  let users;
 
   try {
-    users = await User.findByIdAndUpdate(id, {
-      name: name,
-      email: email,
-      address: address,
-      phone: phone,
-      password: password,
-      ConfirmPassword: ConfirmPassword,
-    });
-    users = await users.save();
-  } catch (error) {
-    console.error("Update user error:", error.message);
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update non-sensitive fields only if provided
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (phone !== undefined) user.phone = phone;
+    if (address !== undefined) user.address = address;
+
+    // Handle password change (optional)
+    if (password !== undefined && password !== "") {
+      // 1) Confirm match
+      if (password !== ConfirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+      // 2) Basic strength gate (optional but recommended)
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+      // 3) Hash
+      const salt = await bcrypt.genSalt(12);
+      user.password = await bcrypt.hash(password, salt);
+      // 4) Optional: mark password changed time for JWT invalidation logic
+      user.passwordChangedAt = new Date();
+    }
+
+   
+
+    await user.save();
+
+    // Remove sensitive fields from response
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
+    return res.status(200).json({ user: safeUser });
+  } catch (err) {
+    console.error("Update user error:", err);
+    return res.status(500).json({ message: "Something went wrong" });
   }
-  if (!users) {
-    return res.status(404).json({ message: "Unable to Update users Details" });
-  }
-  return res.status(200).json({ users });
 };
 
 exports.getAllUser = getAllUser;

@@ -5,4 +5,5 @@ const UserLoginController = require("../Controllers/LoginController");
 
 router.post("/", UserLoginController.loginUser);
 router.post("/logout", UserLoginController.logoutUser);
+router.post("/refresh", UserLoginController.refreshTokens);
 module.exports = router;
