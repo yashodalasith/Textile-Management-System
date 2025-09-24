@@ -28,10 +28,9 @@ const loginUser = async (req, res, next) => {
 
   // Set refresh token cookie (HttpOnly, Secure, SameSite)
   res.cookie("rt", refreshToken, {
-    httpOnly: true,
-    secure: true,          // true in production (HTTPS)
+    httpOnly: true,         // true in production (HTTPS)
     sameSite: "Strict",    // or "Lax" if you need cross-site GET navigations
-    path: "/auth/refresh", // cookie only sent to refresh endpoint
+    path: "/login/refresh", // cookie only sent to refresh endpoint
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -53,9 +52,8 @@ const refreshTokens = (req, res) => {
     // rotate refresh token
     res.cookie("rt", refreshToken, {
       httpOnly: true,
-      secure: true,
       sameSite: "Strict",
-      path: "/auth/refresh",
+      path: "/login/refresh",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -69,7 +67,7 @@ const refreshTokens = (req, res) => {
 
 
 const logoutUser = async (req, res, next) => {
-  res.clearCookie("rt", { path: "/auth/refresh" });
+  res.clearCookie("rt", { path: "/login/refresh" });
   res.status(204).end();
   
 };

@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from "react";
+// src/components/PrivateRoute/PrivateRouteUser.jsx
 import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../../AuthContext";
 
 export default function PrivateRoute() {
-  const [alertShown, setAlertShown] = useState(false);
-  const currentCustomer = localStorage.getItem("userId");
-  const location = useLocation();
-
-  useEffect(() => {
-    if (!currentCustomer && !alertShown) {
-      alert("You must log in first to access this page.");
-      setAlertShown(true); // Set alert shown to true to prevent duplicate alerts
-    }
-  }, [currentCustomer, alertShown]);
-
-  return currentCustomer ? <Outlet /> : <Navigate to="/" />;
+  const { accessToken, isAuthReady } = useAuth();
+  if (!isAuthReady) return null;          // or a small loader
+  return accessToken ? <Outlet /> : <Navigate to="/" replace />;
 }

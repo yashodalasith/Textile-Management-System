@@ -18,7 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
-
+import { useAuth } from "../../AuthContext";
 const ProfileMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -60,30 +60,23 @@ const ProfileMenu = () => {
       closeMenu();
     }
   };
-
-  const logoutHandler = () => {
-    // Check if userId exists in localStorage
-    const userId = localStorage.getItem("userId");
-
-    if (userId) {
-      // Remove the userId from localStorage
-      localStorage.removeItem("userId");
-      localStorage.removeItem("role");
-      // Remove the token from localStorage
-      localStorage.removeItem("token");
-
-      // Show Snackbar alert
+  const { logout } = useAuth();
+  
+  const logoutHandler = async () => {
+    try {
+      await logout(); // calls backend + clears accessToken + user
       setMessage("Logged out successfully!");
       setSeverity("success");
       setOpen(true);
 
-      // Redirect to the login page after delay
+      // Redirect after Snackbar duration
       setTimeout(() => {
-        navigate("/"); // Redirect after delay
-      }, 3000); // Match Snackbar duration
-    } else {
-      // Alert that the user is already logged out
-      alert("You have already logged out.");
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      setMessage("Error logging out");
+      setSeverity("error");
+      setOpen(true);
     }
   };
 
