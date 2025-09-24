@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import {
   Input,
   Button,
@@ -101,8 +101,8 @@ function AddProduct() {
   };
 
   const sendRequest = async () => {
-    await axios
-      .post("http://localhost:3001/Products/product-add", {
+    await api
+      .post("/Products/product-add", {
         productId: String(inputs.productId),
         productName: String(inputs.productName),
         description: String(inputs.description),

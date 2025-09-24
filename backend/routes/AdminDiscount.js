@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order1");
 const Product = require("../models/Products");
+const { adminAuth } = require("../middleware/auth");
 
 // Fetch data for the dashboard
-router.get("/dashboard", async (req, res) => {
+router.get("/dashboard", adminAuth, async (req, res) => {
   try {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);

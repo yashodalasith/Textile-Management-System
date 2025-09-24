@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Cart = require("../models/Cart");
+const { auth } = require("../middleware/auth");
 
 // dummy data for testing
 // const mockInventory = [
@@ -13,7 +14,7 @@ const Cart = require("../models/Cart");
 // ];
 
 /// Add item to cart
-router.post("/add", async (req, res) => {
+router.post("/add", auth, async (req, res) => {
   const {
     userId,
     productId,
@@ -75,7 +76,7 @@ router.post("/add", async (req, res) => {
 });
 
 // View cart
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", auth, async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -89,7 +90,7 @@ router.get("/:userId", async (req, res) => {
 });
 
 // Remove item  cart
-router.delete("/remove", async (req, res) => {
+router.delete("/remove", auth, async (req, res) => {
   const { userId, productId } = req.body;
 
   try {
@@ -120,7 +121,7 @@ router.delete("/remove", async (req, res) => {
 });
 
 // Clear cart
-router.delete("/clear", async (req, res) => {
+router.delete("/clear", auth, async (req, res) => {
   const { userId } = req.body;
 
   try {
@@ -138,7 +139,7 @@ router.delete("/clear", async (req, res) => {
 });
 
 //update cart
-router.put("/update-quantities", async (req, res) => {
+router.put("/update-quantities", auth, async (req, res) => {
   const { userId, updatedCart } = req.body;
 
   try {
@@ -158,7 +159,7 @@ router.put("/update-quantities", async (req, res) => {
 });
 
 // Remove entire item from cart
-router.delete("/remove-item", async (req, res) => {
+router.delete("/remove-item", auth, async (req, res) => {
   const { userId, productId } = req.body;
 
   try {

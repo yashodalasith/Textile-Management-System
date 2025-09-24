@@ -4,9 +4,10 @@ const router = express.Router();
 const Product = require("../models/Products");
 const Order = require("../models/Order1");
 const DiscountSchedule = require("../models/DiscountTime");
+const { adminAuth } = require("../middleware/auth");
 
 // Reset and apply discounts every 24 hours at the most and least sales hours
-router.post("/reset-discount", async (req, res) => {
+router.post("/reset-discount", adminAuth, async (req, res) => {
   try {
     // Schedule the task to run every day at midnight
     cron.schedule("0 0 * * *", async () => {
@@ -55,7 +56,7 @@ router.post("/reset-discount", async (req, res) => {
 });
 
 // Manually apply discount for the current hour for one hour
-router.post("/apply-discount", async (req, res) => {
+router.post("/apply-discount", adminAuth, async (req, res) => {
   try {
     const currentHour = new Date().getHours();
     console.log(`Applying discount for current hour (${currentHour}:00)`);
