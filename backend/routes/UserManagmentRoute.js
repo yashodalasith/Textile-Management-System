@@ -1,13 +1,13 @@
-const UserManagmentController = require('../Controllers/UserManagmentController');
+const UserManagmentController = require("../Controllers/UserManagmentController");
+const { adminAuth } = require("../middleware/auth");
 
-const express = require('express')
+const express = require("express");
 const router = express.Router();
 
-router.post("/", UserManagmentController.addUser);
-router.delete("/:id", UserManagmentController.deleteUser);
-router.put("/:id", UserManagmentController.updateUser);
-router.get("/:id", UserManagmentController.getById);
-router.get("/", UserManagmentController.getAllUser);
-
+router.post("/", adminAuth, UserManagmentController.addUser);
+router.delete("/:id", adminAuth, UserManagmentController.deleteUser);
+router.put("/:id", adminAuth, UserManagmentController.updateUser);
+router.get("/:id", adminAuth, UserManagmentController.getById);
+router.get("/", adminAuth, UserManagmentController.getAllUser);
 
 module.exports = router;

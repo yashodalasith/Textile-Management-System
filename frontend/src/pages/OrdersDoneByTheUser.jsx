@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import jsPDF from "jspdf";
+import api from "../services/api";
 import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
@@ -11,13 +11,12 @@ export default function OrdersDoneByTheUser() {
   const [searchDate, setSearchDate] = useState(""); // State for search input
   const [visibleOrders, setVisibleOrders] = useState(5); // Initially show 7 orders
   const userId = localStorage.getItem("userId");
-  const baseUrl1 = "http://localhost:3001/order";
 
   useEffect(() => {
     // Fetch user orders from the backend
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${baseUrl1}/orders/${userId}`);
+        const response = await api.get(`/order/orders/${userId}`);
 
         // Ensure the response is an array
         if (Array.isArray(response.data)) {

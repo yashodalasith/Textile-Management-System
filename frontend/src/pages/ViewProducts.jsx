@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import {
   Card,
   CardBody,
@@ -15,12 +15,9 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 
-const URL = "http://localhost:3001/Products/products";
-const DELETE_URL = "http://localhost:3001/Products/products-delete";
-
 const fetchHandler = async () => {
   try {
-    const response = await axios.get(URL);
+    const response = await api.get("/Products/products");
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -69,7 +66,7 @@ function ViewProducts() {
 
   const handleDelete = async (productId) => {
     try {
-      await axios.delete(`${DELETE_URL}/${productId}`);
+      await api.delete(`/Products/products-delete/${productId}`);
       setViewProducts(
         products.filter((product) => product.productId !== productId)
       );

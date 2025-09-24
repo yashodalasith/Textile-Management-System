@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
+import api from "../services/api";
 
 function Chatbot() {
   const [message, setMessage] = useState("");
@@ -45,10 +45,7 @@ function Chatbot() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/chatbot/submit",
-        { message }
-      );
+      const response = await api.post("/api/chatbot/submit", { message });
       if (response.request.statusText === "OK") {
         setResponse(response.data.reply);
         setHistory((prev) => [
