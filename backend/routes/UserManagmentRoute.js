@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", adminAuth, UserManagmentController.addUser);
 router.delete("/:id", adminAuth, UserManagmentController.deleteUser);
-router.put("/:id", adminAuth, UserManagmentController.updateUser);
+router.put("/:id", UserManagmentController.updateUser);
 router.get("/:id", adminAuth, UserManagmentController.getById);
 router.get("/", adminAuth, UserManagmentController.getAllUser);
 

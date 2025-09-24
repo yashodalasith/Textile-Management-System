@@ -21,7 +21,9 @@ function UserProfile() {
       const token = localStorage.getItem("token");
       console.log("Token:", token);
       try {
-        const response = await api.post("/userProfile", { token });
+        const response = await api.get("/userProfile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         if (response.data.status === "ok") {
           setUser(response.data.user);
         } else {
