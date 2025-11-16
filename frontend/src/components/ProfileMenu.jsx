@@ -19,25 +19,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 
-const profileMenuItems = [
-  {
-    label: "My Profile",
-    icon: UserCircleIcon,
-    path: "/userProfile",
-  },
-
-  {
-    label: "Sign Out",
-    icon: PowerIcon,
-  },
-];
-
-function ProfileMenu() {
+const ProfileMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [severity, setSeverity] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+
+  const role = localStorage.getItem("role"); // Retrieve the role from localStorage
+
+  // Conditionally add "Dashboard" menu item if the role is "admin"
+  const profileMenuItems = [
+    {
+      label: "My Profile",
+      icon: UserCircleIcon,
+      path: "/userProfile",
+    },
+    role === "admin" && {
+      label: "Dashboard",
+      icon: InboxArrowDownIcon,
+      path: "/dashboard",
+    },
+    {
+      label: "Sign Out",
+      icon: PowerIcon,
+    },
+  ].filter(Boolean); // Remove any false values
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -147,7 +154,7 @@ function ProfileMenu() {
       </Snackbar>
     </>
   );
-}
+};
 
 export default ProfileMenu;
 // {

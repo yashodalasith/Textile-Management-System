@@ -59,7 +59,6 @@ const inventoryAuth = (req, res, next) => {
   }
 };
 
-
 exports.loginUser = loginUser;
 exports.adminAuth = adminAuth;
 exports.inventoryAuth = inventoryAuth;
