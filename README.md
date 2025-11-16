@@ -28,6 +28,20 @@ The **Textile Management System** is designed to streamline processes in textile
 
 ---
 
+## 🖥️ Sneak Peek
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGkzYzJvcTRnMXBoOG43dnM5OGZlem8zZ2dlM2N5OGhyZDdnbjgwcyZlcD12MV9naWZzX3NlYXJjaCZjdD1z/26xBwdIuRJiAIqHwA/giphy.gif" width="600" alt="Textile Dashboard Demo" />
+  <br><sup>Example product dashboard view</sup>
+</p>
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3VhbTF5NWpvbm03dGRibWtkNWhwN2lseWVrYjV2eWNlNnAxMnZ0bCZlcD12MV9naWZzX3NlYXJjaCZjdD1z/13FrpeVH09Zrb2/giphy.gif" width="600" alt="Cart & Checkout Demo" />
+  <br><sup>Shopping cart and checkout flow</sup>
+</p>
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -38,29 +52,44 @@ The **Textile Management System** is designed to streamline processes in textile
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/yashodalasith/Textile-Management-System.git
    cd Textile-Management-System
    ```
 
-2. Install dependencies for the frontend:
+2. **Install dependencies for the frontend:**
 
    ```bash
    cd frontend
    npm install
    ```
 
-3. *(If backend code is included, repeat the install steps in the backend directory as well.)*
+3. **Install dependencies for the backend**  
+   *(If backend code is included, follow these steps to get the backend API running)*:
+
+   ```bash
+   cd ../backend
+   npm install
+   ```
+
+   - **Configure Environment:**  
+     Copy `.env.example` to `.env` (if provided) and set the required environment variables (such as PORT, database connection settings, etc).
+   - **Start the backend server:**  
+     ```bash
+     npm start
+     ```
+   - The backend will typically be available at [http://localhost:3001](http://localhost:3001).
 
 ### Running the App
 
-1. Start the backend service (follow backend setup instructions if available).
+1. **Start the backend service** (see above).
 
-2. Start the frontend (React app):
+2. **Start the frontend (React app):**
 
    ```bash
+   cd ../frontend   # Make sure you are in the frontend directory
    npm run dev
    ```
 
